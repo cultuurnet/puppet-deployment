@@ -1,0 +1,14 @@
+{
+  "name": "puppet-deployment",
+  "version": "0.1.0",
+  "author": "cultuurnet",
+  "summary": "Deploys various applications onto CultuurNet managed infrastructure",
+  "license": "Apache 2.0",
+  "source": "git://github.com/cultuurnet/puppet-deployment.git",
+  "project_page": "https://github.com/cultuurnet/puppet-deployment",
+  "issues_url": "https://github.com/cultuurnet/puppet-deployment/issues",
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
+  ]
+}
+
