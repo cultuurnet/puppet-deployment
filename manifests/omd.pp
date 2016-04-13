@@ -1,10 +1,10 @@
 class deployment::omd (
-  $noop = false
+  $no_deploy = false
 ) {
 
   package { 'omd-drupal':
     ensure => 'latest',
     notify => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
-    noop   => $noop
+    noop   => $no_deploy
   }
 }
