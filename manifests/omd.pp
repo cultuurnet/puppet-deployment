@@ -78,7 +78,6 @@ class deployment::omd (
   if $update_facts {
     exec { 'update_facts':
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
-      path        => [ '/usr/local/bin', '/usr/bin'],
       subscribe   => 'Package[omd]',
       refreshonly => true,
       noop        => $noop_deploy
