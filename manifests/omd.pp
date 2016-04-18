@@ -4,7 +4,9 @@ class deployment::omd (
   $omd_drupal_admin_account_pass,
   $omd_drupal_db_url,
   $omd_drupal_uri,
-  $noop_deploy = false
+  $noop_deploy = false,
+  $update_facts = false,
+  $puppetdb_url = ''
 ) {
 
   package { 'omd-drupal':
@@ -49,6 +51,21 @@ class deployment::omd (
     noop        => $noop_deploy
   }
 
+  file { '/var/www/omd-drupal/sites/default/settings.php':
+    ensure  => 'file',
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Exec[omd-site-install]'
+  }
+
+  file { '/var/www/omd-drupal/sites/default/files':
+    ensure  => 'directory',
+    owner   => 'www-data',
+    group   => 'www-data',
+    recurse => true,
+    require => 'Exec[omd-site-install]'
+  }
+
   exec { 'culturefeed-search-import-cities':
     command     => '/usr/bin/drush -r /var/www/omd-drupal culturefeed-search-import-cities',
     path        => [ '/usr/local/bin', '/usr/bin'],
@@ -56,5 +73,15 @@ class deployment::omd (
     refreshonly => true,
     require     => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]', 'File[omd-drupal-services]', 'Class[Mysql::Server]'],
     noop        => $noop_deploy
+  }
+
+  if $update_facts {
+    exec { 'update_facts':
+      command     => "/usr/local/bin/update_facts ${puppetdb_url}",
+      path        => [ '/usr/local/bin', '/usr/bin'],
+      subscribe   => 'Package[omd]',
+      refreshonly => true,
+      noop        => $noop_deploy
+    }
   }
 }
