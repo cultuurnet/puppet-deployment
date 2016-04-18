@@ -47,7 +47,7 @@ class deployment::omd (
     onlyif      => '/usr/bin/test -z `/usr/bin/drush -r /var/www/omd-drupal core-status --format=list install-profile`',
     refreshonly => true,
     subscribe   => 'Package[omd-drupal]',
-    require     => [ 'File[omd-drupal-settings]', 'File[omd-drupal-services]', 'Class[Mysql::Server]', 'Php::Cli::Config[cli_sendmail_path]'],
+    require     => [ 'File[omd-drupal-settings]', 'File[omd-drupal-services]', 'Class[Mysql::Server]'],
     noop        => $noop_deploy
   }
 
