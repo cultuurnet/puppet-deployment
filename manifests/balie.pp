@@ -4,7 +4,9 @@ class deployment::balie (
   $balie_swagger_ui_config_source,
   $balie_angular_app_deploy_config_source,
   $balie_swagger_ui_deploy_config_source,
-  $noop_deploy = false
+  $noop_deploy = false,
+  $update_facts = false,
+  $puppetdb_url = ''
 ) {
 
   package { 'balie-silex':
@@ -92,5 +94,14 @@ class deployment::balie (
     refreshonly => true,
     subscribe   => [ 'Package[balie-angular-app]', 'File[balie-angular-app-config]', 'File[balie-angular-app-deploy-config]'],
     noop        => $noop_deploy
+  }
+
+  if $update_facts {
+    exec { 'update_facts':
+      command     => "/usr/local/bin/update_facts ${puppetdb_url}",
+      subscribe   => 'Package[balie]',
+      refreshonly => true,
+      noop        => $noop_deploy
+    }
   }
 }
