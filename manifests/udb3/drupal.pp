@@ -10,12 +10,14 @@ class deployment::udb3::drupal (
 
   package { 'udb3-drupal':
     ensure => 'present',
-    notify => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]']
+    notify => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop   => $noop_deploy
   }
 
   package { 'udb3-alternative':
     ensure => 'latest',
-    notify => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]']
+    notify => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop   => $noop_deploy
   }
 
   file { 'udb3-drupal-settings':
@@ -24,7 +26,8 @@ class deployment::udb3::drupal (
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-drupal]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]', 'Package[udb3-drupal]']
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]', 'Package[udb3-drupal]'],
+    noop    => $noop_deploy
   }
 
   exec { 'udb3-site-install':
@@ -33,7 +36,8 @@ class deployment::udb3::drupal (
     onlyif      => '/usr/bin/test -z `/usr/bin/drush -r /var/www/udb-drupal core-status --format=list install-profile`',
     refreshonly => true
     subscribe   => 'Package[udb3-drupal]',
-    require     => 'File[udb3-drupal-settings]'
+    require     => 'File[udb3-drupal-settings]',
+    noop        => $noop_deploy
   }
 
   exec { 'culturefeed-search-import-cities':
@@ -42,7 +46,8 @@ class deployment::udb3::drupal (
     subscribe   => 'Exec[udb3-site-install]',
     require     => [ 'Package[udb3-drupal]', 'File[udb3-drupal-settings]'],
     refreshonly => true,
-    notify      => 'Class[Supervisord::Service]'
+    notify      => 'Class[Supervisord::Service]',
+    noop        => $noop_deploy
   }
 
   file { '/var/www/udb-drupal/sites/default/files':
@@ -50,14 +55,16 @@ class deployment::udb3::drupal (
     owner   => 'www-data',
     group   => 'www-data',
     recurse => true,
-    require => 'Exec[udb3-site-install]'
+    require => 'Exec[udb3-site-install]',
+    noop    => $noop_deploy
   }
 
   file { '/var/www/udb-drupal/sites/default/settings.php':
     ensure  => 'file',
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Exec[udb3-site-install]'
+    require => 'Exec[udb3-site-install]',
+    noop    => $noop_deploy
   }
 
   if $update_facts {
