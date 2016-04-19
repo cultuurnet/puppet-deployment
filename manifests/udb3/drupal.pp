@@ -34,7 +34,7 @@ class deployment::udb3::drupal (
     command     => "/usr/bin/drush -r /var/www/udb-drupal site-install -y culudb --account-pass=${udb3_drupal_admin_account_pass} --db-url=${udb3_drupal_db_url} --uri=${udb3_drupal_uri}",
     path        => [ '/usr/local/bin', '/usr/bin'],
     onlyif      => '/usr/bin/test -z `/usr/bin/drush -r /var/www/udb-drupal core-status --format=list install-profile`',
-    refreshonly => true
+    refreshonly => true,
     subscribe   => 'Package[udb3-drupal]',
     require     => 'File[udb3-drupal-settings]',
     noop        => $noop_deploy
