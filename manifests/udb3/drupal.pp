@@ -26,7 +26,7 @@ class deployment::udb3::drupal (
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-drupal]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]', 'Package[udb3-drupal]'],
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
     noop    => $noop_deploy
   }
 
