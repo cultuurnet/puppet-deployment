@@ -47,7 +47,7 @@ class deployment::omd (
     onlyif      => '/usr/bin/test -z `/usr/bin/drush -r /var/www/omd-drupal core-status --format=list install-profile`',
     refreshonly => true,
     subscribe   => 'Package[omd-drupal]',
-    require     => [ 'File[omd-drupal-settings]', 'File[omd-drupal-services]', 'Class[Mysql::Server]'],
+    require     => [ 'File[omd-drupal-settings]', 'File[omd-drupal-services]'],
     noop        => $noop_deploy
   }
 
@@ -71,7 +71,7 @@ class deployment::omd (
     path        => [ '/usr/local/bin', '/usr/bin'],
     subscribe   => 'Exec[omd-site-install]',
     refreshonly => true,
-    require     => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]', 'File[omd-drupal-services]', 'Class[Mysql::Server]'],
+    require     => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]', 'File[omd-drupal-services]'],
     noop        => $noop_deploy
   }
 
