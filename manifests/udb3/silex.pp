@@ -5,6 +5,7 @@ class deployment::udb3::silex (
   $udb3_swagger_ui_config_source,
   $udb3_angular_app_deploy_config_source,
   $udb3_swagger_ui_deploy_config_source,
+  $udb3_db_name,
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
@@ -112,7 +113,7 @@ class deployment::udb3::silex (
     command   => 'bin/udb3.php install',
     cwd       => '/var/www/udb-silex',
     path      => [ '/usr/local/bin', '/usr/bin', '/var/www/udb-silex'],
-    onlyif    => 'test -z $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e "show tables where tables_in_udb3 <> \"doctrine_migration_versions\"" UDB3 | tr "\n" "_")',
+    onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = '${udb3_db_name}' and table_name not like 'doctrine_migration_versions';')",
     subscribe => 'Package[udb3-silex]',
     noop      => $noop_deploy
   }
