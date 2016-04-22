@@ -31,7 +31,7 @@ class deployment::udb3::drupal (
   }
 
   exec { 'udb3-site-install':
-    command     => "/usr/bin/drush -r /var/www/udb-drupal site-install -y culudb --account-pass=${udb3_drupal_admin_account_pass} --db-url=${udb3_drupal_db_url} --uri=${udb3_drupal_uri}",
+    command     => "/usr/bin/drush -r /var/www/udb-drupal site-install -y culudb_kickstart --account-pass=${udb3_drupal_admin_account_pass} --db-url=${udb3_drupal_db_url} --uri=${udb3_drupal_uri}",
     path        => [ '/usr/local/bin', '/usr/bin'],
     onlyif      => '/usr/bin/test -z `/usr/bin/drush -r /var/www/udb-drupal core-status --format=list install-profile`',
     refreshonly => true,
