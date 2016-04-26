@@ -55,7 +55,8 @@ class deployment::omd (
     ensure  => 'file',
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Exec[omd-site-install]'
+    require => 'Exec[omd-site-install]',
+    noop        => $noop_deploy
   }
 
   file { '/var/www/omd-drupal/sites/default/files':
@@ -63,7 +64,8 @@ class deployment::omd (
     owner   => 'www-data',
     group   => 'www-data',
     recurse => true,
-    require => 'Exec[omd-site-install]'
+    require => 'Exec[omd-site-install]',
+    noop        => $noop_deploy
   }
 
   exec { 'culturefeed-search-import-cities':
