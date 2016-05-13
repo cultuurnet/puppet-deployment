@@ -23,7 +23,7 @@ class deployment::udb3::cdbxml (
   }
 
   if $update_facts {
-    exec { 'update_facts':
+    exec { 'update_facts cdbxml':
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
       subscribe   => 'Package[udb3-cdbxml]',
       refreshonly => true,
