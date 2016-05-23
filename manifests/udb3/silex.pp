@@ -6,6 +6,7 @@ class deployment::udb3::silex (
   $udb3_angular_app_deploy_config_source,
   $udb3_swagger_ui_deploy_config_source,
   $udb3_db_name,
+  $pubkey_source,
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
@@ -90,6 +91,16 @@ class deployment::udb3::silex (
     source => $udb3_swagger_ui_deploy_config_source,
     mode   => '0755',
     noop   => $noop_deploy
+  }
+
+  file { 'udb3-silex-pubkey':
+    ensure  => 'file',
+    path    => '/var/www/udb-silex/public.pem',
+    source  => $pubkey_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[udb3-silex]',
+    noop    => $noop_deploy
   }
 
   exec { 'angular-deploy-config':
