@@ -4,6 +4,7 @@ class deployment::omd (
   $omd_drupal_admin_account_pass,
   $omd_drupal_db_url,
   $omd_drupal_uri,
+  $pubkey_source,
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
@@ -38,6 +39,16 @@ class deployment::omd (
     source  => $omd_drupal_services_source,
     require => 'Package[omd-drupal]',
     notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop    => $noop_deploy
+  }
+
+  file { 'omd-drupal-pubkey':
+    ensure  => 'file',
+    path    => '/var/www/omd-drupal/sites/default/public.pem',
+    source  => $pubkey_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[omd-drupal]',
     noop    => $noop_deploy
   }
 
