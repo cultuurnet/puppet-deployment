@@ -54,7 +54,7 @@ class deployment::omd (
 
   exec { 'omd-site-install':
     command     => "/usr/bin/drush -r /var/www/omd-drupal site-install -y herita --account-pass=${omd_drupal_admin_account_pass} --db-url=${omd_drupal_db_url} --uri=${omd_drupal_uri}",
-    path        => [ '/usr/local/bin', '/usr/bin'],
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     onlyif      => '/usr/bin/test -z `/usr/bin/drush -r /var/www/omd-drupal core-status --format=list install-profile`',
     refreshonly => true,
     subscribe   => 'Package[omd-drupal]',
@@ -81,7 +81,7 @@ class deployment::omd (
 
   exec { 'culturefeed-search-import-cities':
     command     => '/usr/bin/drush -r /var/www/omd-drupal culturefeed-search-import-cities',
-    path        => [ '/usr/local/bin', '/usr/bin'],
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     subscribe   => 'Exec[omd-site-install]',
     refreshonly => true,
     require     => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]', 'File[omd-drupal-services]'],

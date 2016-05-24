@@ -105,7 +105,7 @@ class deployment::udb3::silex (
 
   exec { 'angular-deploy-config':
     command     => 'angular-deploy-config /var/www/udb-app',
-    path        => [ '/usr/local/bin', '/usr/bin'],
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     subscribe   => [ 'Package[udb3-angular-app]', 'File[udb3-angular-app-config]', 'File[udb3-angular-app-deploy-config]'],
     refreshonly => true,
     notify      => 'Class[Supervisord::Service]',
@@ -114,7 +114,7 @@ class deployment::udb3::silex (
 
   exec { 'swagger-deploy-config':
     command     => 'swagger-deploy-config /var/www/udb-silex/web/swagger',
-    path        => [ '/usr/local/bin', '/usr/bin'],
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     subscribe   => [ 'Package[udb3]', 'File[udb3-swagger-ui-config]', 'File[udb3-swagger-ui-deploy-config]'],
     refreshonly => true,
     noop        => $noop_deploy
@@ -123,7 +123,7 @@ class deployment::udb3::silex (
   exec { 'silex-db-install':
     command   => 'bin/udb3.php install',
     cwd       => '/var/www/udb-silex',
-    path      => [ '/usr/local/bin', '/usr/bin', '/var/www/udb-silex'],
+    path      => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-silex'],
     onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = '${udb3_db_name}' and table_name not like 'doctrine_migration_versions';')",
     subscribe => 'Package[udb3-silex]',
     noop      => $noop_deploy
@@ -132,7 +132,7 @@ class deployment::udb3::silex (
   exec { 'silex_db_migrate':
     command     => 'vendor/bin/doctrine-dbal --no-interaction migrations:migrate',
     cwd         => '/var/www/udb-silex',
-    path        => [ '/usr/local/bin', '/usr/bin', '/var/www/udb-silex'],
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-silex'],
     subscribe   => 'Package[udb3-silex]',
     require     => 'Exec[silex-db-install]',
     refreshonly => true,

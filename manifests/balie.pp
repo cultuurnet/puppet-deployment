@@ -82,7 +82,7 @@ class deployment::balie (
 
   exec { 'angular-deploy-config':
     command     => 'angular-deploy-config /var/www/balie/web/app',
-    path        => [ '/usr/local/bin', '/usr/bin'],
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
     subscribe   => [ 'Package[balie-angular-app]', 'File[balie-angular-app-config]', 'File[balie-angular-app-deploy-config]'],
     noop        => $noop_deploy
@@ -90,7 +90,7 @@ class deployment::balie (
 
   exec { 'swagger-deploy-config':
     command     => 'swagger-deploy-config /var/www/balie/web/swagger',
-    path        => [ '/usr/local/bin', '/usr/bin'],
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
     subscribe   => [ 'Package[balie-angular-app]', 'File[balie-angular-app-config]', 'File[balie-angular-app-deploy-config]'],
     noop        => $noop_deploy
