@@ -5,7 +5,7 @@ class deployment::udb3::rabbitmq (
   $noop_deploy = false,
 ) {
 
-  class { 'rabbitmq':
+  class { '::rabbitmq':
     manage_repos      => false,
     delete_guest_user => true
   }
