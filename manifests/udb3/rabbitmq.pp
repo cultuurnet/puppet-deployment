@@ -21,6 +21,12 @@ class deployment::udb3::rabbitmq (
     noop   => $noop_deploy
   }
 
+  rabbitmq_user_permissions { "${admin_user}@${vhost}":
+    configure_permission => '.*',
+    read_permission      => '.*',
+    write_permission     => '.*',
+  }
+
   rabbitmq_exchange { "cdbxml.vagrant.x.entry@${vhost}":
     user        => $admin_user,
     password    => $admin_password,
