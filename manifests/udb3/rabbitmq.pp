@@ -25,6 +25,7 @@ class deployment::udb3::rabbitmq (
     configure_permission => '.*',
     read_permission      => '.*',
     write_permission     => '.*',
+    noop                 => $noop_deploy
   }
 
   rabbitmq_exchange { "cdbxml.vagrant.x.entry@${vhost}":
@@ -35,5 +36,22 @@ class deployment::udb3::rabbitmq (
     auto_delete => false,
     durable     => true,
     noop        => $noop_deploy
+  }
+
+  rabbitmq_queue { "solr.vagrant.q.udb3-cdbxml@${vhost}":
+    user        => $admin_user,
+    password    => $admin_password,
+    durable     => true,
+    auto_delete => false,
+    noop        => $noop_deploy
+  }
+
+  rabbitmq_binding { "cdbxml.vagrant.x.entry@solr.vagrant.q.udb3-cdbxml@${vhost}":
+    user             => $admin_user,
+    password         => $admin_password,
+    destination_type => 'queue',
+    routing_key      => '#',
+    arguments        => {},
+    noop             => $noop_deploy
   }
 }
