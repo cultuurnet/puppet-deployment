@@ -104,4 +104,6 @@ class deployment::balie (
       noop        => $noop_deploy
     }
   }
+
+  Class['Php'] -> Class['Deployment::Balie']
 }

@@ -75,4 +75,6 @@ class deployment::udb3::drupal (
       noop        => $noop_deploy
     }
   }
+
+  Class['Php'] -> Class['Deployment::Udb3::Drupal']
 }

@@ -52,4 +52,6 @@ class deployment::udb3::jwtprovider (
       noop        => $noop_deploy
     }
   }
+
+  Class['Php'] -> Class['Deployment::Udb3::Jwtprovider']
 }

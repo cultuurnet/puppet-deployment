@@ -147,4 +147,6 @@ class deployment::udb3::silex (
       noop        => $noop_deploy
     }
   }
+
+  Class['Php'] -> Class['Deployment::Udb3::Silex']
 }

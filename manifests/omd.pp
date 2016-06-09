@@ -96,4 +96,6 @@ class deployment::omd (
       noop        => $noop_deploy
     }
   }
+
+  Class['Php'] -> Class['Deployment::Omd']
 }

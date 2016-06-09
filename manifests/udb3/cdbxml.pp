@@ -40,4 +40,6 @@ class deployment::udb3::cdbxml (
       noop        => $noop_deploy
     }
   }
+
+  Class['Php'] -> Class['Deployment::Udb3::Cdbxml']
 }

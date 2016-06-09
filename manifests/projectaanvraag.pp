@@ -11,4 +11,6 @@ class deployment::projectaanvraag (
       noop        => $noop_deploy
     }
   }
+
+  Class['Php'] -> Class['Deployment::Projectaanvraag']
 }
