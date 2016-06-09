@@ -79,15 +79,6 @@ class deployment::omd (
     noop        => $noop_deploy
   }
 
-  exec { 'culturefeed-search-import-cities':
-    command     => '/usr/bin/drush -r /var/www/omd-drupal culturefeed-search-import-cities',
-    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
-    subscribe   => 'Exec[omd-site-install]',
-    refreshonly => true,
-    require     => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]', 'File[omd-drupal-services]'],
-    noop        => $noop_deploy
-  }
-
   if $update_facts {
     exec { 'update_facts':
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
