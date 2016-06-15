@@ -1,9 +1,9 @@
 class deployment::balie (
-  $balie_silex_config_source,
-  $balie_angular_app_config_source,
-  $balie_swagger_ui_config_source,
-  $balie_angular_app_deploy_config_source,
-  $balie_swagger_ui_deploy_config_source,
+  $silex_config_source,
+  $angular_app_config_source,
+  $swagger_ui_config_source,
+  $angular_app_deploy_config_source,
+  $swagger_ui_deploy_config_source,
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
@@ -36,7 +36,7 @@ class deployment::balie (
   file { 'balie-silex-config':
     ensure  => 'file',
     path    => '/var/www/balie/config.yml',
-    source  => $balie_silex_config_source,
+    source  => $silex_config_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[balie-silex]',
@@ -47,7 +47,7 @@ class deployment::balie (
   file { 'balie-angular-app-config':
     ensure  => 'file',
     path    => '/var/www/balie/web/app/config.json',
-    source  => $balie_angular_app_config_source,
+    source  => $angular_app_config_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[balie-angular-app]',
@@ -57,7 +57,7 @@ class deployment::balie (
   file { 'balie-swagger-ui-config':
     ensure  => 'file',
     path    => '/var/www/balie/web/swagger/config.json',
-    source  => $balie_swagger_ui_config_source,
+    source  => $swagger_ui_config_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[balie-swagger-ui]',
@@ -67,7 +67,7 @@ class deployment::balie (
   file { 'balie-angular-app-deploy-config':
     ensure => 'file',
     path   => '/usr/local/bin/angular-deploy-config',
-    source => $balie_angular_app_deploy_config_source,
+    source => $angular_app_deploy_config_source,
     mode   => '0755',
     noop   => $noop_deploy
   }
@@ -75,7 +75,7 @@ class deployment::balie (
   file { 'balie-swagger-ui-deploy-config':
     ensure => 'file',
     path   => '/usr/local/bin/swagger-deploy-config',
-    source => $balie_swagger_ui_deploy_config_source,
+    source => $swagger_ui_deploy_config_source,
     mode   => '0755',
     noop   => $noop_deploy
   }
