@@ -1,11 +1,11 @@
 class deployment::udb3::silex (
-  $udb3_silex_config_source,
-  $udb3_silex_features_source,
-  $udb3_angular_app_config_source,
-  $udb3_swagger_ui_config_source,
-  $udb3_angular_app_deploy_config_source,
-  $udb3_swagger_ui_deploy_config_source,
-  $udb3_db_name,
+  $silex_config_source,
+  $silex_features_source,
+  $angular_app_config_source,
+  $swagger_ui_config_source,
+  $angular_app_deploy_config_source,
+  $swagger_ui_deploy_config_source,
+  $db_name,
   $pubkey_source,
   $noop_deploy = false,
   $update_facts = false,
@@ -38,7 +38,7 @@ class deployment::udb3::silex (
   file { 'udb3-silex-config':
     ensure  => 'file',
     path    => '/var/www/udb-silex/config.yml',
-    source  => $udb3_silex_config_source,
+    source  => $silex_config_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-silex]',
@@ -49,7 +49,7 @@ class deployment::udb3::silex (
   file { 'udb3-silex-features':
     ensure  => 'file',
     path    => '/var/www/udb-silex/features.yml',
-    source  => $udb3_silex_features_source,
+    source  => $silex_features_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-silex]',
@@ -60,7 +60,7 @@ class deployment::udb3::silex (
   file { 'udb3-angular-app-config':
     ensure => 'file',
     path   => '/var/www/udb-app/config.json',
-    source => $udb3_angular_app_config_source,
+    source => $angular_app_config_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-angular-app]',
@@ -70,7 +70,7 @@ class deployment::udb3::silex (
   file { 'udb3-swagger-ui-config':
     ensure => 'file',
     path   => '/var/www/udb-silex/web/swagger/config.json',
-    source => $udb3_swagger_ui_config_source,
+    source => $swagger_ui_config_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-swagger-ui]',
@@ -80,7 +80,7 @@ class deployment::udb3::silex (
   file { 'udb3-angular-app-deploy-config':
     ensure => 'file',
     path   => '/usr/local/bin/angular-deploy-config',
-    source => $udb3_angular_app_deploy_config_source,
+    source => $angular_app_deploy_config_source,
     mode   => '0755',
     noop   => $noop_deploy
   }
@@ -88,7 +88,7 @@ class deployment::udb3::silex (
   file { 'udb3-swagger-ui-deploy-config':
     ensure => 'file',
     path   => '/usr/local/bin/swagger-deploy-config',
-    source => $udb3_swagger_ui_deploy_config_source,
+    source => $swagger_ui_deploy_config_source,
     mode   => '0755',
     noop   => $noop_deploy
   }
@@ -124,7 +124,7 @@ class deployment::udb3::silex (
     command   => 'bin/udb3.php install',
     cwd       => '/var/www/udb-silex',
     path      => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-silex'],
-    onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = '${udb3_db_name}' and table_name not like 'doctrine_migration_versions';')",
+    onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = '${db_name}' and table_name not like 'doctrine_migration_versions';')",
     subscribe => 'Package[udb3-silex]',
     noop      => $noop_deploy
   }

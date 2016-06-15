@@ -1,8 +1,8 @@
 class deployment::udb3::drupal (
-  $udb3_drupal_settings_source,
-  $udb3_drupal_admin_account_pass,
-  $udb3_drupal_db_url,
-  $udb3_drupal_uri,
+  $drupal_settings_source,
+  $drupal_admin_account_pass,
+  $drupal_db_url,
+  $drupal_uri,
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
@@ -22,7 +22,7 @@ class deployment::udb3::drupal (
 
   file { 'udb3-drupal-settings':
     path    => '/var/www/udb-drupal/sites/default/settings.local.php',
-    source  => $udb3_drupal_settings_source,
+    source  => $drupal_settings_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-drupal]',
@@ -31,7 +31,7 @@ class deployment::udb3::drupal (
   }
 
   exec { 'udb3-site-install':
-    command     => "/usr/bin/drush -r /var/www/udb-drupal site-install -y culudb_kickstart --account-pass=${udb3_drupal_admin_account_pass} --db-url=${udb3_drupal_db_url} --uri=${udb3_drupal_uri}",
+    command     => "/usr/bin/drush -r /var/www/udb-drupal site-install -y culudb_kickstart --account-pass=${drupal_admin_account_pass} --db-url=${drupal_db_url} --uri=${drupal_uri}",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     onlyif      => '/usr/bin/test -z `/usr/bin/drush -r /var/www/udb-drupal core-status --format=list install-profile`',
     refreshonly => true,
