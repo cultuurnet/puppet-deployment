@@ -1,9 +1,9 @@
 class deployment::omd (
-  $omd_drupal_settings_source,
-  $omd_drupal_services_source,
-  $omd_drupal_admin_account_pass,
-  $omd_drupal_db_url,
-  $omd_drupal_uri,
+  $drupal_settings_source,
+  $drupal_services_source,
+  $drupal_admin_account_pass,
+  $drupal_db_url,
+  $drupal_uri,
   $pubkey_source,
   $noop_deploy = false,
   $update_facts = false,
@@ -26,7 +26,7 @@ class deployment::omd (
     path    => '/var/www/omd-drupal/sites/default/settings.local.php',
     owner   => 'www-data',
     group   => 'www-data',
-    source  => $omd_drupal_settings_source,
+    source  => $drupal_settings_source,
     require => 'Package[omd-drupal]',
     notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
     noop    => $noop_deploy
@@ -36,7 +36,7 @@ class deployment::omd (
     path    => '/var/www/omd-drupal/sites/default/services.yml',
     owner   => 'www-data',
     group   => 'www-data',
-    source  => $omd_drupal_services_source,
+    source  => $drupal_services_source,
     require => 'Package[omd-drupal]',
     notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
     noop    => $noop_deploy
@@ -53,7 +53,7 @@ class deployment::omd (
   }
 
   exec { 'omd-site-install':
-    command     => "/usr/bin/drush -r /var/www/omd-drupal site-install -y herita --account-pass=${omd_drupal_admin_account_pass} --db-url=${omd_drupal_db_url} --uri=${omd_drupal_uri}",
+    command     => "/usr/bin/drush -r /var/www/omd-drupal site-install -y herita --account-pass=${drupal_admin_account_pass} --db-url=${drupal_db_url} --uri=${drupal_uri}",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     onlyif      => '/usr/bin/test -z `/usr/bin/drush -r /var/www/omd-drupal core-status --format=list install-profile`',
     refreshonly => true,
