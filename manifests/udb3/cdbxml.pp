@@ -23,6 +23,15 @@ class deployment::udb3::cdbxml (
     noop    => $noop_deploy
   }
 
+  file { 'udb3-cdbxml-logdir':
+    ensure  => 'directory',
+    path    => '/var/www/udb-cdbxml/log',
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[udb3-cdbxml]',
+    noop    => $noop_deploy
+  }
+
   exec { 'udb3-db-install':
     command   => 'bin/app.php install',
     cwd       => '/var/www/udb-cdbxml',
