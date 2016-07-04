@@ -53,5 +53,5 @@ class deployment::udb3::jwtprovider (
     }
   }
 
-  Class['Php'] -> Class['Deployment::Udb3::Jwtprovider']
+  Class['php'] -> Class['deployment::udb3::jwtprovider']
 }

@@ -50,5 +50,5 @@ class deployment::udb3::cdbxml (
     }
   }
 
-  Class['Php'] -> Class['Deployment::Udb3::Cdbxml']
+  Class['php'] -> Class['deployment::udb3::cdbxml']
 }

@@ -88,5 +88,5 @@ class deployment::omd (
     }
   }
 
-  Class['Php'] -> Class['Deployment::Omd']
+  Class['php'] -> Class['deployment::omd']
 }

@@ -12,5 +12,5 @@ class deployment::projectaanvraag (
     }
   }
 
-  Class['Php'] -> Class['Deployment::Projectaanvraag']
+  Class['php'] -> Class['deployment::projectaanvraag']
 }

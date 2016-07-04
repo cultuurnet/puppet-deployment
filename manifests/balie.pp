@@ -105,5 +105,5 @@ class deployment::balie (
     }
   }
 
-  Class['Php'] -> Class['Deployment::Balie']
+  Class['php'] -> Class['deployment::balie']
 }

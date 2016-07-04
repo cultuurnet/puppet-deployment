@@ -148,5 +148,5 @@ class deployment::udb3::silex (
     }
   }
 
-  Class['Php'] -> Class['Deployment::Udb3::Silex']
+  Class['php'] -> Class['deployment::udb3::silex']
 }
