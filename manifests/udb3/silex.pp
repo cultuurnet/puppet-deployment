@@ -2,9 +2,7 @@ class deployment::udb3::silex (
   $silex_config_source,
   $silex_features_source,
   $angular_app_config_source,
-  $swagger_ui_config_source,
   $angular_app_deploy_config_source,
-  $swagger_ui_deploy_config_source,
   $db_name,
   $pubkey_source,
   $noop_deploy = false,
@@ -23,15 +21,9 @@ class deployment::udb3::silex (
     noop   => $noop_deploy
   }
 
-  package { 'udb3-swagger-ui':
-    ensure  => 'present',
-    require => 'Package[udb3-silex]',
-    noop    => $noop_deploy
-  }
-
   package { 'udb3':
     ensure  => 'latest',
-    require => [ 'Package[udb3-silex]', 'Package[udb3-angular-app]', 'Package[udb3-swagger-ui]'],
+    require => [ 'Package[udb3-silex]', 'Package[udb3-angular-app]' ],
     noop    => $noop_deploy
   }
 
@@ -67,28 +59,10 @@ class deployment::udb3::silex (
     noop    => $noop_deploy
   }
 
-  file { 'udb3-swagger-ui-config':
-    ensure => 'file',
-    path   => '/var/www/udb-silex/web/swagger/config.json',
-    source => $swagger_ui_config_source,
-    owner   => 'www-data',
-    group   => 'www-data',
-    require => 'Package[udb3-swagger-ui]',
-    noop    => $noop_deploy
-  }
-
   file { 'udb3-angular-app-deploy-config':
     ensure => 'file',
     path   => '/usr/local/bin/angular-deploy-config',
     source => $angular_app_deploy_config_source,
-    mode   => '0755',
-    noop   => $noop_deploy
-  }
-
-  file { 'udb3-swagger-ui-deploy-config':
-    ensure => 'file',
-    path   => '/usr/local/bin/swagger-deploy-config',
-    source => $swagger_ui_deploy_config_source,
     mode   => '0755',
     noop   => $noop_deploy
   }
@@ -109,14 +83,6 @@ class deployment::udb3::silex (
     subscribe   => [ 'Package[udb3-angular-app]', 'File[udb3-angular-app-config]', 'File[udb3-angular-app-deploy-config]'],
     refreshonly => true,
     notify      => 'Class[Supervisord::Service]',
-    noop        => $noop_deploy
-  }
-
-  exec { 'swagger-deploy-config':
-    command     => 'swagger-deploy-config /var/www/udb-silex/web/swagger',
-    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
-    subscribe   => [ 'Package[udb3]', 'File[udb3-swagger-ui-config]', 'File[udb3-swagger-ui-deploy-config]'],
-    refreshonly => true,
     noop        => $noop_deploy
   }
 
