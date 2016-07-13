@@ -32,6 +32,22 @@ class deployment::udb3::cdbxml (
     noop    => $noop_deploy
   }
 
+  logrotate::rule { 'udb3-cdbxml':
+    path          => '/var/www/udb-cdbxml/log/*.log',
+    rotate        => '10',
+    rotate_every  => 'day',
+    missingok     => true,
+    compress      => true,
+    delaycompress => true,
+    ifempty       => false,
+    create        => true,
+    create_mode   => '0640',
+    create_owner  => 'www-data',
+    create_group  => 'www-data',
+    require       => 'File[udb3-cdbxml-logdir]',
+    noop          => $noop_deploy
+  }
+
   exec { 'udb3-db-install':
     command   => 'bin/app.php install',
     cwd       => '/var/www/udb-cdbxml',

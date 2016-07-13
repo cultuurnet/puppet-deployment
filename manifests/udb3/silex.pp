@@ -77,6 +77,22 @@ class deployment::udb3::silex (
     noop    => $noop_deploy
   }
 
+  logrotate::rule { 'udb3-silex':
+    path          => '/var/www/udb-silex/log/*.log',
+    rotate        => '10',
+    rotate_every  => 'day',
+    missingok     => true,
+    compress      => true,
+    delaycompress => true,
+    ifempty       => false,
+    create        => true,
+    create_mode   => '0640',
+    create_owner  => 'www-data',
+    create_group  => 'www-data',
+    require       => 'Package[udb3-silex]',
+    noop          => $noop_deploy
+  }
+
   exec { 'angular-deploy-config':
     command     => 'angular-deploy-config /var/www/udb-app',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
