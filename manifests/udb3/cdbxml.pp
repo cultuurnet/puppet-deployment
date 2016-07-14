@@ -8,7 +8,7 @@ class deployment::udb3::cdbxml (
 
   package { 'udb3-cdbxml':
     ensure => 'latest',
-    notify => 'Class[Apache::Service]',
+    notify => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
     noop   => $noop_deploy
   }
 
@@ -19,7 +19,7 @@ class deployment::udb3::cdbxml (
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-cdbxml]',
-    notify  => 'Class[Apache::Service]',
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
     noop    => $noop_deploy
   }
 
