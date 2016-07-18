@@ -1,6 +1,7 @@
 class deployment::udb3::silex (
   $silex_config_source,
   $silex_features_source,
+  $silex_permissions_source,
   $angular_app_config_source,
   $angular_app_deploy_config_source,
   $db_name,
@@ -42,6 +43,17 @@ class deployment::udb3::silex (
     ensure  => 'file',
     path    => '/var/www/udb-silex/features.yml',
     source  => $silex_features_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[udb3-silex]',
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop    => $noop_deploy
+  }
+
+  file { 'udb3-silex-permissions':
+    ensure  => 'file',
+    path    => '/var/www/udb-silex/user_permissions.yml',
+    source  => $silex_permissions_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-silex]',
