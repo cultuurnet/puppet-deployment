@@ -44,6 +44,8 @@ class deployment::udb3::cdbxml (
     create_mode   => '0640',
     create_owner  => 'www-data',
     create_group  => 'www-data',
+    sharedscripts => true,
+    postrotate    => '/usr/bin/supervisorctl restart udb3-cdbxml-service',
     require       => 'File[udb3-cdbxml-logdir]',
     noop          => $noop_deploy
   }

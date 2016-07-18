@@ -101,6 +101,8 @@ class deployment::udb3::silex (
     create_mode   => '0640',
     create_owner  => 'www-data',
     create_group  => 'www-data',
+    sharedscripts => true,
+    postrotate    => '/usr/bin/supervisorctl restart udb3-amqp-listener udb3-search-cache-warmer udb3-worker',
     require       => 'Package[udb3-silex]',
     noop          => $noop_deploy
   }
