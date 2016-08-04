@@ -62,7 +62,7 @@ class deployment::udb3::cdbxml (
   exec { 'cdbxml_db_migrate':
     command     => 'vendor/bin/doctrine-dbal --no-interaction migrations:migrate',
     cwd         => '/var/www/udb-cdbxml',
-    path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-silex'],
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-cdbxml'],
     subscribe   => 'Package[udb3-cdbxml]',
     require     => 'Exec[cdbxml-db-install]',
     refreshonly => true,
