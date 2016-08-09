@@ -30,7 +30,7 @@ class deployment::swaggerui (
   exec { 'swagger-deploy-config':
     command     => 'swagger-deploy-config /var/www/swagger-ui',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
-    subscribe   => [ 'File[swagger-ui-config]', 'File[swagger-ui-deploy-config]'],
+    subscribe   => [ 'Package[swagger-ui]', 'File[swagger-ui-config]', 'File[swagger-ui-deploy-config]'],
     refreshonly => true,
     noop        => $noop_deploy
   }
