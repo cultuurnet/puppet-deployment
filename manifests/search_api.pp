@@ -92,11 +92,11 @@ class deployment::search_api (
     onlyif  => "test text != $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select data_type from information_schema.columns where TABLE_SCHEMA = '${mysql_database}' and TABLE_NAME = 'ITEM' and COLUMN_NAME = 'CONTENT';')"
   }
 
-  $settings.each |$id, $key, $value| {
-    deployment::search_api::setting { $key:
+  $settings.each |$setting| {
+    deployment::search_api::setting { $setting['key']:
       database => $mysql_database,
-      id       => $id,
-      value    => $value
+      id       => $setting['id'],
+      value    => $setting['value']
     }
   }
 
