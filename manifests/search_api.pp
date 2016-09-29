@@ -87,9 +87,9 @@ class deployment::search_api (
   }
 
   exec { 'item_table_update_content_column':
-    command => "mysql --defaults-extra-file=/root/.my.cnf -e 'alter table ${mysql_database}.ITEM change CONTENT CONTENT text';",
+    command => "mysql --defaults-extra-file=/root/.my.cnf -e \"alter table ${mysql_database}.ITEM change CONTENT CONTENT text;\"",
     path    => [ '/usr/local/bin', '/usr/bin', '/bin'],
-    onlyif  => "test text != $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select data_type from information_schema.columns where TABLE_SCHEMA = '${mysql_database}' and TABLE_NAME = 'ITEM' and COLUMN_NAME = 'CONTENT';')"
+    onlyif  => "test text != $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e \"select data_type from information_schema.columns where TABLE_SCHEMA = '${mysql_database}' and TABLE_NAME = 'ITEM' and COLUMN_NAME = 'CONTENT';\")"
   }
 
   $settings.each |$setting| {
