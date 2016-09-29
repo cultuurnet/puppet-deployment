@@ -1,6 +1,5 @@
 class deployment::search_api (
   $user = 'glassfish',
-  $group = 'glassfish',
   $glassfish_portbase = '8000',
   $glassfish_domain = 'sapi',
   $service_name = 'sapi',
@@ -14,7 +13,6 @@ class deployment::search_api (
   # TODO: apt source for private packages
   # TODO: aws keys for private packages
   # TODO: package install sapi from private source
-  # TODO: MySQL update: alter table ITEM change CONTENT CONTENT text;
   # TODO: MySQL search settings
   # TODO: reverse proxy for search/admin/solr
 
@@ -28,11 +26,6 @@ class deployment::search_api (
     manage_java         => false,
     parent_dir          => '/opt',
     install_dir         => 'glassfish'
-  }
-
-  file { '/opt/glassfish/glassfish/domains':
-    owner => $user,
-    group => $group
   }
 
   glassfish::create_domain { $glassfish_domain:
@@ -92,12 +85,18 @@ class deployment::search_api (
     source       => '/opt/sapi/search-standalone.war'
   }
 
-  Class['glassfish'] -> File['/opt/glassfish/glassfish/domains']
-  File['/opt/glassfish/glassfish/domains'] -> Glassfish::Create_domain[$glassfish_domain]
+  exec { 'item_table_update_content_column':
+    command => "mysql --defaults-extra-file=/root/.my.cnf -e 'alter table ${mysql_database}.ITEM change CONTENT CONTENT text';",
+    path    => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    onlyif  => "test text != $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select data_type from information_schema.columns where TABLE_SCHEMA = '${mysql_database}' and TABLE_NAME = 'ITEM' and COLUMN_NAME = 'CONTENT';')"
+  }
+
+  Class['glassfish'] -> Glassfish::Create_domain[$glassfish_domain]
 
   Package['mysql-connector-java'] -> Glassfish::Install_jars['mysql-connector-java.jar']
   Glassfish::Create_domain[$glassfish_domain] -> Glassfish::Install_jars['mysql-connector-java.jar']
 
   Jdbcresource['jdbc/search'] -> Application['sapi']
   Package['sapi'] ~> Application['sapi']
+  Application['sapi'] -> Exec['item_table_update_content_column']
 }
