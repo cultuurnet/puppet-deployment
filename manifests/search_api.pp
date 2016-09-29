@@ -7,7 +7,8 @@ class deployment::search_api (
   $mysql_password,
   $mysql_host,
   $mysql_port,
-  $mysql_database
+  $mysql_database,
+  $settings
 ) {
 
   # TODO: apt source for private packages
@@ -91,10 +92,17 @@ class deployment::search_api (
     onlyif  => "test text != $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select data_type from information_schema.columns where TABLE_SCHEMA = '${mysql_database}' and TABLE_NAME = 'ITEM' and COLUMN_NAME = 'CONTENT';')"
   }
 
+  $settings.each |$id, $key, $value| {
+    deployment::search_api::setting { $key:
+      database => $mysql_database,
+      id       => $id,
+      value    => $value
+    }
+  }
+
   Class['glassfish'] -> Glassfish::Create_domain[$glassfish_domain]
 
   Package['mysql-connector-java'] -> Glassfish::Install_jars['mysql-connector-java.jar']
-  Glassfish::Create_domain[$glassfish_domain] -> Glassfish::Install_jars['mysql-connector-java.jar']
 
   Jdbcresource['jdbc/search'] -> Application['sapi']
   Package['sapi'] ~> Application['sapi']
