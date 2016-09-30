@@ -27,6 +27,7 @@ class deployment::search_api (
     manage_java         => false,
     parent_dir          => '/opt',
     install_dir         => 'glassfish'
+    require             => Class['apt::update']
   }
 
   glassfish::create_domain { $glassfish_domain:
