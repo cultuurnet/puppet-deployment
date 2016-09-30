@@ -104,7 +104,8 @@ class deployment::search_api (
       database => $mysql_database,
       service  => $service_name,
       id       => $setting['id'],
-      value    => $setting['value']
+      value    => $setting['value'],
+      require  => Application['sapi']
     }
   }
 
