@@ -95,12 +95,6 @@ class deployment::search_api (
     source       => '/opt/sapi/search-standalone.war'
   }
 
-  exec { 'item_table_update_content_column':
-    command => "mysql --defaults-extra-file=/root/.my.cnf -e \"alter table ${mysql_database}.ITEM change CONTENT CONTENT text;\"",
-    path    => [ '/usr/local/bin', '/usr/bin', '/bin'],
-    onlyif  => "test 'text' != \"$(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e \"select data_type from information_schema.columns where TABLE_SCHEMA = '${mysql_database}' and TABLE_NAME = 'ITEM' and COLUMN_NAME = 'CONTENT';\")\""
-  }
-
   $settings.each |$setting| {
     deployment::search_api::setting { $setting['key']:
       database => $mysql_database,
@@ -111,10 +105,10 @@ class deployment::search_api (
   }
 
   Class['glassfish'] -> Glassfish::Create_domain[$glassfish_domain]
+  Glassfish::Create_domain[$glassfish_domain] -> Jdbcconnectionpool['mysql_searchdb_j2eePool']
 
   Package['mysql-connector-java'] -> Glassfish::Install_jars['mysql-connector-java.jar']
 
   Jdbcresource['jdbc/search'] -> Application['sapi']
   Package['sapi'] ~> Application['sapi']
-  Application['sapi'] -> Exec['item_table_update_content_column']
 }
