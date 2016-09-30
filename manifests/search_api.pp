@@ -49,6 +49,7 @@ class deployment::search_api (
   }
 
   jdbcconnectionpool { 'mysql_searchdb_j2eePool':
+    ensure              => 'present',
     user                => $user,
     passwordfile        => $passwordfile,
     portbase            => $glassfish_portbase,
@@ -69,6 +70,7 @@ class deployment::search_api (
   }
 
   jdbcresource { 'jdbc/search':
+    ensure         => 'present',
     portbase       => $glassfish_portbase,
     user           => $user,
     passwordfile   => $passwordfile,
@@ -91,6 +93,7 @@ class deployment::search_api (
   }
 
   application { 'sapi':
+    ensure       => 'present',
     portbase     => $glassfish_portbase,
     user         => $user,
     passwordfile => $passwordfile,
