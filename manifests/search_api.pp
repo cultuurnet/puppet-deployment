@@ -108,6 +108,4 @@ class deployment::search_api (
       require  => Application['sapi']
     }
   }
-
-  Glassfish::Create_domain[$glassfish_domain] -> Jdbcconnectionpool['mysql_searchdb_j2eePool']
 }
