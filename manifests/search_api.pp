@@ -105,6 +105,7 @@ class deployment::search_api (
   }
 
   Class['glassfish'] -> Glassfish::Create_domain[$glassfish_domain]
+  Class['glassfish'] -> Jdbcconnectionpool['mysql_searchdb_j2eePool']
   Glassfish::Create_domain[$glassfish_domain] -> Jdbcconnectionpool['mysql_searchdb_j2eePool']
 
   Package['mysql-connector-java'] -> Glassfish::Install_jars['mysql-connector-java.jar']
