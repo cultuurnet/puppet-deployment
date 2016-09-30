@@ -1,8 +1,8 @@
 class deployment::search_api (
-  $user = 'glassfish',
-  $glassfish_portbase = '8000',
-  $glassfish_domain = 'sapi',
-  $service_name = 'sapi',
+  $user,
+  $glassfish_portbase,
+  $glassfish_domain,
+  $service_name,
   $mysql_user,
   $mysql_password,
   $mysql_host,
@@ -14,7 +14,6 @@ class deployment::search_api (
   # TODO: apt source for private packages
   # TODO: aws keys for private packages
   # TODO: package install sapi from private source
-  # TODO: MySQL search settings
   # TODO: reverse proxy for search/admin/solr
 
   $passwordfile = "/home/${user}/asadmin.pass"
