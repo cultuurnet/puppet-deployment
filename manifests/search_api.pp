@@ -44,7 +44,8 @@ class deployment::search_api (
     install_location => 'domain',
     domain_name      => $glassfish_domain,
     service_name     => $service_name,
-    source           => '/opt/mysql-connector-java/mysql-connector-java.jar'
+    source           => '/opt/mysql-connector-java/mysql-connector-java.jar',
+    require          => Package['mysql-connector-java']
   }
 
   jdbcconnectionpool { 'mysql_searchdb_j2eePool':
@@ -63,7 +64,8 @@ class deployment::search_api (
       'driverClass'       => 'com.mysql.jdbc.Driver',
       'useUnicode'        => true,
       'characterEncoding' => 'utf8'
-    }
+    },
+    require             => [ Class['glassfish'], Glassfish::Create_domain[$glassfish_domain]]
   }
 
   jdbcresource { 'jdbc/search':
@@ -84,7 +86,8 @@ class deployment::search_api (
   }
 
   package { 'sapi':
-    ensure => 'latest'
+    ensure => 'latest',
+    notify => Application['sapi']
   }
 
   application { 'sapi':
@@ -92,7 +95,8 @@ class deployment::search_api (
     user         => $user,
     passwordfile => $passwordfile,
     target       => 'domain',
-    source       => '/opt/sapi/search-standalone.war'
+    source       => '/opt/sapi/search-standalone.war',
+    require      => Jdbcresource['jdbc/search']
   }
 
   $settings.each |$setting| {
@@ -104,12 +108,5 @@ class deployment::search_api (
     }
   }
 
-  Class['glassfish'] -> Glassfish::Create_domain[$glassfish_domain]
-  Class['glassfish'] -> Jdbcconnectionpool['mysql_searchdb_j2eePool']
   Glassfish::Create_domain[$glassfish_domain] -> Jdbcconnectionpool['mysql_searchdb_j2eePool']
-
-  Package['mysql-connector-java'] -> Glassfish::Install_jars['mysql-connector-java.jar']
-
-  Jdbcresource['jdbc/search'] -> Application['sapi']
-  Package['sapi'] ~> Application['sapi']
 }
