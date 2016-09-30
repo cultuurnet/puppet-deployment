@@ -26,7 +26,7 @@ class deployment::search_api (
     enable_secure_admin => false,
     manage_java         => false,
     parent_dir          => '/opt',
-    install_dir         => 'glassfish'
+    install_dir         => 'glassfish',
     require             => Class['apt::update']
   }
 
