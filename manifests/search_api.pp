@@ -8,6 +8,7 @@ class deployment::search_api (
   $mysql_host,
   $mysql_port,
   $mysql_database,
+  $solr_url,
   $settings
 ) {
 
@@ -71,6 +72,14 @@ class deployment::search_api (
     passwordfile   => $passwordfile,
     target         => 'domain',
     connectionpool => 'mysql_searchdb_j2eePool'
+  }
+
+  systemproperty { 'search_solr_path':
+    portbase     => $glassfish_portbase,
+    user         => $user,
+    passwordfile => $passwordfile,
+    target       => 'domain',
+    value        => $solr_url
   }
 
   package { 'sapi':
