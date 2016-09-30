@@ -84,7 +84,7 @@ class deployment::search_api (
   }
 
   package { 'sapi':
-    ensure => 'present'
+    ensure => 'latest'
   }
 
   application { 'sapi':
