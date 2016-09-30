@@ -101,11 +101,9 @@ class deployment::search_api (
 
   $settings.each |$setting| {
     deployment::search_api::setting { $setting['key']:
-      database => $mysql_database,
-      service  => $service_name,
-      id       => $setting['id'],
-      value    => $setting['value'],
-      require  => Application['sapi']
-    }
+    database => $mysql_database,
+     id       => $setting['id'],
+     value    => $setting['value']
+   }
   }
 }
