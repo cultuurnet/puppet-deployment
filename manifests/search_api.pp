@@ -75,6 +75,7 @@ class deployment::search_api (
   }
 
   systemproperty { 'search_solr_path':
+    ensure       => 'present',
     portbase     => $glassfish_portbase,
     user         => $user,
     passwordfile => $passwordfile,
