@@ -102,13 +102,12 @@ class deployment::search_api (
     require      => Jdbcresource['jdbc/search']
   }
 
-  create_resources("deployment::search_api::setting", $settings, {})
-
-  #$settings.each |$setting| {
-  # deployment::search_api::setting { $setting['key']:
-  # database => $mysql_database,
-  #  id       => $setting['id'],
-  #  value    => $setting['value']
-  #}
-  #}
+  $settings.each |$name, $setting| {
+    deployment::search_api::setting { $name:
+      database => $mysql_database,
+      id       => $setting['id'],
+      value    => $setting['value'],
+      require  => Application['sapi']
+    }
+  }
 }
