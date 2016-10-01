@@ -90,6 +90,7 @@ class deployment::search_api (
 
   package { 'sapi':
     ensure => 'latest'
+    notify => Application['sapi']
   }
 
   application { 'sapi':
@@ -99,16 +100,7 @@ class deployment::search_api (
     passwordfile => $passwordfile,
     target       => 'domain',
     source       => '/opt/sapi/search-standalone.war',
-    require      => Jdbcresource['jdbc/search'],
-    subscribe    => Package['sapi']
-  }
-
-  applicationref { 'sapi':
-    ensure       => 'present',
-    portbase     => $glassfish_portbase,
-    user         => $user,
-    passwordfile => $passwordfile,
-    target       => 'domain'
+    require      => Jdbcresource['jdbc/search']
   }
 
   $settings.each |$name, $setting| {
