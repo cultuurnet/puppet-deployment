@@ -103,6 +103,14 @@ class deployment::search_api (
     subscribe    => Package['sapi']
   }
 
+  applicationref { 'sapi':
+    ensure       => 'present',
+    portbase     => $glassfish_portbase,
+    user         => $user,
+    passwordfile => $passwordfile,
+    target       => 'domain'
+  }
+
   $settings.each |$name, $setting| {
     deployment::search_api::setting { $name:
       database => $mysql_database,
