@@ -75,7 +75,6 @@ class deployment::search_api (
     portbase       => $glassfish_portbase,
     user           => $user,
     passwordfile   => $passwordfile,
-    target         => 'domain',
     connectionpool => 'mysql_searchdb_j2eePool'
   }
 
@@ -84,7 +83,6 @@ class deployment::search_api (
     portbase     => $glassfish_portbase,
     user         => $user,
     passwordfile => $passwordfile,
-    target       => 'domain',
     value        => $solr_url
   }
 
@@ -97,7 +95,6 @@ class deployment::search_api (
     portbase     => $glassfish_portbase,
     user         => $user,
     passwordfile => $passwordfile,
-    target       => 'domain',
     source       => '/opt/sapi/search-standalone.war',
     require      => Jdbcresource['jdbc/search']
   }
