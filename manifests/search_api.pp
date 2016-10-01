@@ -119,9 +119,8 @@ class deployment::search_api (
   # which means the application settings can only be applied after
   # that. This is a reversal of the PCS pattern.
   exec { "restart_service_${service_name}":
-    command     => '/usr/sbin/service ${service_name} restart',
+    command     => "/usr/sbin/service ${service_name} restart",
     refreshonly => true,
     subscribe   => Application['sapi']
   }
 }
-
