@@ -99,7 +99,8 @@ class deployment::search_api (
     passwordfile => $passwordfile,
     target       => 'domain',
     source       => '/opt/sapi/search-standalone.war',
-    require      => Jdbcresource['jdbc/search']
+    require      => Jdbcresource['jdbc/search'],
+    subscribe    => Package['sapi']
   }
 
   $settings.each |$name, $setting| {
