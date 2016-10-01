@@ -105,7 +105,23 @@ class deployment::search_api (
       database => $mysql_database,
       id       => $setting['id'],
       value    => $setting['value'],
-      require  => Application['sapi']
+      require  => Application['sapi'],
+      notify   => Exec["restart_service_${service_name}"]
     }
   }
+
+  # Force domain restart at the end of the deployment procedure.
+  # Unfortunately we need an 'exec' here, notifying the domain after
+  # application deployment and applying settings would result in a
+  # dependency cycle, as it has to be created before the glassfish
+  # resources can be applied.
+  # Also, the database schema is created by the application deployment,
+  # which means the application settings can only be applied after
+  # that. This is a reversal of the PCS pattern.
+  exec { "restart_service_${service_name}":
+    command     => '/usr/sbin/service ${service_name} restart',
+    refreshonly => true,
+    subscribe   => Application['sapi']
+  }
 }
+
