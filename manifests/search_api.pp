@@ -89,7 +89,7 @@ class deployment::search_api (
   }
 
   package { 'sapi':
-    ensure => 'latest'
+    ensure => 'latest',
     notify => Application['sapi']
   }
 
