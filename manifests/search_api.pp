@@ -9,15 +9,15 @@ class deployment::search_api (
   $mysql_port,
   $mysql_database,
   $solr_url,
-  $settings
+  $settings,
+  $solr_max_heap
 ) {
 
-  # TODO: apt source for private packages
-  # TODO: aws keys for private packages
-  # TODO: package install sapi from private source
   # TODO: reverse proxy for search/admin/solr
 
   $passwordfile = "/home/${user}/asadmin.pass"
+
+  include java8
 
   class { 'glassfish':
     install_method      => 'package',
@@ -27,7 +27,7 @@ class deployment::search_api (
     manage_java         => false,
     parent_dir          => '/opt',
     install_dir         => 'glassfish',
-    require             => Class['apt::update']
+    require             => [ Class['apt::update'], Class['java8']]
   }
 
   glassfish::create_domain { $glassfish_domain:
@@ -122,5 +122,16 @@ class deployment::search_api (
     command     => "/usr/sbin/service ${service_name} restart",
     refreshonly => true,
     subscribe   => Application['sapi']
+  }
+
+  class { 'solr':
+    max_heap              => $solr_max_heap,
+    cores                 => {
+      'sapi'              => {
+        schema_source     => '/opt/sapi/schema.xml',
+        solrconfig_source => '/opt/sapi/sorlconfig.xml'
+      }
+    },
+    require               => [ Package['sapi'], Class['java8']]
   }
 }
