@@ -130,7 +130,7 @@ class deployment::search_api (
     cores                 => {
       'sapi'              => {
         schema_source     => '/opt/sapi/schema.xml',
-        solrconfig_source => '/opt/sapi/sorlconfig.xml'
+        solrconfig_source => '/opt/sapi/solrconfig.xml'
       }
     },
     require               => [ Package['sapi'], Class['java8']]
