@@ -135,6 +135,15 @@ class deployment::udb3::silex (
     noop        => $noop_deploy
   }
 
+  exec { 'silex-elasticsearch-migrate':
+    command     => 'bin/udb3.php elasticsearch:migrate',
+    cwd         => '/var/www/udb-silex',
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-silex'],
+    subscribe   => 'Package[udb3-silex]',
+    refreshonly => true,
+    noop        => $noop_deploy
+  }
+
   if $update_facts {
     exec { 'update_facts silex':
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
