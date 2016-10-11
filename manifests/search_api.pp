@@ -75,7 +75,8 @@ class deployment::search_api (
     portbase       => $glassfish_portbase,
     user           => $user,
     passwordfile   => $passwordfile,
-    connectionpool => 'mysql_searchdb_j2eePool'
+    connectionpool => 'mysql_searchdb_j2eePool',
+    require        => Class['mysql::server']
   }
 
   systemproperty { 'search_solr_path':
