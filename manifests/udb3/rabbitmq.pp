@@ -92,7 +92,26 @@ class deployment::udb3::rabbitmq (
     noop        => $noop_deploy
   }
 
+  rabbitmq_queue { "uitpas.vagrant.q.udb3-domain-events@${vhost}":
+    user        => $admin_user,
+    password    => $admin_password,
+    durable     => true,
+    auto_delete => false,
+    require     => 'Class[Rabbitmq]',
+    noop        => $noop_deploy
+  }
+
   rabbitmq_binding { "udb3.vagrant.x.domain-events@cdbxml.vagrant.q.udb3-domain-events@${vhost}":
+    user             => $admin_user,
+    password         => $admin_password,
+    destination_type => 'queue',
+    routing_key      => '#',
+    arguments        => {},
+    require          => 'Class[Rabbitmq]',
+    noop             => $noop_deploy
+  }
+
+  rabbitmq_binding { "udb3.vagrant.x.domain-events@uitpas.vagrant.q.udb3-domain-events@${vhost}":
     user             => $admin_user,
     password         => $admin_password,
     destination_type => 'queue',
