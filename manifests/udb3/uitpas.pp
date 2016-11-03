@@ -1,5 +1,6 @@
 class deployment::udb3::uitpas (
   $config_source,
+  $pubkey_source,
   $db_name,
   $noop_deploy = false,
   $update_facts = false,
@@ -26,6 +27,16 @@ class deployment::udb3::uitpas (
   file { 'udb3-uitpas-logdir':
     ensure  => 'directory',
     path    => '/var/www/udb-uitpas/log',
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[udb3-uitpas]',
+    noop    => $noop_deploy
+  }
+
+  file { 'udb3-uitpas-pubkey':
+    ensure  => 'file',
+    path    => '/var/www/udb-uitpas/public.pem',
+    source  => $pubkey_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-uitpas]',
