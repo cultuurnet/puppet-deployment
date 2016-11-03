@@ -4,6 +4,8 @@ class deployment::udb3::silex (
   $silex_permissions_source,
   $angular_app_config_source,
   $angular_app_deploy_config_source,
+  $externalid_place_mapping_source,
+  $externalid_organizer_mapping_source,
   $db_name,
   $pubkey_source,
   $noop_deploy = false,
@@ -87,6 +89,15 @@ class deployment::udb3::silex (
     group   => 'www-data',
     require => 'Package[udb3-silex]',
     noop    => $noop_deploy
+  }
+
+  deployment::udb3::externalid { 'udb3-silex':
+    directory                => '/var/www/udb-silex',
+    place_mapping_source     => $externalid_place_mapping_source,
+    organizer_mapping_source => $externalid_organizer_mapping_source,
+    require                  => 'Package[udb3-silex]',
+    notify                   => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop_deploy              => $noop_deploy
   }
 
   logrotate::rule { 'udb3-silex':
