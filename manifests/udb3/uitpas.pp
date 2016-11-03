@@ -1,6 +1,8 @@
 class deployment::udb3::uitpas (
   $config_source,
   $pubkey_source,
+  $externalid_place_mapping_source,
+  $externalid_organizer_mapping_source,
   $db_name,
   $noop_deploy = false,
   $update_facts = false,
@@ -41,6 +43,15 @@ class deployment::udb3::uitpas (
     group   => 'www-data',
     require => 'Package[udb3-uitpas]',
     noop    => $noop_deploy
+  }
+
+  deployment::udb3::externalid { 'udb3-uitpas':
+    directory                => '/var/www/udb-uitpas',
+    place_mapping_source     => $externalid_place_mapping_source,
+    organizer_mapping_source => $externalid_organizer_mapping_source,
+    require                  => 'Package[udb3-uitpas]',
+    notify                   => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop_deploy              => $noop_deploy
   }
 
   logrotate::rule { 'udb3-uitpas':

@@ -1,5 +1,7 @@
 class deployment::udb3::cdbxml (
   $config_source,
+  $externalid_place_mapping_source,
+  $externalid_organizer_mapping_source,
   $db_name,
   $noop_deploy = false,
   $update_facts = false,
@@ -30,6 +32,15 @@ class deployment::udb3::cdbxml (
     group   => 'www-data',
     require => 'Package[udb3-cdbxml]',
     noop    => $noop_deploy
+  }
+
+  deployment::udb3::externalid { 'udb3-cdbxml':
+    directory                => '/var/www/udb-cdbxml',
+    place_mapping_source     => $externalid_place_mapping_source,
+    organizer_mapping_source => $externalid_organizer_mapping_source,
+    require                  => 'Package[udb3-cdbxml]',
+    notify                   => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop_deploy              => $noop_deploy
   }
 
   logrotate::rule { 'udb3-cdbxml':
