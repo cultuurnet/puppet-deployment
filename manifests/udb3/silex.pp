@@ -30,6 +30,33 @@ class deployment::udb3::silex (
     noop    => $noop_deploy
   }
 
+  file { 'udb3-media':
+    ensure  => 'directory',
+    path    => '/var/www/udb-silex/web/media',
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[udb3-silex]',
+    noop    => $noop_deploy
+  }
+
+  file { 'udb3-uploads':
+    ensure  => 'directory',
+    path    => '/var/www/udb-silex/web/uploads',
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[udb3-silex]',
+    noop    => $noop_deploy
+  }
+
+  file { 'udb3-downloads':
+    ensure  => 'directory',
+    path    => '/var/www/udb-silex/web/downloads',
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[udb3-silex]',
+    noop    => $noop_deploy
+  }
+
   file { 'udb3-silex-config':
     ensure  => 'file',
     path    => '/var/www/udb-silex/config.yml',
