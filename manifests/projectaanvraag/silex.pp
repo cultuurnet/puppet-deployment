@@ -67,7 +67,7 @@ class deployment::projectaanvraag::silex (
     command   => 'bin/console orm:schema-tool:create',
     cwd       => '/var/www/projectaanvraag-api',
     path      => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/projectaanvraag-api'],
-    onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = '${db_name}';')",
+    onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = \"${db_name}\";')",
     subscribe => 'Package[projectaanvraag-silex]',
     noop      => $noop_deploy
   }
