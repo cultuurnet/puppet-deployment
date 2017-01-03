@@ -63,24 +63,24 @@ class deployment::projectaanvraag::silex (
     noop        => $noop_deploy
   }
 
-  #exec { 'silex-db-install':
-    #command   => 'bin/udb3.php install',
-    #cwd       => '/var/www/udb-silex',
-    #path      => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-silex'],
-    #onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = '${db_name}' and table_name not like 'doctrine_migration_versions';')",
-    #subscribe => 'Package[udb3-silex]',
-    #noop      => $noop_deploy
-    #}
+  exec { 'silex-db-install':
+    command   => 'bin/console orm:schema-tool:create',
+    cwd       => '/var/www/projectaanvraag-api',
+    path      => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/projectaanvraag-api'],
+    onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = '${db_name}';')",
+    subscribe => 'Package[projectaanvraag-silex]',
+    noop      => $noop_deploy
+  }
 
-  #exec { 'silex_db_migrate':
-    #command     => 'vendor/bin/doctrine-dbal --no-interaction migrations:migrate',
-    #cwd         => '/var/www/udb-silex',
-    #path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-silex'],
-    #subscribe   => 'Package[udb3-silex]',
-    #require     => 'Exec[silex-db-install]',
-    #refreshonly => true,
-    #noop        => $noop_deploy
-    #}
+  exec { 'silex-db-migrate':
+    command     => 'bin/console orm:schema-tool:update',
+    cwd         => '/var/www/projectaanvraag-api',
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/projectaanvraag-api'],
+    subscribe   => 'Package[projectaanvraag-silex]',
+    require     => 'Exec[silex-db-install]',
+    refreshonly => true,
+    noop        => $noop_deploy
+  }
 
   if $update_facts {
     exec { 'update_facts silex':
