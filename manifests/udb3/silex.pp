@@ -158,7 +158,7 @@ class deployment::udb3::silex (
     command   => 'bin/udb3.php install',
     cwd       => '/var/www/udb-silex',
     path      => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-silex'],
-    onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = '${db_name}' and table_name not like 'doctrine_migration_versions';')",
+    onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = \"${db_name}\" and table_name not like \"doctrine_migration_versions\";')",
     subscribe => 'Package[udb3-silex]',
     noop      => $noop_deploy
   }
