@@ -55,7 +55,7 @@ class deployment::projectaanvraag::silex (
   }
 
   exec { 'angular-deploy-config':
-    command     => 'angular-deploy-config /var/www/udb-app',
+    command     => 'angular-deploy-config /var/www/projectaanvraag',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     subscribe   => [ 'Package[projectaanvraag-angular-app]', 'File[projectaanvraag-angular-app-config]', 'File[projectaanvraag-angular-app-deploy-config]'],
     refreshonly => true,
