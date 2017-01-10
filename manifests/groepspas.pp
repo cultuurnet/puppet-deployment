@@ -37,7 +37,7 @@ class deployment::groepspas (
 
   file { 'groepspas-angular-app-config':
     ensure  => 'file',
-    path    => '/var/www/groepspas/config/config.json',
+    path    => '/var/www/groepspas/config.json',
     source  => $angular_app_config_source,
     owner   => 'www-data',
     group   => 'www-data',
