@@ -97,7 +97,7 @@ class deployment::balie (
   }
 
   if $update_facts {
-    exec { 'update_facts':
+    exec { 'update_facts balie':
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
       subscribe   => 'Package[balie]',
       refreshonly => true,

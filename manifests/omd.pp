@@ -80,7 +80,7 @@ class deployment::omd (
   }
 
   if $update_facts {
-    exec { 'update_facts':
+    exec { 'update_facts omd':
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
       subscribe   => 'Package[omd]',
       refreshonly => true,

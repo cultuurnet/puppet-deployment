@@ -183,7 +183,7 @@ class deployment::udb3::silex (
   }
 
   if $update_facts {
-    exec { 'update_facts silex':
+    exec { 'update_facts udb3 silex':
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
       subscribe   => 'Package[udb3]',
       refreshonly => true,

@@ -83,7 +83,7 @@ class deployment::projectaanvraag::silex (
   }
 
   if $update_facts {
-    exec { 'update_facts silex':
+    exec { 'update_facts projectaanvraag':
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
       subscribe   => 'Package[projectaanvraag]',
       refreshonly => true,

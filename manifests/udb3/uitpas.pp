@@ -82,7 +82,7 @@ class deployment::udb3::uitpas (
   }
 
   if $update_facts {
-    exec { 'update_facts uitpas':
+    exec { 'update_facts udb3 uitpas':
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
       subscribe   => 'Package[udb3-uitpas]',
       refreshonly => true,

@@ -62,7 +62,7 @@ class deployment::groepspas (
   }
 
   if $update_facts {
-    exec { 'update_facts':
+    exec { 'update_facts groepspas':
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
       subscribe   => 'Package[groepspas]',
       refreshonly => true,

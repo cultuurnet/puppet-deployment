@@ -10,7 +10,7 @@ class deployment::udb3::swagger (
   }
 
   if $update_facts {
-    exec { 'update_facts swagger':
+    exec { 'update_facts udb3 swagger':
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
       subscribe   => 'Package[udb3-swagger]',
       refreshonly => true,

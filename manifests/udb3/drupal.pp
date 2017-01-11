@@ -68,7 +68,7 @@ class deployment::udb3::drupal (
   }
 
   if $update_facts {
-    exec { 'update_facts drupal':
+    exec { 'update_facts udb3 drupal':
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
       subscribe   => 'Package[udb3-alternative]',
       refreshonly => true,
