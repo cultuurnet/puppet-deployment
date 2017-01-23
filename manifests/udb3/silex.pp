@@ -8,6 +8,8 @@ class deployment::udb3::silex (
   $externalid_organizer_mapping_source,
   $db_name,
   $pubkey_source,
+  $event_conclude_hour = '0',
+  $event_conclude_minute = '0',
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
@@ -180,6 +182,14 @@ class deployment::udb3::silex (
     subscribe   => 'Package[udb3-silex]',
     refreshonly => true,
     noop        => $noop_deploy
+  }
+
+  cron { 'event_conclude':
+    command    => '/var/www/udb-silex/bin/udb3.php event:conclude',
+    require    => 'Package[udb3-silex]',
+    user       => 'root',
+    hour       => $event_conclude_hour,
+    minute     => $event_conclude_minute
   }
 
   if $update_facts {
