@@ -5,6 +5,20 @@ class deployment::projectaanvraag::rabbitmq (
   $noop_deploy = false,
 ) {
 
+  apt::source { 'erlang-solutions':
+    location => 'http://packages.erlang-solutions.com/ubuntu',
+    release  => 'trusty'
+    repos    => 'contrib',
+    key      => {
+      id     => '434975BD900CCBE4F7EE1B1ED208507CA14F4FCA',
+      source => 'http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc'
+    },
+    include => {
+      deb => true,
+      src => false
+    }
+  }
+
   class { '::rabbitmq':
     manage_repos      => false,
     delete_guest_user => true
@@ -13,13 +27,13 @@ class deployment::projectaanvraag::rabbitmq (
   rabbitmq_user { $admin_user:
     admin    => true,
     password => $admin_password,
-    require  => 'Class[Rabbitmq]',
+    require  => Class['::rabbitmq'],
     noop     => $noop_deploy
   }
 
   rabbitmq_vhost { $vhost:
     ensure  => present,
-    require => 'Class[Rabbitmq]',
+    require => Class['::rabbitmq'],
     noop    => $noop_deploy
   }
 
@@ -27,7 +41,9 @@ class deployment::projectaanvraag::rabbitmq (
     configure_permission => '.*',
     read_permission      => '.*',
     write_permission     => '.*',
-    require              => 'Class[Rabbitmq]',
+    require              => Class['::rabbitmq'],
     noop                 => $noop_deploy
   }
+
+  Apt::Source['erlang-solutions'] -> Class['::rabbitmq']
 }
