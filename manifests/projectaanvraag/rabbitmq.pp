@@ -30,34 +30,4 @@ class deployment::projectaanvraag::rabbitmq (
     require              => 'Class[Rabbitmq]',
     noop                 => $noop_deploy
   }
-
-  rabbitmq_exchange { "projectaanvraag.vagrant.x.entry@${vhost}":
-    user        => $admin_user,
-    password    => $admin_password,
-    type        => 'topic',
-    internal    => false,
-    auto_delete => false,
-    durable     => true,
-    require     => 'Class[Rabbitmq]',
-    noop        => $noop_deploy
-  }
-
-  rabbitmq_queue { "projectaanvraag.vagrant.q.entry@${vhost}":
-    user        => $admin_user,
-    password    => $admin_password,
-    durable     => true,
-    auto_delete => false,
-    require     => 'Class[Rabbitmq]',
-    noop        => $noop_deploy
-  }
-
-  rabbitmq_binding { "projectaanvraag.vagrant.x.entry@projectaanvraag.vagrant.q.entry@${vhost}":
-    user             => $admin_user,
-    password         => $admin_password,
-    destination_type => 'queue',
-    routing_key      => '#',
-    arguments        => {},
-    require          => 'Class[Rabbitmq]',
-    noop             => $noop_deploy
-  }
 }
