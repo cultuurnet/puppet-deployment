@@ -7,13 +7,13 @@ class deployment::projectaanvraag::rabbitmq (
 
   apt::source { 'erlang-solutions':
     location => 'http://packages.erlang-solutions.com/ubuntu',
-    release  => 'trusty'
+    release  => 'trusty',
     repos    => 'contrib',
     key      => {
       id     => '434975BD900CCBE4F7EE1B1ED208507CA14F4FCA',
       source => 'http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc'
     },
-    include => {
+    include  => {
       deb => true,
       src => false
     }
@@ -21,13 +21,13 @@ class deployment::projectaanvraag::rabbitmq (
 
   apt::source { 'rabbitmq':
     location => 'http://www.rabbitmq.com/debian/',
-    release  => 'testing'
+    release  => 'testing',
     repos    => 'main',
     key      => {
-      id     => '0A9AF2115F4687BD29803A206B73A36E6026DFCA'
+      id     => '0A9AF2115F4687BD29803A206B73A36E6026DFCA',
       source => 'http://www.rabbitmq.com/rabbitmq-release-signing-key.asc'
     },
-    include => {
+    include  => {
       deb => true,
       src => false
     }
