@@ -73,7 +73,7 @@ class deployment::projectaanvraag::silex (
   }
 
   exec { 'silex-db-migrate':
-    command     => 'bin/console orm:schema-tool:update',
+    command     => 'bin/console orm:schema-tool:update --force',
     cwd         => '/var/www/projectaanvraag-api',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/projectaanvraag-api'],
     subscribe   => 'Package[projectaanvraag-silex]',
