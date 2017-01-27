@@ -19,6 +19,20 @@ class deployment::projectaanvraag::rabbitmq (
     }
   }
 
+  apt::source { 'rabbitmq':
+    location => 'http://www.rabbitmq.com/debian/',
+    release  => 'testing'
+    repos    => 'main',
+    key      => {
+      id     => '0A9AF2115F4687BD29803A206B73A36E6026DFCA'
+      source => 'http://www.rabbitmq.com/rabbitmq-release-signing-key.asc'
+    },
+    include => {
+      deb => true,
+      src => false
+    }
+  }
+
   class { '::rabbitmq':
     manage_repos      => false,
     delete_guest_user => true
@@ -46,4 +60,5 @@ class deployment::projectaanvraag::rabbitmq (
   }
 
   Apt::Source['erlang-solutions'] -> Class['::rabbitmq']
+  Apt::Source['rabbitmq'] -> Class['::rabbitmq']
 }
