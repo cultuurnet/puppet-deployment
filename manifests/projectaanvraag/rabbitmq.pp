@@ -38,6 +38,10 @@ class deployment::projectaanvraag::rabbitmq (
     delete_guest_user => true
   }
 
+  rabbitmq_plugin { 'rabbitmq_delayed_message_exchange':
+      ensure => 'present'
+  }
+
   rabbitmq_user { $admin_user:
     admin    => true,
     password => $admin_password,
@@ -61,4 +65,6 @@ class deployment::projectaanvraag::rabbitmq (
 
   Apt::Source['erlang-solutions'] -> Class['::rabbitmq']
   Apt::Source['rabbitmq'] -> Class['::rabbitmq']
+
+  Class['::rabbitmq'] -> Rabbitmq_plugin['rabbitmq_delayed_message_exchange']
 }
