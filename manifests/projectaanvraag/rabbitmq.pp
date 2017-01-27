@@ -30,10 +30,11 @@ class deployment::projectaanvraag::rabbitmq (
     delete_guest_user => true
   }
 
-  file { $plugin_dir:
-    ensure  => directory,
-    source  => $plugin_source,
-    recurse => true
+  file { 'rabbitmq_delayed_message_exchange-0.0.1.ez':
+    ensure  => 'file',
+    path    => "${plugin_dir}/${title}",
+    source  => "${plugin_source}/${title}",
+    require => Class['::rabbitmq']
   }
 
   rabbitmq_plugin { 'rabbitmq_delayed_message_exchange':
@@ -62,7 +63,4 @@ class deployment::projectaanvraag::rabbitmq (
   }
 
   Apt::Source['erlang-solutions'] -> Class['::rabbitmq']
-
-  Class['::rabbitmq'] -> File[$plugin_dir]
-  File[$plugin_dir] -> Rabbitmq_plugin <| |>
 }
