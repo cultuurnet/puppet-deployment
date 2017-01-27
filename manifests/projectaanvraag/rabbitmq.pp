@@ -2,6 +2,8 @@ class deployment::projectaanvraag::rabbitmq (
   $admin_user,
   $admin_password,
   $vhost,
+  $plugin_source,
+  $plugin_dir = '/usr/lib/rabbitmq-plugins',
   $noop_deploy = false,
 ) {
 
@@ -35,7 +37,14 @@ class deployment::projectaanvraag::rabbitmq (
 
   class { '::rabbitmq':
     manage_repos      => false,
-    delete_guest_user => true
+    delete_guest_user => true,
+    plugin_dir        => $plugin_dir
+  }
+
+  file { $plugin_dir:
+    ensure  => directory,
+    source  => $plugin_source,
+    recurse => true
   }
 
   rabbitmq_plugin { 'rabbitmq_delayed_message_exchange':
@@ -67,4 +76,5 @@ class deployment::projectaanvraag::rabbitmq (
   Apt::Source['rabbitmq'] -> Class['::rabbitmq']
 
   Class['::rabbitmq'] -> Rabbitmq_plugin['rabbitmq_delayed_message_exchange']
+  File[$plugin_dir] -> Rabbitmq_plugin <| |>
 }
