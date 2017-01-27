@@ -63,6 +63,6 @@ class deployment::projectaanvraag::rabbitmq (
 
   Apt::Source['erlang-solutions'] -> Class['::rabbitmq']
 
-  Class['::rabbitmq'] -> Rabbitmq_plugin['rabbitmq_delayed_message_exchange']
+  Class['::rabbitmq'] -> File[$plugin_dir]
   File[$plugin_dir] -> Rabbitmq_plugin <| |>
 }
