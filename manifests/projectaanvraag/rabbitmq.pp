@@ -3,9 +3,12 @@ class deployment::projectaanvraag::rabbitmq (
   $admin_password,
   $vhost,
   $plugin_source,
-  $plugin_dir = '/usr/lib/rabbitmq-plugins',
+  $version = '3.5.8-1'
   $noop_deploy = false,
 ) {
+
+  $base_version = regsubst($version,'^(.*)-\d$','\1')
+  $plugin_dir   = "/usr/lib/rabbitmq/lib/rabbitmq_server-${base_version}/plugins"
 
   apt::source { 'erlang-solutions':
     location => 'http://packages.erlang-solutions.com/ubuntu',
@@ -21,24 +24,10 @@ class deployment::projectaanvraag::rabbitmq (
     }
   }
 
-  apt::source { 'rabbitmq':
-    location => 'http://www.rabbitmq.com/debian/',
-    release  => 'testing',
-    repos    => 'main',
-    key      => {
-      id     => '0A9AF2115F4687BD29803A206B73A36E6026DFCA',
-      source => 'http://www.rabbitmq.com/rabbitmq-release-signing-key.asc'
-    },
-    include  => {
-      deb => true,
-      src => false
-    }
-  }
-
   class { '::rabbitmq':
     manage_repos      => false,
-    delete_guest_user => true,
-    plugin_dir        => $plugin_dir
+    version           => $version,
+    delete_guest_user => true
   }
 
   file { $plugin_dir:
@@ -73,7 +62,6 @@ class deployment::projectaanvraag::rabbitmq (
   }
 
   Apt::Source['erlang-solutions'] -> Class['::rabbitmq']
-  Apt::Source['rabbitmq'] -> Class['::rabbitmq']
 
   Class['::rabbitmq'] -> Rabbitmq_plugin['rabbitmq_delayed_message_exchange']
   File[$plugin_dir] -> Rabbitmq_plugin <| |>
