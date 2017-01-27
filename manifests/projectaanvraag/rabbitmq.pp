@@ -3,8 +3,8 @@ class deployment::projectaanvraag::rabbitmq (
   $admin_password,
   $vhost,
   $plugin_source,
-  $version = '3.5.8-1'
-  $noop_deploy = false,
+  $version = '3.5.8-1',
+  $noop_deploy = false
 ) {
 
   $base_version = regsubst($version,'^(.*)-\d$','\1')
