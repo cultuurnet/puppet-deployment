@@ -30,15 +30,16 @@ class deployment::projectaanvraag::rabbitmq (
     delete_guest_user => true
   }
 
-  file { 'rabbitmq_delayed_message_exchange-0.0.1.ez':
+  file { 'rabbitmq_delayed_message_exchange':
     ensure  => 'file',
-    path    => "${plugin_dir}/${title}",
-    source  => "${plugin_source}/${title}",
+    path    => "${plugin_dir}/rabbitmq_delayed_message_exchange-0.0.1.ez",
+    source  => "${plugin_source}/rabbitmq_delayed_message_exchange-0.0.1.ez",
     require => Class['::rabbitmq']
   }
 
   rabbitmq_plugin { 'rabbitmq_delayed_message_exchange':
-      ensure => 'present'
+      ensure  => 'present',
+      require => File['rabbitmq_delayed_message_exchange']
   }
 
   rabbitmq_user { $admin_user:
