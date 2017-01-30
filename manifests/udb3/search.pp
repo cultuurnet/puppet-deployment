@@ -49,6 +49,15 @@ class deployment::udb3::search (
     noop          => $noop_deploy
   }
 
+  exec { 'search-elasticsearch-migrate':
+    command     => 'bin/app.php elasticsearch:migrate',
+    cwd         => '/var/www/udb-search',
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-search'],
+    subscribe   => 'Package[udb3-search]',
+    refreshonly => true,
+    noop        => $noop_deploy
+  }
+
   if $update_facts {
     exec { 'update_facts udb3 search':
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
