@@ -1,5 +1,7 @@
-class deployment::projectaanvraag::silex (
+class deployment::projectaanvraag::application (
   $silex_config_source,
+  $silex_user_roles_source,
+  $silex_integration_types_source,
   $angular_app_config_source,
   $angular_app_deploy_config_source,
   $db_name,
@@ -29,6 +31,28 @@ class deployment::projectaanvraag::silex (
     ensure  => 'file',
     path    => '/var/www/projectaanvraag-api/config.yml',
     source  => $silex_config_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[projectaanvraag-silex]',
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop    => $noop_deploy
+  }
+
+  file { 'projectaanvraag-silex-user_roles':
+    ensure  => 'file',
+    path    => '/var/www/projectaanvraag-api/user_roles.yml',
+    source  => $silex_user_roles_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[projectaanvraag-silex]',
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop    => $noop_deploy
+  }
+
+  file { 'projectaanvraag-silex-integration_types':
+    ensure  => 'file',
+    path    => '/var/www/projectaanvraag-api/integration_types.yml',
+    source  => $silex_integration_types_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[projectaanvraag-silex]',
