@@ -115,5 +115,5 @@ class deployment::projectaanvraag::application (
     }
   }
 
-  Class['php'] -> Class['deployment::projectaanvraag::silex']
+  Class['php'] -> Class['deployment::projectaanvraag::application']
 }
