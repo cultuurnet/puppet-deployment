@@ -22,11 +22,12 @@ class deployment::udb3::search (
     noop    => $noop_deploy
   }
 
-  file { 'udb3-search-logdir':
+  file { 'udb3-search-log':
     ensure  => 'directory',
     path    => '/var/www/udb-search/log',
     owner   => 'www-data',
     group   => 'www-data',
+    recurse => true,
     require => 'Package[udb3-search]',
     noop    => $noop_deploy
   }
@@ -45,7 +46,7 @@ class deployment::udb3::search (
     create_group  => 'www-data',
     sharedscripts => true,
     postrotate    => '/usr/bin/supervisorctl restart udb3-search-service',
-    require       => 'File[udb3-search-logdir]',
+    require       => 'File[udb3-search-log]',
     noop          => $noop_deploy
   }
 

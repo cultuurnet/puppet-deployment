@@ -25,11 +25,12 @@ class deployment::udb3::cdbxml (
     noop    => $noop_deploy
   }
 
-  file { 'udb3-cdbxml-logdir':
+  file { 'udb3-cdbxml-log':
     ensure  => 'directory',
     path    => '/var/www/udb-cdbxml/log',
     owner   => 'www-data',
     group   => 'www-data',
+    recurse => true,
     require => 'Package[udb3-cdbxml]',
     noop    => $noop_deploy
   }
@@ -57,7 +58,7 @@ class deployment::udb3::cdbxml (
     create_group  => 'www-data',
     sharedscripts => true,
     postrotate    => '/usr/bin/supervisorctl restart udb3-cdbxml-service',
-    require       => 'File[udb3-cdbxml-logdir]',
+    require       => 'File[udb3-cdbxml-log]',
     noop          => $noop_deploy
   }
 

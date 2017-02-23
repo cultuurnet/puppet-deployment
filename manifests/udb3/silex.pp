@@ -32,6 +32,16 @@ class deployment::udb3::silex (
     noop    => $noop_deploy
   }
 
+  file { 'udb3-silex-log':
+    ensure  => 'directory',
+    path    => '/var/www/udb-silex/log',
+    owner   => 'www-data',
+    group   => 'www-data',
+    recurse => true,
+    require => 'Package[udb3-silex]',
+    noop    => $noop_deploy
+  }
+
   file { 'udb3-media':
     ensure  => 'directory',
     path    => '/var/www/udb-silex/web/media',

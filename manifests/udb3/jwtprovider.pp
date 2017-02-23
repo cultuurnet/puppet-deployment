@@ -24,6 +24,16 @@ class deployment::udb3::jwtprovider (
     noop    => $noop_deploy
   }
 
+  file { 'udb3-jwt-log':
+    ensure  => 'directory',
+    path    => '/var/www/udb-jwt-provider/log',
+    owner   => 'www-data',
+    group   => 'www-data',
+    recurse => true,
+    require => 'Package[udb3-jwt]',
+    noop    => $noop_deploy
+  }
+
   file { 'udb3-jwtprovider-privkey':
     ensure  => 'file',
     path    => '/var/www/udb-jwt-provider/private.pem',

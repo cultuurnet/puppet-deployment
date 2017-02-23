@@ -26,11 +26,12 @@ class deployment::udb3::uitpas (
     noop    => $noop_deploy
   }
 
-  file { 'udb3-uitpas-logdir':
+  file { 'udb3-uitpas-log':
     ensure  => 'directory',
     path    => '/var/www/udb-uitpas/log',
     owner   => 'www-data',
     group   => 'www-data',
+    recurse => true,
     require => 'Package[udb3-uitpas]',
     noop    => $noop_deploy
   }
@@ -68,7 +69,7 @@ class deployment::udb3::uitpas (
     create_group  => 'www-data',
     sharedscripts => true,
     postrotate    => '/usr/bin/supervisorctl restart udb3-uitpas-service',
-    require       => 'File[udb3-uitpas-logdir]',
+    require       => 'File[udb3-uitpas-log]',
     noop          => $noop_deploy
   }
 
