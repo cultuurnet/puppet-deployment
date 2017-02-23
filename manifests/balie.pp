@@ -33,6 +33,15 @@ class deployment::balie (
     noop    => $noop_deploy
   }
 
+  file { 'balie-silex-log':
+    path    => '/var/www/balie/log',
+    owner   => 'www-data',
+    group   => 'www-data',
+    recurse => true,
+    require => 'Package[balie-silex]',
+    noop    => $noop_deploy
+  }
+
   file { 'balie-silex-config':
     ensure  => 'file',
     path    => '/var/www/balie/config.yml',
