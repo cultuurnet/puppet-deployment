@@ -92,7 +92,7 @@ class deployment::search_api (
     notify => Application['sapi']
   }
 
-  application { 'sapi':
+  app { 'sapi':
     ensure       => 'present',
     portbase     => $glassfish_portbase,
     user         => $user,
