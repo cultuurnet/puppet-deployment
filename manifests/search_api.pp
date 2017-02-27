@@ -89,7 +89,7 @@ class deployment::search_api (
 
   package { 'sapi':
     ensure => 'latest',
-    notify => Application['sapi']
+    notify => App['sapi']
   }
 
   app { 'sapi':
@@ -106,7 +106,7 @@ class deployment::search_api (
       database => $mysql_database,
       id       => $setting['id'],
       value    => $setting['value'],
-      require  => Application['sapi'],
+      require  => App['sapi'],
       notify   => Exec["restart_service_${service_name}"]
     }
   }
@@ -122,7 +122,7 @@ class deployment::search_api (
   exec { "restart_service_${service_name}":
     command     => "/usr/sbin/service ${service_name} restart",
     refreshonly => true,
-    subscribe   => Application['sapi']
+    subscribe   => App['sapi']
   }
 
   class { 'solr':
@@ -134,6 +134,6 @@ class deployment::search_api (
       }
     },
     require               => [ Package['sapi'], Class['java8']],
-    before                => Application['sapi']
+    before                => App['sapi']
   }
 }
