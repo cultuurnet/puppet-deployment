@@ -1,4 +1,6 @@
 class deployment::omd (
+  $angular_app_config_source,
+  $angular_app_deploy_config_source,
   $drupal_settings_source,
   $drupal_services_source,
   $drupal_admin_account_pass,
@@ -10,6 +12,39 @@ class deployment::omd (
   $puppetdb_url = ''
 ) {
 
+  package { 'omd-angular-app':
+    ensure => 'latest',
+    notify => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop   => $noop_deploy
+  }
+
+  file { 'omd-angular-app-config':
+    ensure => 'file',
+    path   => '/var/www/omd-app/config.json',
+    source => $angular_app_config_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[omd-angular-app]',
+    noop    => $noop_deploy
+  }
+
+  file { 'omd-angular-app-deploy-config':
+    ensure => 'file',
+    path   => '/usr/local/bin/angular-deploy-config',
+    source => $angular_app_deploy_config_source,
+    mode   => '0755',
+    noop   => $noop_deploy
+  }
+
+  exec { 'angular-deploy-config':
+    command     => 'angular-deploy-config /var/www/omd-app',
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    subscribe   => [ 'Package[omd-angular-app]', 'File[omd-angular-app-config]', 'File[omd-angular-app-deploy-config]'],
+    refreshonly => true,
+    notify      => 'Class[Supervisord::Service]',
+    noop        => $noop_deploy
+  }
+
   package { 'omd-drupal':
     ensure => 'latest',
     notify => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
@@ -18,7 +53,7 @@ class deployment::omd (
 
   package { 'omd':
     ensure  => 'latest',
-    require => [ 'Package[omd-drupal]', 'Package[omd-websockets]'],
+    require => [ 'Package[omd-angular-app], Package[omd-drupal]', 'Package[omd-websockets]'],
     noop    => $noop_deploy
   }
 
