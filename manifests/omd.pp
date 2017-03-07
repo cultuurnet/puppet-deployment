@@ -53,7 +53,7 @@ class deployment::omd (
 
   package { 'omd':
     ensure  => 'latest',
-    require => [ 'Package[omd-angular-app], Package[omd-drupal]', 'Package[omd-websockets]'],
+    require => [ 'Package[omd-angular-app]', 'Package[omd-drupal]', 'Package[omd-websockets]'],
     noop    => $noop_deploy
   }
 
