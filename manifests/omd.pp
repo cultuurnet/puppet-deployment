@@ -97,8 +97,8 @@ class deployment::omd (
     command     => "drush -r /var/www/omd-drupal cache-rebuild",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
-    subscribe   => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]'],
-    require     => [ 'Package[omd-fs-data]', 'Exec[drush config-split-import]',
+    subscribe   => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]', 'Package[omd-fs-data]'],
+    require     => 'Exec[drush config-split-import]',
     noop        => $noop_deploy
   }
 
