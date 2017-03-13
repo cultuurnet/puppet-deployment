@@ -48,9 +48,10 @@ class deployment::omd (
   }
 
   package { 'omd-fs-data':
-    ensure => 'latest',
-    notify => 'Class[Apache::Service]',
-    noop   => $noop_deploy
+    ensure  => 'latest',
+    notify  => 'Class[Apache::Service]',
+    require => 'Package[omd-drupal]',
+    noop    => $noop_deploy
   }
 
   package { 'omd-db-data':
@@ -77,7 +78,7 @@ class deployment::omd (
   exec { 'omd-db-install':
     command     => "drush -r /var/www/omd-drupal sql-query --file=${drupal_db_source}",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
-    onlyif      => 'test 0 -eq $(drush -r /var/www/omd-drupal sql-query "show tables" | wc -l)',
+    onlyif      => 'test 0 -eq $(drush -r /var/www/omd-drupal sql-query "show tables" | sed -e "/^$/d" | wc -l)',
     refreshonly => true,
     subscribe   => [ 'Package[omd-drupal]', 'Package[omd-db-data]', 'File[omd-drupal-settings]'],
     noop        => $noop_deploy
