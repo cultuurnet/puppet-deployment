@@ -89,7 +89,7 @@ class deployment::omd (
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
     subscribe   => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]'],
-    require     => 'Exec[omd-db-install]',
+    require     => [ 'Package[omd-fs-data]', 'Exec[omd-db-install]'],
     noop        => $noop_deploy
   }
 
@@ -98,7 +98,7 @@ class deployment::omd (
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
     subscribe   => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]'],
-    require     => 'Exec[drush config-split-import]',
+    require     => [ 'Package[omd-fs-data]', 'Exec[drush config-split-import]',
     noop        => $noop_deploy
   }
 
