@@ -4,6 +4,7 @@ class deployment::omd (
   $drupal_settings_source,
   $drupal_db_source,
   $drupal_fs_source,
+  $pubkey_source,
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
@@ -75,6 +76,16 @@ class deployment::omd (
     noop    => $noop_deploy
   }
 
+  file { 'omd-drupal-pubkey':
+    ensure  => 'file',
+    path    => '/var/www/omd-drupal/sites/default/public.pem',
+    source  => $pubkey_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[omd-drupal]',
+    noop    => $noop_deploy
+  }
+
   exec { 'omd-db-install':
     command     => "drush -r /var/www/omd-drupal sql-query --file=${drupal_db_source}",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
@@ -85,7 +96,7 @@ class deployment::omd (
   }
 
   exec { 'drush config-split-import':
-    command     => "drush -r /var/www/omd-drupal config-split-import",
+    command     => "drush -r /var/www/omd-drupal config-split-import -y",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
     subscribe   => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]'],
