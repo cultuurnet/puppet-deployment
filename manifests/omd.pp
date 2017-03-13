@@ -84,6 +84,23 @@ class deployment::omd (
     noop        => $noop_deploy
   }
 
+  exec { 'drush config-split-import':
+    command     => "drush -r /var/www/omd-drupal config-split-import",
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    refreshonly => true,
+    subscribe   => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]'],
+    noop        => $noop_deploy
+  }
+
+  exec { 'drush cache-rebuild':
+    command     => "drush -r /var/www/omd-drupal cache-rebuild",
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    refreshonly => true,
+    subscribe   => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]'],
+    require     => 'Exec[drush config-split-import]',
+    noop        => $noop_deploy
+  }
+
   file { '/var/www/omd-drupal/sites/default/files':
     ensure  => 'directory',
     source  => $drupal_fs_source,
