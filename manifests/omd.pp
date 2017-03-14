@@ -119,7 +119,6 @@ class deployment::omd (
     owner   => 'www-data',
     group   => 'www-data',
     recurse => true,
-    purge   => true,
     require => 'Package[omd-fs-data]',
     noop    => $noop_deploy
   }
