@@ -95,6 +95,15 @@ class deployment::omd (
     noop        => $noop_deploy
   }
 
+  exec { 'drush updatedb':
+    command     => "drush -r /var/www/omd-drupal updatedb",
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    refreshonly => true,
+    subscribe   => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]'],
+    require     => 'Exec[omd-db-install]',
+    noop        => $noop_deploy
+  }
+
   exec { 'drush config-split-import':
     command     => "drush -r /var/www/omd-drupal config-split-import -y",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
