@@ -96,7 +96,7 @@ class deployment::omd (
   }
 
   exec { 'drush updatedb':
-    command     => "drush -r /var/www/omd-drupal updatedb",
+    command     => "drush -r /var/www/omd-drupal updatedb -y",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
     subscribe   => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]'],
