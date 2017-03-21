@@ -103,7 +103,7 @@ class deployment::udb3::iis (
     noop      => $noop_deploy
   }
 
-  exec { 'silex_db_migrate':
+  exec { 'iis_silex_db_migrate':
     command     => 'vendor/bin/doctrine-dbal --no-interaction migrations:migrate',
     cwd         => '/var/www/udb-iis-silex',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-iis-silex'],
