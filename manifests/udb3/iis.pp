@@ -107,7 +107,8 @@ class deployment::udb3::iis (
     command     => 'vendor/bin/doctrine-dbal --no-interaction migrations:migrate',
     cwd         => '/var/www/udb-iis-silex',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-iis-silex'],
-    subscribe => [ 'Package[udb3-iis-silex]', 'File[udb3-iis-silex-config]'],
+    onlyif      => 'test -d /var/www/udb-iis-silex/src/Migrations',
+    subscribe   => [ 'Package[udb3-iis-silex]', 'File[udb3-iis-silex-config]'],
     require     => 'Exec[iis-silex-db-install]',
     refreshonly => true,
     noop        => $noop_deploy
