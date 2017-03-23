@@ -1,6 +1,7 @@
 class deployment::udb3::iis (
   $silex_config_source,
   $importer_config_source,
+  $importer_rootdir,
   $db_name,
   $noop_deploy = false,
   $update_facts = false,
@@ -59,6 +60,39 @@ class deployment::udb3::iis (
     require => 'Package[udb3-iis-importer]',
     notify  => 'Class[Supervisord::Service]',
     noop    => $noop_deploy
+  }
+
+  file { $importer_rootdir:
+    ensure => directory,
+    noop   => $noop_deploy
+  }
+
+  file { "${importer_rootdir}/process":
+    ensure => directory,
+    owner  => 'www-data',
+    group  => 'www-data',
+    noop   => $noop_deploy
+  }
+
+  file { "${importer_rootdir}/success":
+    ensure => directory,
+    owner  => 'www-data',
+    group  => 'www-data',
+    noop   => $noop_deploy
+  }
+
+  file { "${importer_rootdir}/error":
+    ensure => directory,
+    owner  => 'www-data',
+    group  => 'www-data',
+    noop   => $noop_deploy
+  }
+
+  file { "${importer_rootdir}/invalid":
+    ensure => directory,
+    owner  => 'www-data',
+    group  => 'www-data',
+    noop   => $noop_deploy
   }
 
   logrotate::rule { 'udb3-iis-silex':
