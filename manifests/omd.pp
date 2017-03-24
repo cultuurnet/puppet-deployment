@@ -109,7 +109,7 @@ class deployment::omd (
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
     subscribe   => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]'],
-    require     => [ 'Package[omd-fs-data]', 'Exec[omd-db-install]'],
+    require     => [ 'Package[omd-fs-data]', 'Exec[omd-db-install]', 'Exec[drush updatedb]'],
     noop        => $noop_deploy
   }
 
