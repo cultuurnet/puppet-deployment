@@ -11,6 +11,11 @@ class deployment::udb3::search (
     noop   => $noop_deploy
   }
 
+  package { 'udb3-geojson-data':
+    ensure => 'latest',
+    noop   => $noop_deploy
+  }
+
   file { 'udb3-search-config':
     ensure  => 'file',
     path    => '/var/www/udb-search/config.yml',
@@ -54,7 +59,7 @@ class deployment::udb3::search (
     command     => 'bin/app.php elasticsearch:migrate',
     cwd         => '/var/www/udb-search',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-search'],
-    subscribe   => 'Package[udb3-search]',
+    subscribe   => [ 'Package[udb3-search]', 'Package[udb3-geojson-data]' ],
     refreshonly => true,
     noop        => $noop_deploy
   }
