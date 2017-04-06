@@ -59,7 +59,7 @@ class deployment::udb3::search (
     command     => 'bin/app.php elasticsearch:migrate',
     cwd         => '/var/www/udb-search',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-search'],
-    subscribe   => [ 'Package[udb3-search]', 'Package[udb3-geojson-data]', 'File[udb3-search-config]' ],
+    subscribe   => 'File[udb3-search-config]',
     refreshonly => true,
     noop        => $noop_deploy
   }
@@ -67,7 +67,7 @@ class deployment::udb3::search (
   if $update_facts {
     exec { 'update_facts udb3 search':
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
-      subscribe   => 'Package[udb3-search]',
+      subscribe   => [ 'Package[udb3-search]', 'Package[udb3-geojson-data]' ],
       refreshonly => true,
       noop        => $noop_deploy
     }
