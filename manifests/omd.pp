@@ -1,10 +1,10 @@
 class deployment::omd (
   $angular_app_config_source,
-  $angular_app_deploy_config_source,
   $drupal_settings_source,
   $drupal_db_source,
   $drupal_fs_source,
   $pubkey_source,
+  $angular_app_deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
