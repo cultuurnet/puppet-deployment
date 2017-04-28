@@ -84,7 +84,15 @@ class deployment::search_api (
     portbase     => $glassfish_portbase,
     user         => $user,
     passwordfile => $passwordfile,
-    value        => $solr_url
+    value        => "${solr_url}/sapi/"
+  }
+
+  systemproperty { 'search_solr_path_fast':
+    ensure       => 'present',
+    portbase     => $glassfish_portbase,
+    user         => $user,
+    passwordfile => $passwordfile,
+    value        => "${solr_url}/sapifast/"
   }
 
   package { 'sapi':
