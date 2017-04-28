@@ -61,6 +61,7 @@ class deployment::udb3::search (
     cwd         => '/var/www/udb-search',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-search'],
     subscribe   => 'File[udb3-search-config]',
+    logoutput   => true,
     timeout     => $migrate_timeout,
     refreshonly => true,
     noop        => $noop_deploy
