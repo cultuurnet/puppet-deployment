@@ -1,5 +1,6 @@
 class deployment::udb3::search (
   $config_source,
+  $migrate_data = true,
   $migrate_timeout = '300',
   $noop_deploy = false,
   $update_facts = false,
@@ -56,15 +57,17 @@ class deployment::udb3::search (
     noop          => $noop_deploy
   }
 
-  exec { 'search-elasticsearch-migrate':
-    command     => 'bin/app.php elasticsearch:migrate',
-    cwd         => '/var/www/udb-search',
-    path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-search'],
-    subscribe   => 'File[udb3-search-config]',
-    logoutput   => true,
-    timeout     => $migrate_timeout,
-    refreshonly => true,
-    noop        => $noop_deploy
+  if $migrate_data {
+    exec { 'search-elasticsearch-migrate':
+      command     => 'bin/app.php elasticsearch:migrate',
+      cwd         => '/var/www/udb-search',
+      path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-search'],
+      subscribe   => 'File[udb3-search-config]',
+      logoutput   => true,
+      timeout     => $migrate_timeout,
+      refreshonly => true,
+      noop        => $noop_deploy
+    }
   }
 
   if $update_facts {
