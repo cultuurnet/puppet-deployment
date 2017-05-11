@@ -3,8 +3,8 @@ class deployment::projectaanvraag::application (
   $silex_user_roles_source,
   $silex_integration_types_source,
   $angular_app_config_source,
-  $angular_app_deploy_config_source,
   $db_name,
+  $angular_app_deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
