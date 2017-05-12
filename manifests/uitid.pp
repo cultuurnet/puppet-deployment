@@ -33,19 +33,20 @@ class deployment::uitid (
     ensure => 'present'
   }
 
+  # Hack to circumvent dependency problems with using glassfish::install_jars
+  file { 'mysql-connector-java':
+    ensure  => 'link',
+    path    => '/opt/payara/glassfish/lib/mysql-connector-java.jar',
+    target  => '/opt/mysql-connector-java/mysql-connector-java.jar',
+    require => Package['mysql-connector-java']
+  }
+
   glassfish::create_domain { $payara_domain:
     portbase       => $payara_portbase,
     service_name   => $service_name,
     create_service => true,
-    start_domain   => true
-  }
-
-  glassfish::install_jars { 'mysql-connector-java.jar':
-    install_location => 'domain',
-    domain_name      => $payara_domain,
-    service_name     => $service_name,
-    source           => '/opt/mysql-connector-java/mysql-connector-java.jar',
-    require          => Package['mysql-connector-java']
+    start_domain   => true,
+    require        => File['mysql-connector-java']
   }
 
   jdbcconnectionpool { 'mysql_uitid_j2eePool':
@@ -66,7 +67,7 @@ class deployment::uitid (
       'useUnicode'        => true,
       'characterEncoding' => 'utf8'
     },
-    require             => [ Class['glassfish'], Glassfish::Install_jars['mysql-connector-java.jar'] ]
+    require             => [ Class['glassfish'], Glassfish::Create_domain[$payara_domain] ]
   }
 
   jdbcresource { 'jdbc/cultuurnet':
