@@ -82,13 +82,14 @@ class deployment::uitid (
   }
 
   app { 'uitpas-app':
-    ensure       => 'present',
-    portbase     => $payara_portbase,
-    user         => $user,
-    passwordfile => $passwordfile,
-    contextroot  => 'uitid',
-    source       => '/opt/uitpas-app/uitpas-app.war',
-    require      => Jdbcresource['jdbc/cultuurnet']
+    ensure        => 'present',
+    portbase      => $payara_portbase,
+    user          => $user,
+    passwordfile  => $passwordfile,
+    contextroot   => 'uitid',
+    precompilejsp => false,
+    source        => '/opt/uitpas-app/uitpas-app.war',
+    require       => Jdbcresource['jdbc/cultuurnet']
   }
 
   # Force domain restart at the end of the deployment procedure.
