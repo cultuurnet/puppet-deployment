@@ -42,10 +42,10 @@ class deployment::uitid (
 
   glassfish::install_jars { 'mysql-connector-java.jar':
     install_location => 'domain',
-    domain_name      => $glassfish_domain,
+    domain_name      => $payara_domain,
     service_name     => $service_name,
     source           => '/opt/mysql-connector-java/mysql-connector-java.jar',
-    require          => Package['mysql-connector-java']
+    require          => [ Package['mysql-connector-java'], Glassfish::Create_domain[$payara_domain] ]
   }
 
   jdbcconnectionpool { 'mysql_uitid_j2eePool':
