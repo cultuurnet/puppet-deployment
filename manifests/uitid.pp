@@ -91,16 +91,6 @@ class deployment::uitid (
     require      => Jdbcresource['jdbc/cultuurnet']
   }
 
-  $settings.each |$name, $setting| {
-    deployment::uitid::setting { $name:
-      database => $mysql_database,
-      id       => $setting['id'],
-      value    => $setting['value'],
-      require  => App['uitpas-app'],
-      notify   => Exec["restart_service_${service_name}"]
-    }
-  }
-
   # Force domain restart at the end of the deployment procedure.
   # Unfortunately we need an 'exec' here, notifying the domain after
   # application deployment and applying settings would result in a
