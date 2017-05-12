@@ -20,6 +20,7 @@ class deployment::uitid (
   class { 'glassfish':
     install_method      => 'package',
     package_prefix      => 'payara',
+    glassfish_version   => '4.1.1.171.1',
     create_service      => false,
     enable_secure_admin => false,
     manage_java         => false,
