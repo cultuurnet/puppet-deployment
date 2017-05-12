@@ -38,7 +38,7 @@ class deployment::uitid (
     ensure  => 'link',
     path    => '/opt/payara/glassfish/lib/mysql-connector-java.jar',
     target  => '/opt/mysql-connector-java/mysql-connector-java.jar',
-    require => Package['mysql-connector-java']
+    require => [ Package['mysql-connector-java'], Class['glassfish'] ]
   }
 
   glassfish::create_domain { $payara_domain:
