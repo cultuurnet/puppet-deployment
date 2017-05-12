@@ -86,7 +86,7 @@ class deployment::uitid (
     portbase     => $payara_portbase,
     user         => $user,
     passwordfile => $passwordfile,
-    source       => '/opt/sapi/search-standalone.war',
+    source       => '/opt/uitid/uitpas-app.war',
     require      => Jdbcresource['jdbc/cultuurnet']
   }
 
