@@ -8,7 +8,7 @@ class deployment::uitid (
   $mysql_host,
   $mysql_port,
   $mysql_database,
-  $settings
+  $settings = {}
 ) {
 
   # TODO: reverse proxy for search/admin/solr
@@ -92,7 +92,7 @@ class deployment::uitid (
   }
 
   $settings.each |$name, $setting| {
-    deployment::search_api::setting { $name:
+    deployment::uitid::setting { $name:
       database => $mysql_database,
       id       => $setting['id'],
       value    => $setting['value'],

@@ -9,8 +9,8 @@ class deployment::search_api (
   $mysql_port,
   $mysql_database,
   $solr_url,
-  $settings,
-  $solr_max_heap
+  $solr_max_heap,
+  $settings = {}
 ) {
 
   # TODO: reverse proxy for search/admin/solr
