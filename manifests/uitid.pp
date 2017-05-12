@@ -33,18 +33,19 @@ class deployment::uitid (
     ensure => 'present'
   }
 
-  glassfish::install_jars { 'mysql-connector-java.jar':
-    install_location => 'installation',
-    source           => '/opt/mysql-connector-java/mysql-connector-java.jar',
-    require          => Package['mysql-connector-java']
-  }
-
   glassfish::create_domain { $payara_domain:
     portbase       => $payara_portbase,
     service_name   => $service_name,
     create_service => true,
-    start_domain   => true,
-    require        => Glassfish::Install_jars['mysql-connector-java.jar']
+    start_domain   => true
+  }
+
+  glassfish::install_jars { 'mysql-connector-java.jar':
+    install_location => 'domain',
+    domain_name      => $payara_domain,
+    service_name     => $service_name,
+    source           => '/opt/mysql-connector-java/mysql-connector-java.jar',
+    require          => Package['mysql-connector-java']
   }
 
   jdbcconnectionpool { 'mysql_uitid_j2eePool':
@@ -65,7 +66,7 @@ class deployment::uitid (
       'useUnicode'        => true,
       'characterEncoding' => 'utf8'
     },
-    require             => [ Class['glassfish'], Glassfish::Create_domain[$payara_domain] ]
+    require             => [ Class['glassfish'], Glassfish::Install_jars['mysql-connector-java.jar'] ]
   }
 
   jdbcresource { 'jdbc/cultuurnet':
