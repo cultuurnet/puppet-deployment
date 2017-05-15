@@ -84,6 +84,15 @@ class deployment::uitid (
     notify => App['uitpas-app']
   }
 
+  exec { 'uitpas-app_schema_install':
+    command     => "mysql --defaults-extra-file=/root/.my.cnf ${mysql_database} < /opt/uitpas-app/createtables.sql",
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin' ],
+    onlyif      => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = \"${mysql_database}\";')",
+    refreshonly => true,
+    subscribe   => Package['uitpas-app'],
+    require     => Class['mysql::server']
+  }
+
   app { 'uitpas-app':
     ensure        => 'present',
     portbase      => $payara_portbase,
@@ -92,7 +101,7 @@ class deployment::uitid (
     contextroot   => 'uitid',
     precompilejsp => false,
     source        => '/opt/uitpas-app/uitpas-app.war',
-    require       => Jdbcresource['jdbc/cultuurnet']
+    require       => [ Jdbcresource['jdbc/cultuurnet'], Exec['uitpas-app_schema_install'] ]
   }
 
   # Force domain restart at the end of the deployment procedure.
