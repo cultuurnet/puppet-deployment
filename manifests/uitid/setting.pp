@@ -14,8 +14,8 @@ define deployment::uitid::setting (
     }
   }
   else {
-    exec { "UiTID setting add ${title}: ${value} ":
-      command => "mysql --defaults-extra-file=/root/.my.cnf -e \"insert into ${database}.SETTING (K, TYPE, V, DTYPE) values ('${title}', ${type}, '${value}', '${dtype}') on duplicate key update V = '${value}';\"",
+    exec { "UiTID setting add ${title}: ${value}":
+      command => "mysql --defaults-extra-file=/root/.my.cnf -e \"insert into ${database}.SETTING (K, TYPE, V, DTYPE) values ('${title}', ${type}, '${value}', '${dtype}');\"",
       path    => [ '/usr/local/bin', '/usr/bin', '/bin'],
       onlyif  => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e \"select count(*) from ${database}.SETTING where K = '${title}';\")"
     }
@@ -23,7 +23,8 @@ define deployment::uitid::setting (
     exec { "UiTID setting update ${title}: ${value}":
       command => "mysql --defaults-extra-file=/root/.my.cnf -e \"update ${database}.SETTING set V = '${value}' where K = '${title}';\"",
       path    => [ '/usr/local/bin', '/usr/bin', '/bin'],
-      onlyif  => "test '${value}' != \"$(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e \"select V from ${database}.SETTING where K = '${title}';\")\""
+      onlyif  => "test '${value}' != \"$(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e \"select V from ${database}.SETTING where K = '${title}';\")\"",
+      require => Exec["UiTID setting add ${title}: ${value}"]
     }
   }
 }
