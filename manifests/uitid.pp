@@ -108,7 +108,8 @@ class deployment::uitid (
     path        => [ '/usr/local/bin', '/usr/bin', '/bin' ],
     onlyif      => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(*) from DALIUSER;' ${mysql_database})",
     refreshonly => true,
-    subscribe   => Package['uitpas-app']
+    subscribe   => Package['uitpas-app'],
+    require     => App['uitpas-app']
   }
 
   $settings.each |$name, $setting| {
