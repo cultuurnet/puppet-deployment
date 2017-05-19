@@ -11,6 +11,7 @@ define deployment::uitid::setting (
       command => "mysql --defaults-extra-file=/root/.my.cnf -e \"delete from ${database}.SETTING where K = '${title}';\"",
       path    => [ '/usr/local/bin', '/usr/bin', '/bin'],
       onlyif  => "test 0 != $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e \"select count(*) from ${database}.SETTING where K = '${title}';\")"
+    }
   }
   else {
     exec { "SAPI setting ${title}: ${value}":
