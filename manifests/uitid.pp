@@ -11,9 +11,8 @@ class deployment::uitid (
   $settings = {}
 ) {
 
-  # TODO: reverse proxy for search/admin/solr
-
   $passwordfile = "/home/${user}/asadmin.pass"
+  $application_http_port = ${payara_portbase} + 80
 
   include java8
 
@@ -104,6 +103,22 @@ class deployment::uitid (
     require       => [ Jdbcresource['jdbc/cultuurnet'], Exec['uitpas-app_schema_install'] ]
   }
 
+  $settings.each |$name, $setting| {
+    $ensure = if $setting['ensure'] {
+      $setting['ensure']
+    } else {
+      'present'
+    }
+
+    deployment::uitid::setting { $name:
+      database => $mysql_database,
+      value    => $setting['value'],
+      ensure   => $ensure,
+      require  => App['uitpas-app'],
+      notify   => Exec["restart_service_${service_name}"]
+    }
+  }
+
   # Force domain restart at the end of the deployment procedure.
   # Unfortunately we need an 'exec' here, notifying the domain after
   # application deployment and applying settings would result in a
@@ -117,4 +132,12 @@ class deployment::uitid (
     refreshonly => true,
     subscribe   => App['uitpas-app']
   }
+
+  exec { "bootstrap_${service_name}":
+    command     => "curl http://localhost:${application_http_port}/uitid/rest/bootstrap/test",
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin' ],
+    onlyif      => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(*) from DALIUSER;' ${mysql_database})",
+    refreshonly => true,
+    subscribe   => Package['uitpas-app'],
+    require     => Exec["restart_service_${service_name}"]
 }
