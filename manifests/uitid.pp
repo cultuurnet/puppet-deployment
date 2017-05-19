@@ -103,6 +103,14 @@ class deployment::uitid (
     require       => [ Jdbcresource['jdbc/cultuurnet'], Exec['uitpas-app_schema_install'] ]
   }
 
+  exec { "bootstrap_${service_name}":
+    command     => "curl http://localhost:${application_http_port}/uitid/rest/bootstrap/test",
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin' ],
+    onlyif      => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(*) from DALIUSER;' ${mysql_database})",
+    refreshonly => true,
+    subscribe   => Package['uitpas-app']
+  }
+
   $settings.each |$name, $setting| {
     if $setting['ensure'] {
       $ensure = $setting['ensure']
@@ -114,7 +122,7 @@ class deployment::uitid (
       database => $mysql_database,
       value    => $setting['value'],
       ensure   => $ensure,
-      require  => App['uitpas-app'],
+      require  => [ App['uitpas-app'], Exec["bootstrap_${service_name}"] ],
       notify   => Exec["restart_service_${service_name}"]
     }
   }
@@ -131,14 +139,5 @@ class deployment::uitid (
     command     => "/usr/sbin/service ${service_name} restart",
     refreshonly => true,
     subscribe   => App['uitpas-app']
-  }
-
-  exec { "bootstrap_${service_name}":
-    command     => "curl http://localhost:${application_http_port}/uitid/rest/bootstrap/test",
-    path        => [ '/usr/local/bin', '/usr/bin', '/bin' ],
-    onlyif      => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(*) from DALIUSER;' ${mysql_database})",
-    refreshonly => true,
-    subscribe   => Package['uitpas-app'],
-    require     => Exec["restart_service_${service_name}"]
   }
 }
