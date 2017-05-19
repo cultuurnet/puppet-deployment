@@ -140,4 +140,5 @@ class deployment::uitid (
     refreshonly => true,
     subscribe   => Package['uitpas-app'],
     require     => Exec["restart_service_${service_name}"]
+  }
 }
