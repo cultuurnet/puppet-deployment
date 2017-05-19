@@ -15,7 +15,7 @@ define deployment::uitid::setting (
   }
   else {
     exec { "UiTID setting ${title}: ${value}":
-      command => "mysql --defaults-extra-file=/root/.my.cnf -e \"insert into ${database}.SETTING (K, TYPE, V, DTYPE) values ('${title}', ${type}, '${value}', '${dtype}') on duplicate key update CONTENT = '${value}';\"",
+      command => "mysql --defaults-extra-file=/root/.my.cnf -e \"insert into ${database}.SETTING (K, TYPE, V, DTYPE) values ('${title}', ${type}, '${value}', '${dtype}') on duplicate key update V = '${value}';\"",
       path    => [ '/usr/local/bin', '/usr/bin', '/bin'],
       onlyif  => "test '${value}' != \"$(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e \"select V from ${database}.SETTING where K = '${title}';\")\""
     }
