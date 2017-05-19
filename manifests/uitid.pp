@@ -104,10 +104,10 @@ class deployment::uitid (
   }
 
   $settings.each |$name, $setting| {
-    $ensure = if $setting['ensure'] {
-      $setting['ensure']
+    if $setting['ensure'] {
+      $ensure = $setting['ensure']
     } else {
-      'present'
+      $ensure = 'present'
     }
 
     deployment::uitid::setting { $name:
