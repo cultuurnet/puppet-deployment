@@ -12,7 +12,7 @@ class deployment::uitid (
 ) {
 
   $passwordfile = "/home/${user}/asadmin.pass"
-  $application_http_port = ${payara_portbase} + 80
+  $application_http_port = $payara_portbase + 80
 
   include java8
 
