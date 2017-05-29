@@ -10,6 +10,8 @@ class deployment::search_api (
   $mysql_database,
   $solr_url,
   $solr_max_heap,
+  $glassfish_start_heap = '512m',
+  $glassfish_max_heap = '512m',
   $settings = {}
 ) {
 
@@ -35,6 +37,22 @@ class deployment::search_api (
     service_name   => $service_name,
     create_service => true,
     start_domain   => true
+  }
+
+  glassfish::jvmoption { "Domain ${glassfish_domain} start heap":
+    option       => "-Xms${glassfish_start_heap}",
+    user         => $user,
+    passwordfile => $passwordfile,
+    portbase     => $glassfish_portbase
+    require      => Glassfish::Create_domain[$glassfish_domain]
+  }
+
+  glassfish::jvmoption { "Domain ${glassfish_domain} max heap":
+    option       => "-Xmx${glassfish_max_heap}",
+    user         => $user,
+    passwordfile => $passwordfile,
+    portbase     => $glassfish_portbase
+    require      => Glassfish::Create_domain[$glassfish_domain]
   }
 
   package { 'mysql-connector-java':
