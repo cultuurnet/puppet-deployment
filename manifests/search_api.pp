@@ -41,6 +41,7 @@ class deployment::search_api (
 
   jvmoption { "Domain ${glassfish_domain} start heap":
     option       => "-Xms${glassfish_start_heap}",
+    ensure       => 'present',
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $glassfish_portbase,
@@ -50,6 +51,7 @@ class deployment::search_api (
 
   jvmoption { "Domain ${glassfish_domain} max heap":
     option       => "-Xmx${glassfish_max_heap}",
+    ensure       => 'present',
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $glassfish_portbase,
