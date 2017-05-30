@@ -43,7 +43,7 @@ class deployment::search_api (
     option       => "-Xms${glassfish_start_heap}",
     user         => $user,
     passwordfile => $passwordfile,
-    portbase     => $glassfish_portbase
+    portbase     => $glassfish_portbase,
     require      => Glassfish::Create_domain[$glassfish_domain]
   }
 
@@ -51,7 +51,7 @@ class deployment::search_api (
     option       => "-Xmx${glassfish_max_heap}",
     user         => $user,
     passwordfile => $passwordfile,
-    portbase     => $glassfish_portbase
+    portbase     => $glassfish_portbase,
     require      => Glassfish::Create_domain[$glassfish_domain]
   }
 
