@@ -44,7 +44,8 @@ class deployment::search_api (
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $glassfish_portbase,
-    require      => Glassfish::Create_domain[$glassfish_domain]
+    require      => Glassfish::Create_domain[$glassfish_domain],
+    notify       => Exec["restart_service_${service_name}"]
   }
 
   jvmoption { "Domain ${glassfish_domain} max heap":
@@ -52,7 +53,8 @@ class deployment::search_api (
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $glassfish_portbase,
-    require      => Glassfish::Create_domain[$glassfish_domain]
+    require      => Glassfish::Create_domain[$glassfish_domain],
+    notify       => Exec["restart_service_${service_name}"]
   }
 
   package { 'mysql-connector-java':
