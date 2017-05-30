@@ -12,10 +12,19 @@ class deployment::search_api (
   $solr_max_heap,
   $glassfish_start_heap = '512m',
   $glassfish_max_heap = '512m',
+  $glassfish_jmx = true,
   $settings = {}
 ) {
 
   # TODO: reverse proxy for search/admin/solr
+
+  Jvmoption {
+    ensure       => 'present',
+    user         => $user,
+    passwordfile => $passwordfile,
+    portbase     => $glassfish_portbase,
+    notify       => Exec["restart_service_${service_name}"]
+  }
 
   $passwordfile = "/home/${user}/asadmin.pass"
 
@@ -41,22 +50,19 @@ class deployment::search_api (
 
   jvmoption { "Domain ${glassfish_domain} start heap":
     option       => "-Xms${glassfish_start_heap}",
-    ensure       => 'present',
-    user         => $user,
-    passwordfile => $passwordfile,
-    portbase     => $glassfish_portbase,
-    require      => Glassfish::Create_domain[$glassfish_domain],
-    notify       => Exec["restart_service_${service_name}"]
   }
 
   jvmoption { "Domain ${glassfish_domain} max heap":
     option       => "-Xmx${glassfish_max_heap}",
-    ensure       => 'present',
-    user         => $user,
-    passwordfile => $passwordfile,
-    portbase     => $glassfish_portbase,
-    require      => Glassfish::Create_domain[$glassfish_domain],
-    notify       => Exec["restart_service_${service_name}"]
+  }
+
+  if $glassfish_jmx {
+    jvmoption { "-Dcom.sun.management.jmxremote": }
+    jvmoption { "-Dcom.sun.management.jmxremote.port=9001": }
+    jvmoption { "-Dcom.sun.management.jmxremote.local.only=false": }
+    jvmoption { "-Dcom.sun.management.jmxremote.authenticate=false": }
+    jvmoption { "-Dcom.sun.management.jmxremote.ssl=false": }
+    jvmoption { "-Djava.rmi.server.hostname=127.0.0.1": }
   }
 
   package { 'mysql-connector-java':
