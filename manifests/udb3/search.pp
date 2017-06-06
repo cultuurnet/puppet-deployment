@@ -2,6 +2,8 @@ class deployment::udb3::search (
   $config_source,
   $migrate_data = true,
   $migrate_timeout = '300',
+  $reindex_permanent_hour = '0',
+  $reindex_permanent_minute = '0',
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
@@ -68,6 +70,14 @@ class deployment::udb3::search (
       refreshonly => true,
       noop        => $noop_deploy
     }
+  }
+
+  cron { 'reindex_permanent':
+    command    => '/var/www/udb-search/bin/app.php udb3-core:reindex-permanent',
+    require    => 'Package[udb3-search]',
+    user       => 'root',
+    hour       => $reindex_permanent_hour,
+    minute     => $reindex_permanent_minute
   }
 
   if $update_facts {
