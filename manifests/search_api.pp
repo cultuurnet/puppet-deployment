@@ -24,6 +24,16 @@ class deployment::search_api (
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $glassfish_portbase,
+    require      => Glassfish::Create_domain[$glassfish_domain],
+    notify       => Exec["restart_service_${service_name}"]
+  }
+
+  Systemproperty {
+    ensure       => 'present',
+    user         => $user,
+    passwordfile => $passwordfile,
+    portbase     => $glassfish_portbase,
+    require      => Glassfish::Create_domain[$glassfish_domain],
     notify       => Exec["restart_service_${service_name}"]
   }
 
@@ -109,30 +119,15 @@ class deployment::search_api (
   }
 
   systemproperty { 'search_solr_path':
-    ensure       => 'present',
-    portbase     => $glassfish_portbase,
-    user         => $user,
-    passwordfile => $passwordfile,
-    value        => "${solr_url}/sapi/",
-    before       => App['sapi']
+    value        => "${solr_url}/sapi/"
   }
 
   systemproperty { 'search_solr_path_fast':
-    ensure       => 'present',
-    portbase     => $glassfish_portbase,
-    user         => $user,
-    passwordfile => $passwordfile,
-    value        => "${solr_url}/sapifast/",
-    before       => App['sapi']
+    value        => "${solr_url}/sapifast/"
   }
 
   systemproperty { 'search_mysql_cachesize':
-    ensure       => 'present',
-    portbase     => $glassfish_portbase,
-    user         => $user,
-    passwordfile => $passwordfile,
-    value        => $cache_size,
-    before       => App['sapi']
+    value        => $cache_size
   }
 
   package { 'sapi':
