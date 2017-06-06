@@ -91,5 +91,13 @@ class deployment::udb3::uitpas (
     }
   }
 
+  exec { 'update udb3_version endpoint uitpas':
+    path        => [ '/opt/puppetlabs/bin', '/usr/bin'],
+    command     => 'facter -pj udb3_version > /var/www/udb3_version',
+    subscribe   => 'Package[udb3]',
+    refreshonly => true,
+    noop        => $noop_deploy
+  }
+
   Class['php'] -> Class['deployment::udb3::uitpas']
 }

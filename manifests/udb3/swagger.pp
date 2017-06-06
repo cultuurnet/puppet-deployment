@@ -17,4 +17,12 @@ class deployment::udb3::swagger (
       noop        => $noop_deploy
     }
   }
+
+  exec { 'update udb3_version endpoint swagger':
+    path        => [ '/opt/puppetlabs/bin', '/usr/bin'],
+    command     => 'facter -pj udb3_version > /var/www/udb3_version',
+    subscribe   => 'Package[udb3]',
+    refreshonly => true,
+    noop        => $noop_deploy
+  }
 }

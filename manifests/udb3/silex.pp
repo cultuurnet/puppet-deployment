@@ -202,5 +202,13 @@ class deployment::udb3::silex (
     }
   }
 
+  exec { 'update udb3_version endpoint silex':
+    path        => [ '/opt/puppetlabs/bin', '/usr/bin'],
+    command     => 'facter -pj udb3_version > /var/www/udb3_version',
+    subscribe   => 'Package[udb3]',
+    refreshonly => true,
+    noop        => $noop_deploy
+  }
+
   Class['php'] -> Class['deployment::udb3::silex']
 }
