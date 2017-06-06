@@ -12,6 +12,7 @@ class deployment::search_api (
   $solr_max_heap,
   $glassfish_start_heap = '512m',
   $glassfish_max_heap = '512m',
+  $cache_size = '300000',
   $glassfish_jmx = true,
   $settings = {}
 ) {
@@ -112,7 +113,8 @@ class deployment::search_api (
     portbase     => $glassfish_portbase,
     user         => $user,
     passwordfile => $passwordfile,
-    value        => "${solr_url}/sapi/"
+    value        => "${solr_url}/sapi/",
+    before       => App['sapi']
   }
 
   systemproperty { 'search_solr_path_fast':
@@ -120,7 +122,17 @@ class deployment::search_api (
     portbase     => $glassfish_portbase,
     user         => $user,
     passwordfile => $passwordfile,
-    value        => "${solr_url}/sapifast/"
+    value        => "${solr_url}/sapifast/",
+    before       => App['sapi']
+  }
+
+  systemproperty { 'search_mysql_cachesize':
+    ensure       => 'present',
+    portbase     => $glassfish_portbase,
+    user         => $user,
+    passwordfile => $passwordfile,
+    value        => $cache_size,
+    before       => App['sapi']
   }
 
   package { 'sapi':
