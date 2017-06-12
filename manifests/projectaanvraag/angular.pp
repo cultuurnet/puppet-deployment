@@ -39,7 +39,7 @@ class deployment::projectaanvraag::angular (
 
   deployment::versions { $title:
     project      => 'projectaanvraag',
-    packages     => 'projectaanvraag-angular',
+    packages     => 'projectaanvraag-angular-app',
     noop_deploy  => $noop_deploy,
     update_facts => $update_facts,
     puppetdb_url => $puppetdb_url
