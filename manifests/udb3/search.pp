@@ -1,5 +1,6 @@
 class deployment::udb3::search (
   $config_source,
+  $features_source,
   $migrate_data = true,
   $migrate_timeout = '300',
   $reindex_permanent_hour = '0',
@@ -23,6 +24,17 @@ class deployment::udb3::search (
   file { 'udb3-search-config':
     ensure  => 'file',
     path    => '/var/www/udb-search/config.yml',
+    source  => $config_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[udb3-search]',
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop    => $noop_deploy
+  }
+
+  file { 'udb3-search-features':
+    ensure  => 'file',
+    path    => '/var/www/udb-search/features.yml',
     source  => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
