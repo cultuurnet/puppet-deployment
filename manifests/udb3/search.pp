@@ -35,7 +35,7 @@ class deployment::udb3::search (
   file { 'udb3-search-features':
     ensure  => 'file',
     path    => '/var/www/udb-search/features.yml',
-    source  => $config_source,
+    source  => $features_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-search]',
