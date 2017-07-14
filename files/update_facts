@@ -1,0 +1,69 @@
+#!/opt/puppetlabs/puppet/bin/ruby
+
+require 'puppet/face'
+require 'net/https'
+require 'uri'
+require 'yaml'
+require 'json'
+require 'date'
+
+module Facts
+  def self.config(setting)
+    begin
+      orig_stdout = $stdout
+      out = StringIO.new
+      $stdout = out
+      Puppet::Face[:config, :current].print(setting)
+
+      out.string.chomp
+
+    ensure
+      $stdout = orig_stdout
+    end
+  end
+
+  def self.replace(puppetdb_url)
+    Puppet.initialize_settings
+
+    certname = config('certname')
+    environment = config('environment')
+    privatekeydir = config('privatekeydir')
+    certdir = config('certdir')
+    timestamp = DateTime.now.iso8601
+    params = {
+      :command => 'replace_facts',
+      :version => '4',
+      :certname => certname
+    }
+
+    puppetdb_command_api_endpoint = URI.parse("#{puppetdb_url}/pdb/cmd/v1")
+    puppetdb_command_api_endpoint.query = URI.encode_www_form(params)
+
+    cacert = "#{certdir}/ca.pem"
+    cert = File.read("#{certdir}/#{certname}.pem")
+    privkey = File.read("#{privatekeydir}/#{certname}.pem")
+
+    connection = Net::HTTP.new(puppetdb_command_api_endpoint.host, puppetdb_command_api_endpoint.port)
+    connection.use_ssl = true
+    connection.ca_file = cacert
+    connection.cert = OpenSSL::X509::Certificate.new(cert)
+    connection.key = OpenSSL::PKey::RSA.new(privkey)
+    connection.verify_mode = OpenSSL::SSL::VERIFY_PEER
+
+    request = Net::HTTP::Post.new(puppetdb_command_api_endpoint.request_uri)
+    request.add_field('Accept', 'application/json')
+    request.add_field('Content-Type', 'application/json')
+    request.body = {
+      :certname => certname,
+      :environment => environment,
+      :producer_timestamp => timestamp,
+      :values => YAML.load(%x[/opt/puppetlabs/bin/facter -py])
+    }.to_json
+
+    response = connection.request(request)
+  end
+end
+
+puppetdb_url = ARGV[0]
+
+Facts.replace(puppetdb_url)
