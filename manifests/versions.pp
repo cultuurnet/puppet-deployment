@@ -1,6 +1,7 @@
 define deployment::versions (
   $project,
   $packages = [],
+  $destination_dir = '/var/www',
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
@@ -21,7 +22,7 @@ define deployment::versions (
 
     exec { "update versions endpoint for package ${package}":
       path        => [ '/opt/puppetlabs/bin', '/usr/bin'],
-      command     => "facter -pj ${project}_version > /var/www/${project}_version",
+      command     => "facter -pj ${project}_version > ${destination_dir}/versions.${project}",
       subscribe   => Package[$package],
       refreshonly => true,
       noop        => $noop_deploy
@@ -29,7 +30,7 @@ define deployment::versions (
 
     exec { "update versions.${package} endpoint for package ${package}":
       path        => [ '/opt/puppetlabs/bin', '/usr/bin'],
-      command     => "facter -pj ${project}_version.${package} > /var/www/versions.${package}",
+      command     => "facter -pj ${project}_version.${package} > ${destination_dir}/versions.${package}",
       subscribe   => Package[$package],
       refreshonly => true,
       noop        => $noop_deploy
