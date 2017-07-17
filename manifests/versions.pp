@@ -21,7 +21,7 @@ define deployment::versions (
     }
 
     exec { "update versions endpoint for package ${package}":
-      path        => [ '/opt/puppetlabs/bin', '/usr/bin'],
+      path        => [ '/opt/puppetlabs/bin', '/sbin', '/bin', '/usr/sbin', '/usr/bin' ],
       command     => "facter -pj ${project}_version > ${destination_dir}/versions.${project}",
       subscribe   => Package[$package],
       refreshonly => true,
@@ -29,7 +29,7 @@ define deployment::versions (
     }
 
     exec { "update versions.${package} endpoint for package ${package}":
-      path        => [ '/opt/puppetlabs/bin', '/usr/bin'],
+      path        => [ '/opt/puppetlabs/bin', '/sbin', '/bin', '/usr/sbin', '/usr/bin' ],
       command     => "facter -pj ${project}_version.${package} > ${destination_dir}/versions.${package}",
       subscribe   => Package[$package],
       refreshonly => true,
