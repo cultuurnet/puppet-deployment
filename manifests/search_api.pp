@@ -17,7 +17,7 @@ class deployment::search_api (
   $settings = {}
 ) {
 
-  # TODO: reverse proxy for search/admin/solr
+  $passwordfile = "/home/${user}/asadmin.pass"
 
   Jvmoption {
     ensure       => 'present',
@@ -36,8 +36,6 @@ class deployment::search_api (
     require      => Glassfish::Create_domain[$glassfish_domain],
     notify       => Exec["restart_service_${service_name}"]
   }
-
-  $passwordfile = "/home/${user}/asadmin.pass"
 
   include java8
 
