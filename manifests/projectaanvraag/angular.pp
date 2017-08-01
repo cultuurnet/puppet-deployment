@@ -6,6 +6,8 @@ class deployment::projectaanvraag::angular (
   $puppetdb_url = ''
 ) {
 
+  contain deployment
+
   package { 'projectaanvraag-angular-app':
     ensure => 'latest',
     noop   => $noop_deploy

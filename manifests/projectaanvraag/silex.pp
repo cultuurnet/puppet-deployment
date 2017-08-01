@@ -8,6 +8,8 @@ class deployment::projectaanvraag::silex (
   $puppetdb_url = ''
 ) {
 
+  contain deployment
+
   package { 'projectaanvraag-silex':
     ensure => 'latest',
     notify => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],

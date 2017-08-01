@@ -7,7 +7,7 @@ define deployment::versions (
   $puppetdb_url = ''
 ) {
 
-  include deployment
+  contain deployment
 
   any2array($packages).each |$package| {
     if $update_facts {

@@ -1,6 +1,8 @@
 # Class: deployment
 class deployment {
 
+  contain ruby
+
   file { 'update_facts':
     ensure => 'file',
     path   => '/usr/local/bin/update_facts',
