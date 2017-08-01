@@ -12,7 +12,7 @@ class deployment::projectaanvraag::silex (
 
   package { 'projectaanvraag-silex':
     ensure => 'latest',
-    notify => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    notify => [ Class['apache::service'], Class['supervisord::service'] ],
     noop   => $noop_deploy
   }
 
@@ -22,8 +22,8 @@ class deployment::projectaanvraag::silex (
     source  => $silex_config_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[projectaanvraag-silex]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    require => Package['projectaanvraag-silex'],
+    notify  => [ Class['apache::service'], Class['supervisord::service'] ],
     noop    => $noop_deploy
   }
 
@@ -33,8 +33,8 @@ class deployment::projectaanvraag::silex (
     source  => $silex_user_roles_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[projectaanvraag-silex]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    require => Package['projectaanvraag-silex'],
+    notify  => [ Class['apache::service'], Class['supervisord::service'] ],
     noop    => $noop_deploy
   }
 
@@ -44,8 +44,8 @@ class deployment::projectaanvraag::silex (
     source  => $silex_integration_types_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[projectaanvraag-silex]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    require => Package['projectaanvraag-silex'],
+    notify  => [ Class['apache::service'], Class['supervisord::service'] ],
     noop    => $noop_deploy
   }
 
@@ -54,7 +54,7 @@ class deployment::projectaanvraag::silex (
     cwd       => '/var/www/projectaanvraag-api',
     path      => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/projectaanvraag-api'],
     onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = \"${db_name}\";')",
-    subscribe => 'Package[projectaanvraag-silex]',
+    subscribe => Package['projectaanvraag-silex'],
     noop      => $noop_deploy
   }
 
@@ -62,8 +62,8 @@ class deployment::projectaanvraag::silex (
     command     => 'bin/console orm:schema-tool:update --force',
     cwd         => '/var/www/projectaanvraag-api',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/projectaanvraag-api'],
-    subscribe   => 'Package[projectaanvraag-silex]',
-    require     => 'Exec[silex-db-install]',
+    subscribe   => Package['projectaanvraag-silex'],
+    require     => Exec['silex-db-install'],
     refreshonly => true,
     noop        => $noop_deploy
   }

@@ -19,7 +19,7 @@ class deployment::projectaanvraag::angular (
     source => $angular_app_config_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[projectaanvraag-angular-app]',
+    require => Package['projectaanvraag-angular-app'],
     noop    => $noop_deploy
   }
 
@@ -36,6 +36,7 @@ class deployment::projectaanvraag::angular (
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     subscribe   => [ 'Package[projectaanvraag-angular-app]', 'File[projectaanvraag-angular-app-config]', 'File[projectaanvraag-angular-app-deploy-config]'],
     refreshonly => true,
+    require     => Class['deployment'],
     noop        => $noop_deploy
   }
 
