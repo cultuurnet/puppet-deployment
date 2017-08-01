@@ -9,6 +9,6 @@ require 'json'
 fact = ARGV[0].split('.')[0]
 component = ARGV[0].split('.')[1]
 
-result = component ? Facter.value(fact)[component] : Facter.value(fact)
+result = component ? Hash[component => Facter.value(fact)[component]] : Facter.value(fact)
 
 puts result.to_json
