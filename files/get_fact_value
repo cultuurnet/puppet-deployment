@@ -7,8 +7,9 @@ require 'facter'
 require 'json'
 
 fact = ARGV[0].split('.')[0]
+project = fact[/(.*)_version/, 1]
 component = ARGV[0].split('.')[1]
 
-result = component ? Hash[component => Facter.value(fact)[component]] : Facter.value(fact)
+result = component ? Hash[component => Facter.value(fact)[component]] : Hash[project => Facter.value(fact)]
 
 puts result.to_json
