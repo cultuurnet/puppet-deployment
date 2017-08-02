@@ -24,7 +24,7 @@ class deployment::search_api (
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $glassfish_portbase,
-    require      => Glassfish::Create_domain[$glassfish_domain],
+    require      => [ Class['glassfish'], Glassfish::Create_domain[$glassfish_domain]],
     notify       => Exec["restart_service_${service_name}"]
   }
 
@@ -33,7 +33,7 @@ class deployment::search_api (
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $glassfish_portbase,
-    require      => Glassfish::Create_domain[$glassfish_domain],
+    require      => [ Class['glassfish'], Glassfish::Create_domain[$glassfish_domain]],
     notify       => Exec["restart_service_${service_name}"]
   }
 
