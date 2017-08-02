@@ -1,6 +1,6 @@
 class deployment::projectaanvraag::angular (
-  $angular_app_config_source,
-  $angular_app_deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
+  $config_source,
+  $deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
@@ -16,7 +16,7 @@ class deployment::projectaanvraag::angular (
   file { 'projectaanvraag-angular-app-config':
     ensure => 'file',
     path   => '/var/www/projectaanvraag/config.json',
-    source => $angular_app_config_source,
+    source => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => Package['projectaanvraag-angular-app'],
@@ -26,7 +26,7 @@ class deployment::projectaanvraag::angular (
   file { 'projectaanvraag-angular-app-deploy-config':
     ensure => 'file',
     path   => '/usr/local/bin/angular-deploy-config',
-    source => $angular_app_deploy_config_source,
+    source => $deploy_config_source,
     mode   => '0755',
     noop   => $noop_deploy
   }

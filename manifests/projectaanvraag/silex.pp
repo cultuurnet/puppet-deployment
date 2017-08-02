@@ -1,7 +1,7 @@
 class deployment::projectaanvraag::silex (
-  $silex_config_source,
-  $silex_user_roles_source,
-  $silex_integration_types_source,
+  $config_source,
+  $user_roles_source,
+  $integration_types_source,
   $db_name,
   $noop_deploy = false,
   $update_facts = false,
@@ -19,7 +19,7 @@ class deployment::projectaanvraag::silex (
   file { 'projectaanvraag-silex-config':
     ensure  => 'file',
     path    => '/var/www/projectaanvraag-api/config.yml',
-    source  => $silex_config_source,
+    source  => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => Package['projectaanvraag-silex'],
@@ -30,7 +30,7 @@ class deployment::projectaanvraag::silex (
   file { 'projectaanvraag-silex-user_roles':
     ensure  => 'file',
     path    => '/var/www/projectaanvraag-api/user_roles.yml',
-    source  => $silex_user_roles_source,
+    source  => $user_roles_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => Package['projectaanvraag-silex'],
@@ -41,7 +41,7 @@ class deployment::projectaanvraag::silex (
   file { 'projectaanvraag-silex-integration_types':
     ensure  => 'file',
     path    => '/var/www/projectaanvraag-api/integration_types.yml',
-    source  => $silex_integration_types_source,
+    source  => $integration_types_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => Package['projectaanvraag-silex'],
