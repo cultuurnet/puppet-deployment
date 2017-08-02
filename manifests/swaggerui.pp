@@ -12,9 +12,9 @@ class deployment::swaggerui (
   }
 
   file { 'swagger-ui-config':
-    ensure => 'file',
-    path   => '/var/www/swagger-ui/config.json',
-    source => config_source,
+    ensure  => 'file',
+    path    => '/var/www/swagger-ui/config.json',
+    source  => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[swagger-ui]',
@@ -24,7 +24,7 @@ class deployment::swaggerui (
   file { 'swagger-ui-deploy-config':
     ensure => 'file',
     path   => '/usr/local/bin/swagger-deploy-config',
-    source => deploy_config_source,
+    source => $deploy_config_source,
     mode   => '0755',
     noop   => $noop_deploy
   }
