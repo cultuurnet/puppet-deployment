@@ -92,21 +92,12 @@ class deployment::udb3::search (
     minute     => $reindex_permanent_minute
   }
 
-  if $update_facts {
-    exec { 'update_facts udb3 search':
-      command     => "/usr/local/bin/update_facts ${puppetdb_url}",
-      subscribe   => [ 'Package[udb3-search]', 'Package[udb3-geojson-data]' ],
-      refreshonly => true,
-      noop        => $noop_deploy
-    }
-  }
-
-  exec { 'update udb3_version endpoint search':
-    path        => [ '/opt/puppetlabs/bin', '/usr/bin'],
-    command     => 'facter -pj udb3_version > /var/www/udb3_version',
-    subscribe   => 'Package[udb3]',
-    refreshonly => true,
-    noop        => $noop_deploy
+  deployment::versions { $title:
+    project      => 'udb3',
+    packages     => [ 'udb3-search', 'udb3-geojson-data'],
+    noop_deploy  => $noop_deploy,
+    update_facts => $update_facts,
+    puppetdb_url => $puppetdb_url
   }
 
   Class['php'] -> Class['deployment::udb3::search']

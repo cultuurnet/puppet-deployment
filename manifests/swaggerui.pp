@@ -1,8 +1,10 @@
 class deployment::swaggerui (
-  $swagger_ui_config_source,
-  $swagger_ui_deploy_config_source,
+  $config_source,
+  $deploy_config_source,
   $noop_deploy = false,
 ) {
+
+  contain deployment
 
   package { 'swagger-ui':
     ensure  => 'latest',
@@ -32,6 +34,7 @@ class deployment::swaggerui (
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     subscribe   => [ 'Package[swagger-ui]', 'File[swagger-ui-config]', 'File[swagger-ui-deploy-config]'],
     refreshonly => true,
+    require     => Class['deployment'],
     noop        => $noop_deploy
   }
 }
