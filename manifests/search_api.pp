@@ -101,8 +101,7 @@ class deployment::search_api (
       'Password'          => $mysql_password,
       'URL'               => "jdbc:mysql://${mysql_host}:${mysql_port}/${mysql_database}",
       'driverClass'       => 'com.mysql.jdbc.Driver',
-      'useUnicode'        => true,
-      'characterEncoding' => 'utf8'
+      'useUnicode'        => true
     },
     require             => [ Class['glassfish'], Glassfish::Create_domain[$glassfish_domain]]
   }
