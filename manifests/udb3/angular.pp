@@ -13,6 +13,11 @@ class deployment::udb3::angular (
     noop   => $noop_deploy
   }
 
+  package { 'udb3-angular':
+    ensure => 'latest',
+    noop   => $noop_deploy
+  }
+
   file { 'udb3-angular-app-config':
     ensure => 'file',
     path   => '/var/www/udb-app/config.json',
@@ -42,7 +47,7 @@ class deployment::udb3::angular (
 
   deployment::versions { $title:
     project      => 'udb3',
-    packages     => 'udb3-angular-app',
+    packages     => [ 'udb3-angular-app', 'udb3-angular'],
     noop_deploy  => $noop_deploy,
     update_facts => $update_facts,
     puppetdb_url => $puppetdb_url
