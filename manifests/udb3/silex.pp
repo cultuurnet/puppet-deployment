@@ -160,7 +160,7 @@ class deployment::udb3::silex (
 
   deployment::versions { $title:
     project      => 'udb3',
-    packages     => [ 'udb3-silex', 'udb3-php']
+    packages     => [ 'udb3-silex', 'udb3-php'],
     noop_deploy  => $noop_deploy,
     update_facts => $update_facts,
     puppetdb_url => $puppetdb_url
