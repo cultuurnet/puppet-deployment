@@ -20,7 +20,7 @@ class deployment::udb3::silex (
   }
 
   package { 'udb3-php':
-    ensure => 'latest'
+    ensure => 'latest',
     noop   => $noop_deploy
   }
 
