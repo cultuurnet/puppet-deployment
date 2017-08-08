@@ -8,6 +8,8 @@ class deployment::uitid (
   $mysql_host,
   $mysql_port,
   $mysql_database,
+  $payara_start_heap = '512m',
+  $payara_max_heap = '512m',
   $settings = {}
 ) {
 
@@ -15,6 +17,15 @@ class deployment::uitid (
   $application_http_port = $payara_portbase + 80
 
   include java8
+
+  Jvmoption {
+    ensure       => 'present',
+    user         => $user,
+    passwordfile => $passwordfile,
+    portbase     => $payara_portbase,
+    require      => [ Class['glassfish'], Glassfish::Create_domain[$payara_domain]],
+    notify       => Exec["restart_service_${service_name}"]
+  }
 
   class { 'glassfish':
     install_method      => 'package',
@@ -46,6 +57,14 @@ class deployment::uitid (
     create_service => true,
     start_domain   => true,
     require        => File['mysql-connector-java']
+  }
+
+  jvmoption { "Domain ${payara_domain} start heap":
+    option       => "-Xms${payara_start_heap}",
+  }
+
+  jvmoption { "Domain ${payara_domain} max heap":
+    option       => "-Xmx${payara_max_heap}",
   }
 
   jdbcconnectionpool { 'mysql_uitid_j2eePool':
