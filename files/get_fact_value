@@ -10,6 +10,10 @@ fact = ARGV[0].split('.')[0]
 project = fact[/(.*)_version/, 1]
 component = ARGV[0].split('.')[1]
 
-result = component ? Hash[component => Facter.value(fact)[component]] : Hash[project => Facter.value(fact)]
+if component
+  result = Hash["id" => component].merge!(Facter.value(fact)[component])
+else
+  result = Facter.value(fact).map { |comp, version| Hash["id" => comp].merge!(version) }
+end
 
 puts result.to_json
