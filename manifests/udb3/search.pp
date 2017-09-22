@@ -4,7 +4,7 @@ class deployment::udb3::search (
   $facet_mapping_facilities_source,
   $facet_mapping_themes_source,
   $facet_mapping_types_source,
-  $facet_mapping_regions_source = '/var/www/geojson-data/facet_mapping_regions.yml',
+  $facet_mapping_regions_source = '/var/www/geojson-data/output/facet_mapping_regions.yml',
   $migrate_data = true,
   $migrate_timeout = '300',
   $reindex_permanent_hour = '0',
