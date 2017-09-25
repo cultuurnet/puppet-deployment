@@ -16,8 +16,7 @@ class deployment::udb3::search (
 
   File {
     owner   => 'www-data',
-    group   => 'www-data',
-    noop    => $noop_deploy
+    group   => 'www-data'
   }
 
   package { 'udb3-search':
@@ -36,7 +35,8 @@ class deployment::udb3::search (
     path    => '/var/www/udb-search/config.yml',
     source  => $config_source,
     require => 'Package[udb3-search]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]']
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop    => $noop_deploy
   }
 
   file { 'udb3-search-features':
@@ -44,7 +44,8 @@ class deployment::udb3::search (
     path    => '/var/www/udb-search/features.yml',
     source  => $features_source,
     require => 'Package[udb3-search]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]']
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop    => $noop_deploy
   }
 
   file { 'udb3-search-facet-mapping-facilities':
@@ -52,7 +53,8 @@ class deployment::udb3::search (
     path    => '/var/www/udb-search/facet_mapping_facilities.yml',
     source  => $facet_mapping_facilities_source,
     require => 'Package[udb3-search]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]']
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop    => $noop_deploy
   }
 
   file { 'udb3-search-facet-mapping-themes':
@@ -60,7 +62,8 @@ class deployment::udb3::search (
     path    => '/var/www/udb-search/facet_mapping_themes.yml',
     source  => $facet_mapping_themes_source,
     require => 'Package[udb3-search]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]']
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop    => $noop_deploy
   }
 
   file { 'udb3-search-facet-mapping-types':
@@ -68,7 +71,8 @@ class deployment::udb3::search (
     path    => '/var/www/udb-search/facet_mapping_types.yml',
     source  => $facet_mapping_types_source,
     require => 'Package[udb3-search]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]']
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop    => $noop_deploy
   }
 
   file { 'udb3-search-log':
@@ -102,7 +106,8 @@ class deployment::udb3::search (
       path    => '/var/www/udb-search/facet_mapping_regions.yml',
       source  => $facet_mapping_regions_source,
       require => [ 'Package[udb3-search]', 'Package[udb3-geojson-data]'],
-      notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]']
+      notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+      noop    => $noop_deploy
     }
   }
 
