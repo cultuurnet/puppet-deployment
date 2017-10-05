@@ -44,8 +44,9 @@ class deployment::udb3::silex (
   }
 
   file { 'udb3-images':
-    ensure  => 'directory',
+    ensure  => 'link',
     path    => '/var/www/udb-silex/web/images',
+    target  => '/var/www/udb-silex/web/media',
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-silex]',
