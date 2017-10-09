@@ -48,6 +48,15 @@ class deployment::widgetbeheer::silex (
     noop    => $noop_deploy
   }
 
+  exec { 'widgetbeheer-cache-clear':
+    command     => 'bin/console projectaanvraag:cache-clear',
+    cwd         => '/var/www/widgetbeheer-api',
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/widgetbeheer-api'],
+    refreshonly => true,
+    subscribe   => Package['widgetbeheer-silex'],
+    noop        => $noop_deploy
+  }
+
   deployment::versions { $title:
     project      => 'widgetbeheer',
     packages     => 'widgetbeheer-silex',
