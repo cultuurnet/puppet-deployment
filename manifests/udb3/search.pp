@@ -58,22 +58,24 @@ class deployment::udb3::search (
 
   # When running in noop_deploy the source of this file will not exist, and
   # applying the resource, even with noop => true will cause an error
-  unless $noop_deploy {
-    file { 'udb3-search-facet-mapping-regions':
-      ensure  => 'file',
-      path    => '/var/www/udb-search/facet_mapping_regions.yml',
-      source  => '/var/www/geojson-data/output/facet_mapping_regions.yml',
-      require => [ 'Package[udb3-search]', 'Package[udb3-geojson-data]'],
-      notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
-    }
+  file { 'udb3-search-facet-mapping-regions':
+    ensure  => 'file',
+    path    => '/var/www/udb-search/facet_mapping_regions.yml',
+    source  => '/var/www/geojson-data/output/facet_mapping_regions.yml',
+    require => [ 'Package[udb3-search]', 'Package[udb3-geojson-data]'],
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop    => $noop_deploy
+  }
 
-    file { 'udb3-search-autocomplete-json':
-      ensure  => 'file',
-      path    => '/var/www/udb-search/web/autocomplete.json',
-      source  => '/var/www/geojson-data/output/autocomplete.json',
-      require => [ 'Package[udb3-search]', 'Package[udb3-geojson-data]'],
-      notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
-    }
+  # When running in noop_deploy the source of this file will not exist, and
+  # applying the resource, even with noop => true will cause an error
+  file { 'udb3-search-autocomplete-json':
+    ensure  => 'file',
+    path    => '/var/www/udb-search/web/autocomplete.json',
+    source  => '/var/www/geojson-data/output/autocomplete.json',
+    require => [ 'Package[udb3-search]', 'Package[udb3-geojson-data]'],
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop    => $noop_deploy
   }
 
   file { 'udb3-search-facet-mapping-themes':
