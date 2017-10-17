@@ -66,6 +66,14 @@ class deployment::udb3::search (
       require => [ 'Package[udb3-search]', 'Package[udb3-geojson-data]'],
       notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
     }
+
+    file { 'udb3-search-autocomplete-json':
+      ensure  => 'file',
+      path    => '/var/www/udb-search/web/autocomplete.json',
+      source  => '/var/www/geojson-data/output/autocomplete.json',
+      require => [ 'Package[udb3-search]', 'Package[udb3-geojson-data]'],
+      notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    }
   }
 
   file { 'udb3-search-facet-mapping-themes':
