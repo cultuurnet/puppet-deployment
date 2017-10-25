@@ -2,7 +2,7 @@ class deployment::udb3 {
 
   contain deployment::udb3::rabbitmq
 
-  unless $noop_deploy {
+  if $::noop_deploy == 'false' {
     contain deployment::udb3::silex
     contain deployment::udb3::angular
     contain deployment::udb3::cdbxml
