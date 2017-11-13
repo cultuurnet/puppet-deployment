@@ -14,7 +14,7 @@ class deployment::udb3 (
     contain deployment::udb3::rabbitmq
   }
 
-  unless $environment == 'development' and $facts['noop_deploy'] == 'false' {
+  unless $environment == 'development' or $facts['noop_deploy'] == 'true' {
     if $with_silex {
       contain deployment::udb3::silex
     }
