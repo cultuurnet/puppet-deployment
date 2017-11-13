@@ -1,19 +1,43 @@
 class deployment::udb3 (
-  $with_rabbitmq = true
+  $with_rabbitmq    = true,
+  $with_silex       = true,
+  $with_angular     = true,
+  $with_cdbxml      = true,
+  $with_jwtprovider = true,
+  $with_swagger     = true,
+  $with_uitpas      = true,
+  $with_search      = true,
+  $with_iis         = true
 ){
 
   if $with_rabbitmq {
     contain deployment::udb3::rabbitmq
   }
 
-  if $::noop_deploy == 'false' {
-    contain deployment::udb3::silex
-    contain deployment::udb3::angular
-    contain deployment::udb3::cdbxml
-    contain deployment::udb3::jwtprovider
-    contain deployment::udb3::swagger
-    contain deployment::udb3::uitpas
-    contain deployment::udb3::search
-    contain deployment::udb3::iis
+  if $environment == 'development' and $facts['noop_deploy'] == 'false' {
+    if $with_silex {
+      contain deployment::udb3::silex
+    }
+    if $with_angular {
+      contain deployment::udb3::angular
+    }
+    if $with_cdbxml {
+      contain deployment::udb3::cdbxml
+    }
+    if $with_jwtprovider {
+      contain deployment::udb3::jwtprovider
+    }
+    if $with_swagger {
+      contain deployment::udb3::swagger
+    }
+    if $with_uitpas {
+      contain deployment::udb3::uitpas
+    }
+    if $with_search {
+      contain deployment::udb3::search
+    }
+    if $with_iis {
+      contain deployment::udb3::iis
+    }
   }
 }
