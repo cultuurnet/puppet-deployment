@@ -14,7 +14,34 @@ class deployment::udb3 (
     contain deployment::udb3::rabbitmq
   }
 
-  unless $environment == 'development' or $facts['noop_deploy'] == 'true' {
+  if $environment == 'development' {
+    unless $facts['noop_deploy'] == 'true' {
+      if $with_silex {
+        contain deployment::udb3::silex
+      }
+      if $with_angular {
+        contain deployment::udb3::angular
+      }
+      if $with_cdbxml {
+        contain deployment::udb3::cdbxml
+      }
+      if $with_jwtprovider {
+        contain deployment::udb3::jwtprovider
+      }
+      if $with_swagger {
+        contain deployment::udb3::swagger
+      }
+      if $with_uitpas {
+        contain deployment::udb3::uitpas
+      }
+      if $with_search {
+        contain deployment::udb3::search
+      }
+      if $with_iis {
+        contain deployment::udb3::iis
+      }
+    }
+  } else {
     if $with_silex {
       contain deployment::udb3::silex
     }
