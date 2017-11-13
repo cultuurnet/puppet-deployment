@@ -1,6 +1,10 @@
-class deployment::udb3 {
+class deployment::udb3 (
+  $with_rabbitmq = true
+){
 
-  contain deployment::udb3::rabbitmq
+  if $with_rabbitmq {
+    contain deployment::udb3::rabbitmq
+  }
 
   if $::noop_deploy == 'false' {
     contain deployment::udb3::silex
