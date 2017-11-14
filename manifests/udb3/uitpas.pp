@@ -3,7 +3,6 @@ class deployment::udb3::uitpas (
   $pubkey_source,
   $externalid_place_mapping_source,
   $externalid_organizer_mapping_source,
-  $db_name,
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
@@ -71,15 +70,6 @@ class deployment::udb3::uitpas (
     postrotate    => '/usr/bin/supervisorctl restart udb3-uitpas-service',
     require       => 'File[udb3-uitpas-log]',
     noop          => $noop_deploy
-  }
-
-  exec { 'uitpas-db-install':
-    command   => 'bin/app.php install',
-    cwd       => '/var/www/udb-uitpas',
-    path      => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-uitpas'],
-    onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = \"${db_name}\";')",
-    subscribe => [ 'Package[udb3-uitpas]', 'File[udb3-uitpas-config]'],
-    noop      => $noop_deploy
   }
 
   deployment::versions { $title:
