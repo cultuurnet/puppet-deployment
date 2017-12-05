@@ -4,7 +4,7 @@ class deployment::udb3 (
   $with_angular     = true,
   $with_cdbxml      = true,
   $with_jwtprovider = true,
-  $with_swagger     = true,
+  $with_apidoc      = true,
   $with_uitpas      = true,
   $with_search      = true,
   $with_iis         = true
@@ -28,8 +28,8 @@ class deployment::udb3 (
       if $with_jwtprovider {
         contain deployment::udb3::jwtprovider
       }
-      if $with_swagger {
-        contain deployment::udb3::swagger
+      if $with_apidoc {
+        contain deployment::udb3::apidoc
       }
       if $with_uitpas {
         contain deployment::udb3::uitpas
@@ -54,8 +54,8 @@ class deployment::udb3 (
     if $with_jwtprovider {
       contain deployment::udb3::jwtprovider
     }
-    if $with_swagger {
-      contain deployment::udb3::swagger
+    if $with_apidoc {
+      contain deployment::udb3::apidoc
     }
     if $with_uitpas {
       contain deployment::udb3::uitpas
