@@ -8,6 +8,7 @@ class deployment::udb3::search (
   $migrate_timeout = '300',
   $reindex_permanent_hour = '0',
   $reindex_permanent_minute = '0',
+  $region_mapping_source = 'puppet:///modules/deployment/search/mapping_region.json',
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
@@ -103,6 +104,14 @@ class deployment::udb3::search (
     require => 'Package[udb3-search]'
   }
 
+  file { 'udb3-search-region-mapping':
+    ensure  => 'file',
+    path    => '/var/www/udb-search/vendor/cultuurnet/udb3-search-elasticsearch/src/Operations/json/mapping_region.json',
+    source  => $region_mapping_source,
+    require => 'Package[udb3-search]',
+    noop    => $noop_deploy
+  }
+
   logrotate::rule { 'udb3-search':
     path          => '/var/www/udb-search/log/*.log',
     rotate        => '10',
@@ -126,7 +135,7 @@ class deployment::udb3::search (
       command     => 'bin/app.php elasticsearch:migrate',
       cwd         => '/var/www/udb-search',
       path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-search'],
-      subscribe   => 'File[udb3-search-config]',
+      subscribe   => [ 'File[udb3-search-config]', 'File[udb3-search-region-mapping]' ],
       logoutput   => true,
       timeout     => $migrate_timeout,
       refreshonly => true,
