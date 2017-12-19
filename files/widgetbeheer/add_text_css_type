@@ -2,9 +2,10 @@
 
 require 'nokogiri'
 
-@doc = File.open(ARGV[0]) { |f| Nokogiri::HTML(f) }
+file = File.read(ARGV[0])
+doc = Nokogiri::HTML(file)
 
-stylesheet_link = @doc.at_xpath("//*[contains(@rel,'stylesheet')]")
+stylesheet_link = doc.at_xpath("//*[contains(@rel,'stylesheet')]")
 stylesheet_link.set_attribute('type', 'text/css')
 
-puts @doc.to_html
+File.write(ARGV[0], doc.to_html)
