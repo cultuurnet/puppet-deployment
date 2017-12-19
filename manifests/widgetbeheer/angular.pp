@@ -21,7 +21,7 @@ class deployment::widgetbeheer::angular (
   }
 
   exec { 'add_text_css_type':
-    command     => 'add_text_css_type /var/www/widgetbeheer/index.html > /var/www/widgetbeheer/index.html',
+    command     => 'add_text_css_type /var/www/widgetbeheer/index.html',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
     require     => [ File['add_text_css_type'], Package['rubygem-nokogiri']],
