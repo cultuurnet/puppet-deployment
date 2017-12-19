@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'nokogiri'
 
 @doc = File.open(ARGV[0]) { |f| Nokogiri::HTML(f) }
