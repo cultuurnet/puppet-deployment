@@ -1,0 +1,8 @@
+require 'nokogiri'
+
+@doc = File.open(ARGV[0]) { |f| Nokogiri::HTML(f) }
+
+stylesheet_link = @doc.at_xpath("//*[contains(@rel,'stylesheet')]")
+stylesheet_link.set_attribute('type', 'text/css')
+
+puts @doc.to_html
