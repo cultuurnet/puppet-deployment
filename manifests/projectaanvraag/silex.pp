@@ -49,7 +49,6 @@ class deployment::projectaanvraag::silex (
     noop    => $noop_deploy
   }
 
-
   exec { 'projectaanvraag-cache-clear':
     command     => 'bin/console projectaanvraag:cache-clear',
     cwd         => '/var/www/projectaanvraag-api',
@@ -59,7 +58,7 @@ class deployment::projectaanvraag::silex (
     noop        => $noop_deploy
   }
 
- 'silex-db-install':
+  exec { 'silex-db-install':
     command   => 'bin/console orm:schema-tool:create',
     cwd       => '/var/www/projectaanvraag-api',
     path      => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/projectaanvraag-api'],
