@@ -4,6 +4,8 @@ class deployment::widgetbeheer::angular (
   $puppetdb_url = ''
 ) {
 
+  contain deployment
+
   package { 'widgetbeheer-angular-app':
     ensure => 'latest',
     noop   => $noop_deploy
@@ -24,7 +26,7 @@ class deployment::widgetbeheer::angular (
     command     => 'add_text_css_type /var/www/widgetbeheer/index.html',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
-    require     => [ File['add_text_css_type'], Package['rubygem-nokogiri']],
+    require     => [ File['add_text_css_type'], Package['rubygem-nokogiri'], Class['deployment']],
     subscribe   => Package['widgetbeheer-angular-app'],
     noop        => $noop_deploy
   }
