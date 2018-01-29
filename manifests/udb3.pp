@@ -1,13 +1,14 @@
 class deployment::udb3 (
-  $with_rabbitmq    = true,
-  $with_silex       = true,
-  $with_angular     = true,
-  $with_cdbxml      = true,
-  $with_jwtprovider = true,
-  $with_apidoc      = true,
-  $with_uitpas      = true,
-  $with_search      = true,
-  $with_iis         = true
+  $with_rabbitmq          = true,
+  $with_silex             = true,
+  $with_angular           = true,
+  $with_cdbxml            = true,
+  $with_jwtprovider       = true,
+  $with_apidoc            = true,
+  $with_uitpas            = true,
+  $with_search            = true,
+  $with_iis               = true,
+  $with_movie_api_fetcher = true
 ){
 
   if $with_rabbitmq {
@@ -40,6 +41,9 @@ class deployment::udb3 (
       if $with_iis {
         contain deployment::udb3::iis
       }
+      if $with_movie_api_fetcher {
+        contain deployment::udb3::movie_api_fetcher
+      }
     }
   } else {
     if $with_silex {
@@ -65,6 +69,9 @@ class deployment::udb3 (
     }
     if $with_iis {
       contain deployment::udb3::iis
+    }
+    if $with_movie_api_fetcher {
+      contain deployment::udb3::movie_api_fetcher
     }
   }
 }
