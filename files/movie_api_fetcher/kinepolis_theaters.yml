@@ -1,0 +1,7 @@
+kinepolis_theaters:
+  FOO:
+    cdbid: '12345'
+    external_id: 'ORG:12345'
+  BAR:
+    cdbid: '67890'
+    external_id: 'ORG:67890'

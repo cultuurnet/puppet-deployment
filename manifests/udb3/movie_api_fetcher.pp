@@ -1,6 +1,8 @@
 class deployment::udb3::movie_api_fetcher (
   $silex_config_source,
   $db_name,
+  $kinepolis_theaters_source = 'puppet:///modules/deployment/movie_api_fetcher/kinepolis_theaters.yml',
+  $kinepolis_terms_source = 'puppet:///modules/deployment/movie_api_fetcher/kinepolis_terms.yml',
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
@@ -26,6 +28,28 @@ class deployment::udb3::movie_api_fetcher (
     ensure  => 'file',
     path    => '/var/www/movie-api-fetcher/config.yml',
     source  => $silex_config_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[udb3-movie-api-fetcher]',
+    notify  => 'Class[Apache::Service]',
+    noop    => $noop_deploy
+  }
+
+  file { 'udb3-movie-api-fetcher-kinepolis-theaters':
+    ensure  => 'file',
+    path    => '/var/www/movie-api-fetcher/kinepolis_theaters.yml',
+    source  => $kinepolis_theaters_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[udb3-movie-api-fetcher]',
+    notify  => 'Class[Apache::Service]',
+    noop    => $noop_deploy
+  }
+
+  file { 'udb3-movie-api-fetcher-kinepolis-terms':
+    ensure  => 'file',
+    path    => '/var/www/movie-api-fetcher/kinepolis_terms.yml',
+    source  => $kinepolis_terms_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-movie-api-fetcher]',
