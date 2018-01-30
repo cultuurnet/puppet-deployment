@@ -24,6 +24,16 @@ class deployment::udb3::movie_api_fetcher (
     noop    => $noop_deploy
   }
 
+  file { 'udb3-movie-api-fetcher-files':
+    ensure  => 'directory',
+    path    => '/var/www/movie-api-fetcher/files',
+    owner   => 'www-data',
+    group   => 'www-data',
+    recurse => true,
+    require => 'Package[udb3-movie-api-fetcher]',
+    noop    => $noop_deploy
+  }
+
   file { 'udb3-movie-api-fetcher-config':
     ensure  => 'file',
     path    => '/var/www/movie-api-fetcher/config.yml',
@@ -87,7 +97,7 @@ class deployment::udb3::movie_api_fetcher (
     command     => 'vendor/bin/doctrine-dbal --no-interaction migrations:migrate',
     cwd         => '/var/www/movie-api-fetcher',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/movie-api-fetcher'],
-    onlyif      => 'test -d /var/www/movie-api-fetcher/src/Migrations',
+    onlyif      => 'ls /var/www/movie-api-fetcher/src/Migrations/*.php',
     subscribe   => [ 'Package[udb3-movie-api-fetcher]', 'File[udb3-movie-api-fetcher-config]'],
     require     => 'Exec[movie-api-fetcher-db-install]',
     refreshonly => true,
