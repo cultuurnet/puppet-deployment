@@ -1,4 +1,6 @@
 class deployment::widgetbeheer::angular (
+  $config_source,
+  $deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
@@ -13,6 +15,33 @@ class deployment::widgetbeheer::angular (
 
   package { 'rubygem-nokogiri':
     ensure => 'installed'
+  }
+
+  file { 'widgetbeheer-angular-app-config':
+    ensure => 'file',
+    path   => '/var/www/widgetbeheer/config.json',
+    source => $config_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[widgetbeheer-angular-app]',
+    noop    => $noop_deploy
+  }
+
+  file { 'widgetbeheer-angular-app-deploy-config':
+    ensure => 'file',
+    path   => '/usr/local/bin/widgetbeheer-angular-deploy-config',
+    source => $deploy_config_source,
+    mode   => '0755',
+    noop   => $noop_deploy
+  }
+
+  exec { 'widgetbeheer-angular-deploy-config':
+    command     => 'widgetbeheer-angular-deploy-config /var/www/widgetbeheer',
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    subscribe   => [ 'Package[widgetbeheer-angular-app]', 'File[widgetbeheer-angular-app-config]', 'File[widgetbeheer-angular-app-deploy-config]'],
+    refreshonly => true,
+    require     => Class['deployment'],
+    noop        => $noop_deploy
   }
 
   file { 'add_text_css_type':
