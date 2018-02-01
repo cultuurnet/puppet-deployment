@@ -2,10 +2,13 @@ class deployment::udb3::movie_api_fetcher (
   $silex_config_source,
   $db_name,
   $kinepolis_theaters_source = 'puppet:///modules/deployment/movie_api_fetcher/kinepolis_theaters.yml',
-  $kinepolis_terms_source = 'puppet:///modules/deployment/movie_api_fetcher/kinepolis_terms.yml',
-  $noop_deploy = false,
-  $update_facts = false,
-  $puppetdb_url = ''
+  $kinepolis_terms_source    = 'puppet:///modules/deployment/movie_api_fetcher/kinepolis_terms.yml',
+  $enable_api_fetcher        = false,
+  $api_fetcher_hour          = '0',
+  $api_fetcher_minute        = '0',
+  $noop_deploy               = false,
+  $update_facts              = false,
+  $puppetdb_url              = ''
 ) {
 
   package { 'udb3-movie-api-fetcher':
@@ -65,6 +68,16 @@ class deployment::udb3::movie_api_fetcher (
     require => 'Package[udb3-movie-api-fetcher]',
     notify  => 'Class[Apache::Service]',
     noop    => $noop_deploy
+  }
+
+  if $enable_api_fetcher {
+    cron { 'movie-api-fetcher-kinepolis':
+      command    => '/var/www/movie-api-fetcher/bin/app.php apifetcher',
+      require    => 'Package[udb3-movie-api-fetcher]',
+      user       => 'root',
+      hour       => $api_fetcher_hour,
+      minute     => $api_fetcher_minute
+    }
   }
 
   logrotate::rule { 'udb3-movie-api-fetcher':
