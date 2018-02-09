@@ -169,7 +169,11 @@ class deployment::search_api (
     max_heap              => $solr_max_heap,
     cores                 => {
       'sapi'              => {
-        schema_source     => '/opt/sapi/schema.xml',
+        schema_source     => '/opt/sapi/sapi/schema.xml',
+        solrconfig_source => '/opt/sapi/solrconfig.xml'
+      },
+      'sapifast'          => {
+        schema_source     => '/opt/sapi/sapifast/schema.xml',
         solrconfig_source => '/opt/sapi/solrconfig.xml'
       }
     },
