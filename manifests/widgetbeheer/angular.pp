@@ -1,5 +1,6 @@
 class deployment::widgetbeheer::angular (
   $config_source,
+  $htaccess_source,
   $deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
   $noop_deploy = false,
   $update_facts = false,
@@ -21,6 +22,16 @@ class deployment::widgetbeheer::angular (
     ensure => 'file',
     path   => '/var/www/widgetbeheer/config.json',
     source => $config_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[widgetbeheer-angular-app]',
+    noop    => $noop_deploy
+  }
+
+  file { 'widgetbeheer-angular-htaccess':
+    ensure => 'file',
+    path   => '/var/www/widgetbeheer/.htaccess',
+    source => $htaccess_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[widgetbeheer-angular-app]',
