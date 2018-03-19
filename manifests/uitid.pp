@@ -10,6 +10,7 @@ class deployment::uitid (
   $mysql_database,
   $payara_start_heap = '512m',
   $payara_max_heap = '512m',
+  $timezone = 'UTC',
   $settings = {}
 ) {
 
@@ -60,11 +61,15 @@ class deployment::uitid (
   }
 
   jvmoption { "Domain ${payara_domain} start heap":
-    option       => "-Xms${payara_start_heap}",
+    option => "-Xms${payara_start_heap}",
   }
 
   jvmoption { "Domain ${payara_domain} max heap":
-    option       => "-Xmx${payara_max_heap}",
+    option => "-Xmx${payara_max_heap}",
+  }
+
+  jvmoption { "Domain ${payara_domain} timezone":
+    option => "-Duser.timezone=${timezone}",
   }
 
   jdbcconnectionpool { 'mysql_uitid_j2eePool':
