@@ -67,6 +67,9 @@ class deployment::projectaanvraag::rabbitmq (
     user        => $admin_user,
     password    => $admin_password,
     type        => 'x-delayed-message',
+    arguments   => {
+                     'x-delayed-type' => 'direct'
+                   },
     internal    => false,
     auto_delete => false,
     durable     => true,
