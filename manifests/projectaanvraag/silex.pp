@@ -77,6 +77,15 @@ class deployment::projectaanvraag::silex (
     noop        => $noop_deploy
   }
 
+  file { 'projectaanvraag-cache-directory':
+    ensure  => 'directory',
+    path    => '/var/www/projectaanvraag-api/cache',
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => [ Package['projectaanvraag-silex'], Exec['projectaanvraag-cache-clear'], Exec['silex-db-install'], Exec['silex-db-migrate']],
+    noop    => $noop_deploy
+  }
+
   deployment::versions { $title:
     project      => 'projectaanvraag',
     packages     => 'projectaanvraag-silex',
