@@ -49,18 +49,67 @@ class deployment::projectaanvraag::rabbitmq (
     noop     => $noop_deploy
   }
 
-  rabbitmq_vhost { $vhost:
-    ensure  => present,
-    require => Class['::rabbitmq'],
-    noop    => $noop_deploy
-  }
-
   rabbitmq_user_permissions { "${admin_user}@${vhost}":
     configure_permission => '.*',
     read_permission      => '.*',
     write_permission     => '.*',
     require              => Class['::rabbitmq'],
     noop                 => $noop_deploy
+  }
+
+  rabbitmq_vhost { $vhost:
+    ensure  => present,
+    require => Class['::rabbitmq'],
+    noop    => $noop_deploy
+  }
+
+  rabbitmq_exchange { "main_exchange@${vhost}":
+    user        => $admin_user,
+    password    => $admin_password,
+    type        => 'x-delayed-message',
+    internal    => false,
+    auto_delete => false,
+    durable     => true,
+    require     => 'Class[Rabbitmq]',
+    noop        => $noop_deploy
+  }
+
+  rabbitmq_queue { "projectaanvraag@${vhost}":
+    user        => $admin_user,
+    password    => $admin_password,
+    durable     => true,
+    auto_delete => false,
+    require     => 'Class[Rabbitmq]',
+    noop        => $noop_deploy
+  }
+
+  rabbitmq_binding { "main_exchange@projectaanvraag@${vhost}":
+    user             => $admin_user,
+    password         => $admin_password,
+    destination_type => 'queue',
+    routing_key      => 'asynchronous_commands',
+    arguments        => {},
+    require          => 'Class[Rabbitmq]',
+    noop             => $noop_deploy
+  }
+
+  rabbitmq_queue { "projectaanvraag_failed@${vhost}":
+    user        => $admin_user,
+    password    => $admin_password,
+    durable     => true,
+    auto_delete => false,
+    require     => 'Class[Rabbitmq]',
+    noop        => $noop_deploy
+  }
+
+  rabbitmq_binding { "main_exchange@projectaanvraag_failed@${vhost}":
+    user             => $admin_user,
+    password         => $admin_password,
+    destination_type => 'queue',
+    routing_key      => 'projectaanvraag_failed',
+    arguments        => {},
+    require          => 'Class[Rabbitmq]',
+    noop             => $noop_deploy
   }
 
   Apt::Source['erlang-solutions'] -> Class['::rabbitmq']
