@@ -3,8 +3,7 @@ class deployment::projectaanvraag::rabbitmq (
   $admin_password,
   $vhost,
   $plugin_source,
-  $version = '3.5.8-1',
-  $noop_deploy = false
+  $version = '3.5.8-1'
 ) {
 
   $base_version = regsubst($version,'^(.*)-\d$','\1')
@@ -45,22 +44,19 @@ class deployment::projectaanvraag::rabbitmq (
   rabbitmq_user { $admin_user:
     admin    => true,
     password => $admin_password,
-    require  => Class['::rabbitmq'],
-    noop     => $noop_deploy
+    require  => Class['::rabbitmq']
   }
 
   rabbitmq_user_permissions { "${admin_user}@${vhost}":
     configure_permission => '.*',
     read_permission      => '.*',
     write_permission     => '.*',
-    require              => Class['::rabbitmq'],
-    noop                 => $noop_deploy
+    require              => Class['::rabbitmq']
   }
 
   rabbitmq_vhost { $vhost:
     ensure  => present,
-    require => Class['::rabbitmq'],
-    noop    => $noop_deploy
+    require => Class['::rabbitmq']
   }
 
   rabbitmq_exchange { "main_exchange@${vhost}":
@@ -73,8 +69,7 @@ class deployment::projectaanvraag::rabbitmq (
     internal    => false,
     auto_delete => false,
     durable     => true,
-    require     => 'Class[Rabbitmq]',
-    noop        => $noop_deploy
+    require     => Class['::rabbitmq']
   }
 
   rabbitmq_queue { "projectaanvraag@${vhost}":
@@ -82,8 +77,7 @@ class deployment::projectaanvraag::rabbitmq (
     password    => $admin_password,
     durable     => true,
     auto_delete => false,
-    require     => 'Class[Rabbitmq]',
-    noop        => $noop_deploy
+    require     => Class['::rabbitmq']
   }
 
   rabbitmq_binding { "main_exchange@projectaanvraag@${vhost}":
@@ -92,8 +86,7 @@ class deployment::projectaanvraag::rabbitmq (
     destination_type => 'queue',
     routing_key      => 'asynchronous_commands',
     arguments        => {},
-    require          => 'Class[Rabbitmq]',
-    noop             => $noop_deploy
+    require          => Class['::rabbitmq']
   }
 
   rabbitmq_queue { "projectaanvraag_failed@${vhost}":
@@ -101,8 +94,7 @@ class deployment::projectaanvraag::rabbitmq (
     password    => $admin_password,
     durable     => true,
     auto_delete => false,
-    require     => 'Class[Rabbitmq]',
-    noop        => $noop_deploy
+    require     => Class['::rabbitmq']
   }
 
   rabbitmq_binding { "main_exchange@projectaanvraag_failed@${vhost}":
@@ -111,8 +103,7 @@ class deployment::projectaanvraag::rabbitmq (
     destination_type => 'queue',
     routing_key      => 'projectaanvraag_failed',
     arguments        => {},
-    require          => 'Class[Rabbitmq]',
-    noop             => $noop_deploy
+    require          => Class['::rabbitmq'],
   }
 
   Apt::Source['erlang-solutions'] -> Class['::rabbitmq']
