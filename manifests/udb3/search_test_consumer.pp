@@ -1,6 +1,6 @@
 class deployment::udb3::search_test_consumer {
 
-  package { 'udb3-search-test-consumer':
+  package { 'sapi3-test-consumer':
     ensure => 'latest',
     notify => Class['Apache::Service']
   }
