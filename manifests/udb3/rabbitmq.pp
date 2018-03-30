@@ -169,4 +169,34 @@ class deployment::udb3::rabbitmq (
     require          => 'Class[Rabbitmq]',
     noop             => $noop_deploy
   }
+
+  rabbitmq_exchange { "imports.vagrant.x.entry@${vhost}":
+    user        => $admin_user,
+    password    => $admin_password,
+    type        => 'topic',
+    internal    => false,
+    auto_delete => false,
+    durable     => true,
+    require     => 'Class[Rabbitmq]',
+    noop        => $noop_deploy
+  }
+
+  rabbitmq_queue { "udb3.vagrant.q.imports-entry@${vhost}":
+    user        => $admin_user,
+    password    => $admin_password,
+    durable     => true,
+    auto_delete => false,
+    require     => 'Class[Rabbitmq]',
+    noop        => $noop_deploy
+  }
+
+  rabbitmq_binding { "imports.vagrant.x.entry@udb3.vagrant.q.imports-entry@${vhost}":
+    user             => $admin_user,
+    password         => $admin_password,
+    destination_type => 'queue',
+    routing_key      => '#',
+    arguments        => {},
+    require          => 'Class[Rabbitmq]',
+    noop             => $noop_deploy
+  }
 }
