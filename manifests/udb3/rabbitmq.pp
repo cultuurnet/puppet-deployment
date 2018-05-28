@@ -2,6 +2,7 @@ class deployment::udb3::rabbitmq (
   $admin_user,
   $admin_password,
   $vhost,
+  $environment = 'vagrant',
   $noop_deploy = false,
 ) {
 
@@ -31,7 +32,7 @@ class deployment::udb3::rabbitmq (
     noop                 => $noop_deploy
   }
 
-  rabbitmq_exchange { "udb2.vagrant.x.entry@${vhost}":
+  rabbitmq_exchange { "udb2.${environment}.x.entry@${vhost}":
     user        => $admin_user,
     password    => $admin_password,
     type        => 'topic',
@@ -42,7 +43,7 @@ class deployment::udb3::rabbitmq (
     noop        => $noop_deploy
   }
 
-  rabbitmq_exchange { "udb3.vagrant.x.domain-events@${vhost}":
+  rabbitmq_exchange { "udb3.${environment}.x.domain-events@${vhost}":
     user        => $admin_user,
     password    => $admin_password,
     type        => 'topic',
@@ -53,7 +54,7 @@ class deployment::udb3::rabbitmq (
     noop        => $noop_deploy
   }
 
-  rabbitmq_exchange { "cdbxml.vagrant.x.entry@${vhost}":
+  rabbitmq_exchange { "cdbxml.${environment}.x.entry@${vhost}":
     user        => $admin_user,
     password    => $admin_password,
     type        => 'topic',
@@ -64,7 +65,7 @@ class deployment::udb3::rabbitmq (
     noop        => $noop_deploy
   }
 
-  rabbitmq_queue { "udb3.vagrant.q.udb2-entry@${vhost}":
+  rabbitmq_queue { "udb3.${environment}.q.udb2-entry@${vhost}":
     user        => $admin_user,
     password    => $admin_password,
     durable     => true,
@@ -73,7 +74,7 @@ class deployment::udb3::rabbitmq (
     noop        => $noop_deploy
   }
 
-  rabbitmq_binding { "udb2.vagrant.x.entry@udb3.vagrant.q.udb2-entry@${vhost}":
+  rabbitmq_binding { "udb2.${environment}.x.entry@udb3.${environment}.q.udb2-entry@${vhost}":
     user             => $admin_user,
     password         => $admin_password,
     destination_type => 'queue',
@@ -83,7 +84,7 @@ class deployment::udb3::rabbitmq (
     noop             => $noop_deploy
   }
 
-  rabbitmq_queue { "cdbxml.vagrant.q.udb3-domain-events@${vhost}":
+  rabbitmq_queue { "cdbxml.${environment}.q.udb3-domain-events@${vhost}":
     user        => $admin_user,
     password    => $admin_password,
     durable     => true,
@@ -92,7 +93,7 @@ class deployment::udb3::rabbitmq (
     noop        => $noop_deploy
   }
 
-  rabbitmq_queue { "uitpas.vagrant.q.udb3-domain-events@${vhost}":
+  rabbitmq_queue { "uitpas.${environment}.q.udb3-domain-events@${vhost}":
     user        => $admin_user,
     password    => $admin_password,
     durable     => true,
@@ -101,7 +102,7 @@ class deployment::udb3::rabbitmq (
     noop        => $noop_deploy
   }
 
-  rabbitmq_binding { "udb3.vagrant.x.domain-events@cdbxml.vagrant.q.udb3-domain-events@${vhost}":
+  rabbitmq_binding { "udb3.${environment}.x.domain-events@cdbxml.${environment}.q.udb3-domain-events@${vhost}":
     user             => $admin_user,
     password         => $admin_password,
     destination_type => 'queue',
@@ -111,7 +112,7 @@ class deployment::udb3::rabbitmq (
     noop             => $noop_deploy
   }
 
-  rabbitmq_binding { "udb3.vagrant.x.domain-events@uitpas.vagrant.q.udb3-domain-events@${vhost}":
+  rabbitmq_binding { "udb3.${environment}.x.domain-events@uitpas.${environment}.q.udb3-domain-events@${vhost}":
     user             => $admin_user,
     password         => $admin_password,
     destination_type => 'queue',
@@ -121,7 +122,7 @@ class deployment::udb3::rabbitmq (
     noop             => $noop_deploy
   }
 
-  rabbitmq_queue { "solr.vagrant.q.udb3-cdbxml@${vhost}":
+  rabbitmq_queue { "solr.${environment}.q.udb3-cdbxml@${vhost}":
     user        => $admin_user,
     password    => $admin_password,
     durable     => true,
@@ -130,7 +131,7 @@ class deployment::udb3::rabbitmq (
     noop        => $noop_deploy
   }
 
-  rabbitmq_binding { "cdbxml.vagrant.x.entry@solr.vagrant.q.udb3-cdbxml@${vhost}":
+  rabbitmq_binding { "cdbxml.${environment}.x.entry@solr.${environment}.q.udb3-cdbxml@${vhost}":
     user             => $admin_user,
     password         => $admin_password,
     destination_type => 'queue',
@@ -140,7 +141,7 @@ class deployment::udb3::rabbitmq (
     noop             => $noop_deploy
   }
 
-  rabbitmq_exchange { "uitid.vagrant.x.uitpas-events@${vhost}":
+  rabbitmq_exchange { "uitid.${environment}.x.uitpas-events@${vhost}":
     user        => $admin_user,
     password    => $admin_password,
     type        => 'topic',
@@ -151,7 +152,7 @@ class deployment::udb3::rabbitmq (
     noop        => $noop_deploy
   }
 
-  rabbitmq_queue { "udb3.vagrant.q.uitpas-events@${vhost}":
+  rabbitmq_queue { "udb3.${environment}.q.uitpas-events@${vhost}":
     user        => $admin_user,
     password    => $admin_password,
     durable     => true,
@@ -160,7 +161,7 @@ class deployment::udb3::rabbitmq (
     noop        => $noop_deploy
   }
 
-  rabbitmq_binding { "uitid.vagrant.x.uitpas-events@udb3.vagrant.q.uitpas-events@${vhost}":
+  rabbitmq_binding { "uitid.${environment}.x.uitpas-events@udb3.${environment}.q.uitpas-events@${vhost}":
     user             => $admin_user,
     password         => $admin_password,
     destination_type => 'queue',
@@ -170,7 +171,7 @@ class deployment::udb3::rabbitmq (
     noop             => $noop_deploy
   }
 
-  rabbitmq_exchange { "imports.vagrant.x.entry@${vhost}":
+  rabbitmq_exchange { "imports.${environment}.x.entry@${vhost}":
     user        => $admin_user,
     password    => $admin_password,
     type        => 'topic',
@@ -181,7 +182,7 @@ class deployment::udb3::rabbitmq (
     noop        => $noop_deploy
   }
 
-  rabbitmq_queue { "udb3.vagrant.q.imports-entry@${vhost}":
+  rabbitmq_queue { "udb3.${environment}.q.imports-entry@${vhost}":
     user        => $admin_user,
     password    => $admin_password,
     durable     => true,
@@ -190,7 +191,7 @@ class deployment::udb3::rabbitmq (
     noop        => $noop_deploy
   }
 
-  rabbitmq_binding { "imports.vagrant.x.entry@udb3.vagrant.q.imports-entry@${vhost}":
+  rabbitmq_binding { "imports.${environment}.x.entry@udb3.${environment}.q.imports-entry@${vhost}":
     user             => $admin_user,
     password         => $admin_password,
     destination_type => 'queue',
