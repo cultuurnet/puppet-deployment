@@ -3,6 +3,7 @@ class deployment::uitid (
   $payara_portbase,
   $payara_domain,
   $service_name,
+  $base_url,
   $mysql_user,
   $mysql_password,
   $mysql_host,
@@ -70,6 +71,10 @@ class deployment::uitid (
 
   jvmoption { "Domain ${payara_domain} timezone":
     option => "-Duser.timezone=${timezone}",
+  }
+
+  systemproperty { 'uitid_baseurl':
+    value => $base_url
   }
 
   jdbcconnectionpool { 'mysql_uitid_j2eePool':
