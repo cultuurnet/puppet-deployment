@@ -29,6 +29,15 @@ class deployment::uitid (
     notify       => Exec["restart_service_${service_name}"]
   }
 
+  Systemproperty {
+    ensure       => 'present',
+    user         => $user,
+    passwordfile => $passwordfile,
+    portbase     => $payara_portbase,
+    require      => [ Class['glassfish'], Glassfish::Create_domain[$payara_domain]],
+    notify       => Exec["restart_service_${service_name}"]
+  }
+
   class { 'glassfish':
     install_method      => 'package',
     package_prefix      => 'payara',
