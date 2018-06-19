@@ -13,6 +13,7 @@ class deployment::search_api (
   $glassfish_start_heap = '512m',
   $glassfish_max_heap = '512m',
   $cache_size = '300000',
+  $fast_index_only = false,
   $glassfish_jmx = true,
   $settings = {}
 ) {
@@ -125,6 +126,10 @@ class deployment::search_api (
 
   systemproperty { 'search_mysql_cachesize':
     value        => $cache_size
+  }
+
+  systemproperty { 'search_fastindexonly':
+    value        => $fast_index_only
   }
 
   package { 'sapi':
