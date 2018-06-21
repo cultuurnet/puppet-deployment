@@ -29,7 +29,7 @@ class deployment::museumpas (
   }
 
   exec { 'import museumpas database dump':
-    command   => "mysql ${db_name} < /data/museumpas/db.sql",
+    command   => "mysql --defaults-extra-file=/root/.my.cnf ${db_name} < /data/museumpas/db.sql",
     path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
     subscribe => Package['museumpas-data'],
     onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = \"${db_name}\";')",
