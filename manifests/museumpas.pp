@@ -41,6 +41,7 @@ class deployment::museumpas (
     command   => 'php artisan migrate',
     cwd       => '/var/www/museumpas',
     path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    user      => 'www-data',
     subscribe => Package['museumpas-website'],
     require   => [ File['museumpas-website-config'], Exec['import museumpas database dump'] ],
     noop      => $noop_deploy
@@ -50,6 +51,7 @@ class deployment::museumpas (
     command     => 'vendor/bin/composer run-script post-create-project-cmd',
     cwd         => '/var/www/museumpas',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/museumpas'],
+    user        => 'www-data',
     environment => [ 'HOME=/root'],
     subscribe   => Package['museumpas-website'],
     require     => File['museumpas-website-config'],
@@ -60,6 +62,7 @@ class deployment::museumpas (
     command     => 'vendor/bin/composer run-script post-autoload-dump',
     cwd         => '/var/www/museumpas',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/museumpas'],
+    user        => 'www-data',
     environment => [ 'HOME=/root'],
     subscribe   => Package['museumpas-website'],
     require     => [ File['museumpas-website-config'], Exec['composer script post-create-project-cmd'] ],
@@ -70,6 +73,7 @@ class deployment::museumpas (
     command   => 'php artisan cache:clear',
     cwd       => '/var/www/museumpas',
     path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    user      => 'www-data',
     subscribe => Package['museumpas-website'],
     require   => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
     noop      => $noop_deploy
