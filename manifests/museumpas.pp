@@ -33,7 +33,7 @@ class deployment::museumpas (
     path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
     subscribe => Package['museumpas-data'],
     onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = \"${db_name}\";')",
-    require   => File['museumpas-website-config'],
+    require   => [ File['museumpas-website-config'], Class['mysql::server'] ],
     noop      => $noop_deploy
   }
 
