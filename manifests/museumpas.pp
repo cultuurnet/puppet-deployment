@@ -47,18 +47,18 @@ class deployment::museumpas (
   }
 
   exec { 'composer script post-create-project-cmd':
-    command   => 'composer run-script post-create-project-cmd',
+    command   => 'vendor/bin/composer run-script post-create-project-cmd',
     cwd       => '/var/www/museumpas',
-    path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    path      => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/museumpas'],
     subscribe => Package['museumpas-website'],
     require   => File['museumpas-website-config'],
     noop      => $noop_deploy
   }
 
   exec { 'composer script post-autoload-dump':
-    command   => 'composer run-script post-autoload-dump',
+    command   => 'vendor/bin/composer run-script post-autoload-dump',
     cwd       => '/var/www/museumpas',
-    path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    path      => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/museumpas'],
     subscribe => Package['museumpas-website'],
     require   => [ File['museumpas-website-config'], Exec['composer script post-create-project-cmd'] ],
     noop      => $noop_deploy
