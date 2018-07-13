@@ -19,8 +19,8 @@ class deployment::projectaanvraag::rabbitmq (
   }
 
   class { '::rabbitmq':
-    manage_repos      => false,
-    version           => $version,
+    repos_ensure      => true,
+    package_ensure    => $version,
     delete_guest_user => true
   }
 
