@@ -32,8 +32,16 @@ class deployment::projectaanvraag::rabbitmq (
   }
 
   rabbitmq_plugin { 'rabbitmq_delayed_message_exchange':
-      ensure  => 'present',
-      require => File['rabbitmq_delayed_message_exchange']
+    ensure  => 'present',
+    require => File['rabbitmq_delayed_message_exchange']
+  }
+
+  # Dirty hack to get the rabbitmq_delayed_message_exchange plugin enabled
+  exec { 're-enable rabbitmq plugin rabbitmq_delayed_message_exchange':
+    command     => '/usr/sbin/rabbitmq-plugins enable rabbitmq_delayed_message_exchange',
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/usr/sbin'],
+    refreshonly => true,
+    subscribe   => Rabbitmq_plugin['rabbitmq_delayed_message_exchange'],
   }
 
   rabbitmq_user { $admin_user:
@@ -64,7 +72,7 @@ class deployment::projectaanvraag::rabbitmq (
     internal    => false,
     auto_delete => false,
     durable     => true,
-    require     => [ Class['::rabbitmq'], Rabbitmq_plugin['rabbitmq_delayed_message_exchange']]
+    require     => [ Class['::rabbitmq'], Exec['re-enable rabbitmq plugin rabbitmq_delayed_message_exchange']]
   }
 
   rabbitmq_queue { "projectaanvraag@${vhost}":
