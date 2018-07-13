@@ -3,7 +3,7 @@ class deployment::projectaanvraag::rabbitmq (
   $admin_password,
   $vhost,
   $plugin_source,
-  $erlang_version = '1:20.3-1'
+  $erlang_version = '1:20.3-1',
   $version = '3.7.6-1'
 ) {
 
