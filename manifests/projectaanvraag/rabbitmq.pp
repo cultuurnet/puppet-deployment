@@ -64,7 +64,7 @@ class deployment::projectaanvraag::rabbitmq (
     internal    => false,
     auto_delete => false,
     durable     => true,
-    require     => Class['::rabbitmq']
+    require     => [ Class['::rabbitmq'], Rabbitmq_plugin['rabbitmq_delayed_message_exchange']]
   }
 
   rabbitmq_queue { "projectaanvraag@${vhost}":
