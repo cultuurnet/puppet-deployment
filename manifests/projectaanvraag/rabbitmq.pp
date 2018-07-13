@@ -11,7 +11,7 @@ class deployment::projectaanvraag::rabbitmq (
   $plugin_dir   = "/usr/lib/rabbitmq/lib/rabbitmq_server-${base_version}/plugins"
 
   class { '::erlang':
-    version                  => $erlang_version
+    version                  => $erlang_version,
     key_signature            => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
     remote_repo_location     => 'http://apt.uitdatabank.be/erlang-production',
     remote_repo_key_location => 'http://apt.uitdatabank.be/gpgkey/cultuurnet.gpg.key',
