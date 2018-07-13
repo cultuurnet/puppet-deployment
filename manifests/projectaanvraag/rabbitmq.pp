@@ -3,24 +3,19 @@ class deployment::projectaanvraag::rabbitmq (
   $admin_password,
   $vhost,
   $plugin_source,
-  $version = '3.5.8-1'
+  $erlang_version = '1:20.3-1'
+  $version = '3.7.6-1'
 ) {
 
   $base_version = regsubst($version,'^(.*)-\d$','\1')
   $plugin_dir   = "/usr/lib/rabbitmq/lib/rabbitmq_server-${base_version}/plugins"
 
-  apt::source { 'erlang-solutions':
-    location => 'http://packages.erlang-solutions.com/ubuntu',
-    release  => 'trusty',
-    repos    => 'contrib',
-    key      => {
-      id     => '434975BD900CCBE4F7EE1B1ED208507CA14F4FCA',
-      source => 'http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc'
-    },
-    include  => {
-      deb => true,
-      src => false
-    }
+  class { '::erlang':
+    version                  => $erlang_version
+    key_signature            => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
+    remote_repo_location     => 'http://apt.uitdatabank.be/erlang-production',
+    remote_repo_key_location => 'http://apt.uitdatabank.be/gpgkey/cultuurnet.gpg.key',
+    repos                    => 'main'
   }
 
   class { '::rabbitmq':
@@ -31,8 +26,8 @@ class deployment::projectaanvraag::rabbitmq (
 
   file { 'rabbitmq_delayed_message_exchange':
     ensure  => 'file',
-    path    => "${plugin_dir}/rabbitmq_delayed_message_exchange-0.0.1.ez",
-    source  => "${plugin_source}/rabbitmq_delayed_message_exchange-0.0.1.ez",
+    path    => "${plugin_dir}/rabbitmq_delayed_message_exchange-20171201-3.7.x.ez",
+    source  => "${plugin_source}/rabbitmq_delayed_message_exchange-20171201-3.7.x.ez",
     require => Class['::rabbitmq']
   }
 
@@ -106,5 +101,5 @@ class deployment::projectaanvraag::rabbitmq (
     require          => Class['::rabbitmq'],
   }
 
-  Apt::Source['erlang-solutions'] -> Class['::rabbitmq']
+  Class['::erlang'] -> Class['::rabbitmq']
 }
