@@ -129,7 +129,7 @@ class deployment::search_api (
   }
 
   systemproperty { 'search_fastindexonly':
-    value        => $fast_index_only
+    value        => "${fast_index_only}"
   }
 
   package { 'sapi':
