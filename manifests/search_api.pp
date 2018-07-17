@@ -20,6 +20,7 @@ class deployment::search_api (
 ) {
 
   $passwordfile = "/home/${user}/asadmin.pass"
+  $glassfish_http_port = $glassfish_portbase + 80
 
   Jvmoption {
     ensure       => 'present',
@@ -188,7 +189,7 @@ class deployment::search_api (
   }
 
   cron { 'reindex_job':
-    command    => "/usr/bin/curl 'http://${search_hostname}/search/rest/import/queue/reindex?max=500'",
+    command    => "/usr/bin/curl 'http://${search_hostname}:${glassfish_http_port}/search/rest/import/queue/reindex?max=500'",
     require    => 'App[sapi]',
     user       => 'root',
     hour       => '*',
