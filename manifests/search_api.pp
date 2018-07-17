@@ -10,6 +10,7 @@ class deployment::search_api (
   $mysql_database,
   $solr_url,
   $solr_max_heap,
+  $search_hostname = 'localhost',
   $glassfish_start_heap = '512m',
   $glassfish_max_heap = '512m',
   $cache_size = '300000',
@@ -184,5 +185,16 @@ class deployment::search_api (
     },
     require               => [ Package['sapi'], Class['java8']],
     before                => App['sapi']
+  }
+
+  cron { 'reindex_job':
+    command    => "/usr/bin/curl 'http://${search_hostname}/search/rest/import/queue/reindex?max=500'",
+    require    => 'App[sapi]',
+    user       => 'root',
+    hour       => '*',
+    minute     => '*',
+    weekday    => '*',
+    monthday   => '*',
+    month      => '*'
   }
 }
