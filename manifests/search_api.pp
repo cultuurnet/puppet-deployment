@@ -7,16 +7,16 @@ class deployment::search_api (
   $mysql_port,
   $mysql_database,
   $solr_url,
-  $solr_max_heap = '512m',
-  $service_name = $::deployment::search_api::glassfish_domain,
-  $search_hostname = 'localhost',
-  $glassfish_portbase = '4800',
+  $solr_max_heap        = '512m',
+  $service_name         = $::deployment::search_api::glassfish_domain,
+  $search_hostname      = 'localhost',
+  $glassfish_portbase   = '4800',
   $glassfish_start_heap = undef,
-  $glassfish_max_heap = undef,
-  $cache_size = '300000',
-  $fast_index_only = false,
-  $glassfish_jmx = true,
-  $settings = {}
+  $glassfish_max_heap   = undef,
+  $cache_size           = '300000',
+  $fast_index_only      = false,
+  $glassfish_jmx        = true,
+  $settings             = {}
 ) {
 
   $passwordfile = "/home/${user}/asadmin.pass"
@@ -62,6 +62,10 @@ class deployment::search_api (
     start_domain   => true
   }
 
+  # This will only work if the default start heap value (512m) is present in
+  # the JVM options. The proper solution is extending the jvmoption
+  # type/provider to accomodate all possible combinations of keys, separators
+  # and values.
   if $glassfish_start_heap {
     unless $glassfish_default_start_heap == $glassfish_start_heap {
       jvmoption { "Clear domain ${glassfish_domain} default start heap":
@@ -77,6 +81,10 @@ class deployment::search_api (
     }
   }
 
+  # This will only work if the default start heap value (512m) is present in
+  # the JVM options. The proper solution is extending the jvmoption
+  # type/provider to accomodate all possible combinations of keys, separators
+  # and values.
   if $glassfish_max_heap {
     unless $glassfish_default_max_heap == $glassfish_max_heap {
       jvmoption { "Clear domain ${glassfish_domain} default max heap":
