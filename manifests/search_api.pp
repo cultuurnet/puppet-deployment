@@ -11,8 +11,8 @@ class deployment::search_api (
   $service_name = $::deployment::search_api::glassfish_domain,
   $search_hostname = 'localhost',
   $glassfish_portbase = '4800',
-  $glassfish_start_heap = '512m',
-  $glassfish_max_heap = '512m',
+  $glassfish_start_heap = undef,
+  $glassfish_max_heap = undef,
   $cache_size = '300000',
   $fast_index_only = false,
   $glassfish_jmx = true,
@@ -21,6 +21,8 @@ class deployment::search_api (
 
   $passwordfile = "/home/${user}/asadmin.pass"
   $glassfish_http_port = $glassfish_portbase + 80
+  $glassfish_default_start_heap = '512m'
+  $glassfish_default_max_heap = '512m'
 
   Jvmoption {
     ensure       => 'present',
@@ -60,12 +62,34 @@ class deployment::search_api (
     start_domain   => true
   }
 
-  jvmoption { "Domain ${glassfish_domain} start heap":
-    option       => "-Xms${glassfish_start_heap}",
+  if ${glassfish_start_heap} {
+    unless ${glassfish_default_start_heap} == ${glassfish_start_heap} {
+      jvmoption { "Clear domain ${glassfish_domain} default start heap":
+        ensure => 'absent',
+        option => "-Xms${glassfish_default_start_heap}"
+      }
+
+      jvmoption { "Domain ${glassfish_domain} start heap":
+        option => "-Xms${glassfish_start_heap}"
+      }
+
+      Jvmoption["Clear domain ${glassfish_domain} default start heap"] -> Jvmoption["Domain ${glassfish_domain} start heap"]
+    }
   }
 
-  jvmoption { "Domain ${glassfish_domain} max heap":
-    option       => "-Xmx${glassfish_max_heap}",
+  if ${glassfish_max_heap} {
+    unless ${glassfish_default_max_heap} == ${glassfish_max_heap} {
+      jvmoption { "Clear domain ${glassfish_domain} default max heap":
+        ensure => 'absent',
+        option => "-Xmx${glassfish_default_max_heap}"
+      }
+
+      jvmoption { "Domain ${glassfish_domain} max heap":
+        option => "-Xmx${glassfish_max_heap}"
+      }
+
+      Jvmoption["Clear domain ${glassfish_domain} default max heap"] -> Jvmoption["Domain ${glassfish_domain} max heap"]
+    }
   }
 
   if $glassfish_jmx {
