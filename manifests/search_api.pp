@@ -62,8 +62,8 @@ class deployment::search_api (
     start_domain   => true
   }
 
-  if ${glassfish_start_heap} {
-    unless ${glassfish_default_start_heap} == ${glassfish_start_heap} {
+  if $glassfish_start_heap {
+    unless $glassfish_default_start_heap == $glassfish_start_heap {
       jvmoption { "Clear domain ${glassfish_domain} default start heap":
         ensure => 'absent',
         option => "-Xms${glassfish_default_start_heap}"
@@ -77,8 +77,8 @@ class deployment::search_api (
     }
   }
 
-  if ${glassfish_max_heap} {
-    unless ${glassfish_default_max_heap} == ${glassfish_max_heap} {
+  if $glassfish_max_heap {
+    unless $glassfish_default_max_heap == $glassfish_max_heap {
       jvmoption { "Clear domain ${glassfish_domain} default max heap":
         ensure => 'absent',
         option => "-Xmx${glassfish_default_max_heap}"
