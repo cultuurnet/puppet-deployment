@@ -7,6 +7,7 @@ class deployment::search_api (
   $mysql_port,
   $mysql_database,
   $solr_url,
+  $settings_source,
   $solr_max_heap        = '512m',
   $service_name         = $::deployment::search_api::glassfish_domain,
   $search_hostname      = 'localhost',
@@ -15,14 +16,14 @@ class deployment::search_api (
   $glassfish_max_heap   = undef,
   $cache_size           = '300000',
   $fast_index_only      = false,
-  $glassfish_jmx        = true,
-  $settings             = {}
+  $glassfish_jmx        = true
 ) {
 
   $passwordfile = "/home/${user}/asadmin.pass"
   $glassfish_http_port = $glassfish_portbase + 80
   $glassfish_default_start_heap = '512m'
   $glassfish_default_max_heap = '512m'
+  $settings = parseyaml(file($settings_source))
 
   Jvmoption {
     ensure       => 'present',
