@@ -23,7 +23,7 @@ class deployment::search_api (
   $glassfish_http_port = $glassfish_portbase + 80
   $glassfish_default_start_heap = '512m'
   $glassfish_default_max_heap = '512m'
-  $settings = parseyaml(file($settings_source))
+  $settings = parseyaml(file("/etc/puppetlabs/code/files/${settings_source}"))
 
   Jvmoption {
     ensure       => 'present',
