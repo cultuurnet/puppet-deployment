@@ -9,8 +9,8 @@ class deployment::uitid (
   $mysql_database,
   $service_name      = $::deployment::uitid::payara_domain,
   $payara_portbase   = '4800',
-  $payara_start_heap = '512m',
-  $payara_max_heap   = '512m',
+  $payara_start_heap = undef,
+  $payara_max_heap   = undef,
   $timezone          = 'UTC',
   $settings          = {},
   $payara_jmx        = true
@@ -18,6 +18,8 @@ class deployment::uitid (
 
   $passwordfile = "/home/${user}/asadmin.pass"
   $application_http_port = $payara_portbase + 80
+  $payara_default_start_heap = '512m'
+  $payara_default_max_heap = '512m'
 
   include java8
 
@@ -71,12 +73,42 @@ class deployment::uitid (
     require        => File['mysql-connector-java']
   }
 
-  jvmoption { "Domain ${payara_domain} start heap":
-    option => "-Xms${payara_start_heap}",
+  # This will only work if the default start heap value (512m) is present in
+  # the JVM options. The proper solution is extending the jvmoption
+  # type/provider to accomodate all possible combinations of keys, separators
+  # and values.
+  if $payara_start_heap {
+    unless $payara_default_start_heap == $payara_start_heap {
+      jvmoption { "Clear domain ${payara_domain} default start heap":
+        ensure => 'absent',
+        option => "-Xms${payara_default_start_heap}"
+      }
+
+      jvmoption { "Domain ${payara_domain} start heap":
+        option => "-Xms${payara_start_heap}"
+      }
+
+      Jvmoption["Clear domain ${payara_domain} default start heap"] -> Jvmoption["Domain ${payara_domain} start heap"]
+    }
   }
 
-  jvmoption { "Domain ${payara_domain} max heap":
-    option => "-Xmx${payara_max_heap}",
+  # This will only work if the default start heap value (512m) is present in
+  # the JVM options. The proper solution is extending the jvmoption
+  # type/provider to accomodate all possible combinations of keys, separators
+  # and values.
+  if $payara_max_heap {
+    unless $payara_default_max_heap == $payara_max_heap {
+      jvmoption { "Clear domain ${payara_domain} default max heap":
+        ensure => 'absent',
+        option => "-Xmx${payara_default_max_heap}"
+      }
+
+      jvmoption { "Domain ${payara_domain} max heap":
+        option => "-Xmx${payara_max_heap}"
+      }
+
+      Jvmoption["Clear domain ${payara_domain} default max heap"] -> Jvmoption["Domain ${payara_domain} max heap"]
+    }
   }
 
   jvmoption { "Domain ${payara_domain} timezone":
