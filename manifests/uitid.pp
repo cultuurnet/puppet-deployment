@@ -1,18 +1,19 @@
 class deployment::uitid (
   $user,
-  $payara_portbase,
   $payara_domain,
-  $service_name,
   $base_url,
   $mysql_user,
   $mysql_password,
   $mysql_host,
   $mysql_port,
   $mysql_database,
+  $service_name      = $::deployment::uitid::payara_domain,
+  $payara_portbase   = '4800',
   $payara_start_heap = '512m',
-  $payara_max_heap = '512m',
-  $timezone = 'UTC',
-  $settings = {}
+  $payara_max_heap   = '512m',
+  $timezone          = 'UTC',
+  $settings          = {},
+  $payara_jmx        = true
 ) {
 
   $passwordfile = "/home/${user}/asadmin.pass"
@@ -80,6 +81,15 @@ class deployment::uitid (
 
   jvmoption { "Domain ${payara_domain} timezone":
     option => "-Duser.timezone=${timezone}",
+  }
+
+  if $payara_jmx {
+    jvmoption { "-Dcom.sun.management.jmxremote": }
+    jvmoption { "-Dcom.sun.management.jmxremote.port=9001": }
+    jvmoption { "-Dcom.sun.management.jmxremote.local.only=false": }
+    jvmoption { "-Dcom.sun.management.jmxremote.authenticate=false": }
+    jvmoption { "-Dcom.sun.management.jmxremote.ssl=false": }
+    jvmoption { "-Djava.rmi.server.hostname=127.0.0.1": }
   }
 
   systemproperty { 'uitid_baseurl':
