@@ -12,7 +12,12 @@ class deployment::museumpas (
     noop   => $noop_deploy
   }
 
-  package { 'museumpas-data':
+  package { 'museumpas-database':
+    ensure => 'latest',
+    noop   => $noop_deploy
+  }
+
+  package { 'museumpas-files':
     ensure => 'latest',
     noop   => $noop_deploy
   }
@@ -31,7 +36,7 @@ class deployment::museumpas (
   exec { 'import museumpas database dump':
     command   => "mysql --defaults-extra-file=/root/.my.cnf ${db_name} < /data/museumpas/db.sql",
     path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
-    subscribe => Package['museumpas-data'],
+    subscribe => Package['museumpas-database'],
     onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = \"${db_name}\";')",
     require   => [ File['museumpas-website-config'], Class['mysql::server'] ],
     noop      => $noop_deploy
@@ -74,7 +79,7 @@ class deployment::museumpas (
     cwd       => '/var/www/museumpas',
     path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
     user      => 'www-data',
-    subscribe => Package['museumpas-website'],
+    subscribe => [ Package['museumpas-website'], Package['museumpas-files'] ],
     require   => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
     noop      => $noop_deploy
   }
