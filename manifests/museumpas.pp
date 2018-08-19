@@ -84,6 +84,17 @@ class deployment::museumpas (
     noop      => $noop_deploy
   }
 
+  exec { 'create storage link':
+    command   => 'php artisan storage:link',
+    cwd       => '/var/www/museumpas',
+    path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    user      => 'www-data',
+    unless    => 'test -L /var/www/museumpas/public/storage',
+    subscribe => [ Package['museumpas-website'], Package['museumpas-files'] ],
+    require   => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
+    noop      => $noop_deploy
+  }
+
   if $update_facts {
     exec { 'update_facts museumpas':
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
