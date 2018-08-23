@@ -84,6 +84,16 @@ class deployment::museumpas (
     noop      => $noop_deploy
   }
 
+  exec { 'clear museumpas model cache':
+    command   => 'php artisan modelCache:clear',
+    cwd       => '/var/www/museumpas',
+    path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    user      => 'www-data',
+    subscribe => [ Package['museumpas-website'], Package['museumpas-files'] ],
+    require   => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
+    noop      => $noop_deploy
+  }
+
   exec { 'create storage link':
     command   => 'php artisan storage:link',
     cwd       => '/var/www/museumpas',
