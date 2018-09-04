@@ -1,10 +1,13 @@
 class deployment::museumpas (
   $config_source,
+  $maintenance_source,
   $db_name,
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
 ) {
+
+  $basedir = '/var/www/museumpas'
 
   package { 'museumpas-website':
     ensure => 'latest',
@@ -24,12 +27,23 @@ class deployment::museumpas (
 
   file { 'museumpas-website-config':
     ensure  => 'file',
-    path    => '/var/www/museumpas/.env',
+    path    => "${basedir}/.env",
     source  => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[museumpas-website]',
     notify  => 'Class[Apache::Service]',
+    noop    => $noop_deploy
+  }
+
+  file { 'museumpas-maintenance-pages':
+    ensure  => 'directory',
+    path    => "${basedir}/public/maintenance",
+    recurse => true,
+    source  => $maintenance_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[museumpas-website]',
     noop    => $noop_deploy
   }
 
@@ -44,7 +58,7 @@ class deployment::museumpas (
 
   exec { 'run museumpas database migrations':
     command   => 'php artisan migrate',
-    cwd       => '/var/www/museumpas',
+    cwd       => $basedir,
     path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
     user      => 'www-data',
     subscribe => Package['museumpas-website'],
@@ -54,8 +68,8 @@ class deployment::museumpas (
 
   exec { 'composer script post-create-project-cmd':
     command     => 'vendor/bin/composer run-script post-create-project-cmd',
-    cwd         => '/var/www/museumpas',
-    path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/museumpas'],
+    cwd         => $basedir,
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin', $basedir],
     user        => 'www-data',
     environment => [ 'HOME=/root'],
     subscribe   => Package['museumpas-website'],
@@ -65,8 +79,8 @@ class deployment::museumpas (
 
   exec { 'composer script post-autoload-dump':
     command     => 'vendor/bin/composer run-script post-autoload-dump',
-    cwd         => '/var/www/museumpas',
-    path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/museumpas'],
+    cwd         => $basedir,
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin', $basedir],
     user        => 'www-data',
     environment => [ 'HOME=/root'],
     subscribe   => Package['museumpas-website'],
@@ -76,7 +90,7 @@ class deployment::museumpas (
 
   exec { 'clear museumpas cache':
     command   => 'php artisan cache:clear',
-    cwd       => '/var/www/museumpas',
+    cwd       => $basedir,
     path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
     user      => 'www-data',
     subscribe => [ Package['museumpas-website'], Package['museumpas-files'] ],
@@ -86,7 +100,7 @@ class deployment::museumpas (
 
   exec { 'clear museumpas model cache':
     command   => 'php artisan modelCache:clear',
-    cwd       => '/var/www/museumpas',
+    cwd       => $basedir,
     path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
     user      => 'www-data',
     subscribe => [ Package['museumpas-website'], Package['museumpas-files'] ],
@@ -96,10 +110,10 @@ class deployment::museumpas (
 
   exec { 'create storage link':
     command   => 'php artisan storage:link',
-    cwd       => '/var/www/museumpas',
+    cwd       => $basedir,
     path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
     user      => 'www-data',
-    unless    => 'test -L /var/www/museumpas/public/storage',
+    unless    => "test -L ${basedir}/public/storage",
     subscribe => [ Package['museumpas-website'], Package['museumpas-files'] ],
     require   => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
     noop      => $noop_deploy
