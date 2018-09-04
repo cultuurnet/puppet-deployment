@@ -57,13 +57,14 @@ class deployment::museumpas (
   }
 
   exec { 'run museumpas database migrations':
-    command   => 'php artisan migrate',
-    cwd       => $basedir,
-    path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
-    user      => 'www-data',
-    subscribe => Package['museumpas-website'],
-    require   => [ File['museumpas-website-config'], Exec['import museumpas database dump'] ],
-    noop      => $noop_deploy
+    command     => 'php artisan migrate',
+    cwd         => $basedir,
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    user        => 'www-data',
+    subscribe   => Package['museumpas-website'],
+    refreshonly => true,
+    require     => [ File['museumpas-website-config'], Exec['import museumpas database dump'] ],
+    noop        => $noop_deploy
   }
 
   exec { 'composer script post-autoload-dump':
@@ -73,39 +74,43 @@ class deployment::museumpas (
     user        => 'www-data',
     environment => [ 'HOME=/root'],
     subscribe   => Package['museumpas-website'],
+    refreshonly => true,
     require     => File['museumpas-website-config'],
     noop        => $noop_deploy
   }
 
   exec { 'clear museumpas cache':
-    command   => 'php artisan cache:clear',
-    cwd       => $basedir,
-    path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
-    user      => 'www-data',
-    subscribe => [ Package['museumpas-website'], Package['museumpas-files'] ],
-    require   => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
-    noop      => $noop_deploy
+    command     => 'php artisan cache:clear',
+    cwd         => $basedir,
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    user        => 'www-data',
+    subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
+    refreshonly => true,
+    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
+    noop        => $noop_deploy
   }
 
   exec { 'clear museumpas model cache':
-    command   => 'php artisan modelCache:clear',
-    cwd       => $basedir,
-    path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
-    user      => 'www-data',
-    subscribe => [ Package['museumpas-website'], Package['museumpas-files'] ],
-    require   => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
-    noop      => $noop_deploy
+    command     => 'php artisan modelCache:clear',
+    cwd         => $basedir,
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    user        => 'www-data',
+    subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
+    refreshonly => true,
+    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
+    noop        => $noop_deploy
   }
 
   exec { 'create storage link':
-    command   => 'php artisan storage:link',
-    cwd       => $basedir,
-    path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
-    user      => 'www-data',
-    unless    => "test -L ${basedir}/public/storage",
-    subscribe => [ Package['museumpas-website'], Package['museumpas-files'] ],
-    require   => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
-    noop      => $noop_deploy
+    command     => 'php artisan storage:link',
+    cwd         => $basedir,
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    user        => 'www-data',
+    unless      => "test -L ${basedir}/public/storage",
+    subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
+    refreshonly => true,
+    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
+    noop        => $noop_deploy
   }
 
   if $update_facts {
