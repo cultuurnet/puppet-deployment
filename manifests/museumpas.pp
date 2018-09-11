@@ -61,6 +61,8 @@ class deployment::museumpas (
     command     => 'php artisan down',
     cwd         => $basedir,
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    user        => 'www-data',
+    environment => [ 'HOME=/'],
     logoutput   => true,
     subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
     refreshonly => true,
@@ -72,6 +74,8 @@ class deployment::museumpas (
     command     => 'php artisan migrate --force',
     cwd         => $basedir,
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    user        => 'www-data',
+    environment => [ 'HOME=/'],
     logoutput   => true,
     subscribe   => Package['museumpas-website'],
     refreshonly => true,
@@ -83,22 +87,12 @@ class deployment::museumpas (
     command     => 'vendor/bin/composer run-script post-autoload-dump',
     cwd         => $basedir,
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', $basedir],
+    user        => 'www-data',
+    environment => [ 'HOME=/'],
     logoutput   => true,
-    environment => [ 'HOME=/root'],
     subscribe   => Package['museumpas-website'],
     refreshonly => true,
     require     => File['museumpas-website-config'],
-    noop        => $noop_deploy
-  }
-
-  exec { 'clear museumpas model cache':
-    command     => 'php artisan modelCache:clear',
-    cwd         => $basedir,
-    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
-    logoutput   => true,
-    subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
-    refreshonly => true,
-    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
     noop        => $noop_deploy
   }
 
@@ -106,17 +100,21 @@ class deployment::museumpas (
     command     => 'php artisan cache:clear',
     cwd         => $basedir,
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    user        => 'www-data',
+    environment => [ 'HOME=/'],
     logoutput   => true,
     subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
     refreshonly => true,
-    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'], Exec['clear museumpas model cache'] ],
+    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
     noop        => $noop_deploy
   }
 
-  exec { 'clear museumpas views cache':
-    command     => 'php artisan view:clear',
+  exec { 'clear museumpas model cache':
+    command     => 'php artisan modelCache:clear',
     cwd         => $basedir,
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    user        => 'www-data',
+    environment => [ 'HOME=/'],
     logoutput   => true,
     subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
     refreshonly => true,
@@ -124,14 +122,16 @@ class deployment::museumpas (
     noop        => $noop_deploy
   }
 
-  exec { 'remove all cached data':
-    command     => "rm -rf ${basedir}/storage/framework/cache/data/*",
+  exec { 'clear museumpas views cache':
+    command     => 'php artisan view:clear',
     cwd         => $basedir,
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    user        => 'www-data',
+    environment => [ 'HOME=/'],
     logoutput   => true,
     subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
     refreshonly => true,
-    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'], Exec['clear museumpas views cache'] ],
+    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'], Exec['clear museumpas model cache'] ],
     noop        => $noop_deploy
   }
 
@@ -151,6 +151,8 @@ class deployment::museumpas (
     command     => 'php artisan up',
     cwd         => $basedir,
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    user        => 'www-data',
+    environment => [ 'HOME=/'],
     logoutput   => true,
     subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
     refreshonly => true,
