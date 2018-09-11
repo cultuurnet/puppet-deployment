@@ -88,7 +88,7 @@ class deployment::museumpas (
     cwd         => $basedir,
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', $basedir],
     user        => 'www-data',
-    environment => [ 'HOME=/'],
+    environment => [ 'HOME=/tmp'],
     logoutput   => true,
     subscribe   => Package['museumpas-website'],
     refreshonly => true,
