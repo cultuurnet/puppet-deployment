@@ -124,6 +124,17 @@ class deployment::museumpas (
     noop        => $noop_deploy
   }
 
+  exec { 'remove all cached data':
+    command     => "rm -rf ${basedir}/storage/framework/cache/data/*",
+    cwd         => $basedir,
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    logoutput   => true,
+    subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
+    refreshonly => true,
+    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'], Exec['clear museumpas views cache'] ],
+    noop        => $noop_deploy
+  }
+
   exec { 'create storage link':
     command     => 'php artisan storage:link',
     cwd         => $basedir,
