@@ -80,17 +80,6 @@ class deployment::museumpas (
     noop        => $noop_deploy
   }
 
-  exec { 'clear museumpas cache':
-    command     => 'php artisan cache:clear',
-    cwd         => $basedir,
-    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
-    logoutput   => true,
-    subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
-    refreshonly => true,
-    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
-    noop        => $noop_deploy
-  }
-
   exec { 'clear museumpas model cache':
     command     => 'php artisan modelCache:clear',
     cwd         => $basedir,
@@ -102,6 +91,17 @@ class deployment::museumpas (
     noop        => $noop_deploy
   }
 
+  exec { 'clear museumpas cache':
+    command     => 'php artisan cache:clear',
+    cwd         => $basedir,
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    logoutput   => true,
+    subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
+    refreshonly => true,
+    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'], Exec['clear museumpas model cache'] ],
+    noop        => $noop_deploy
+  }
+
   exec { 'clear museumpas views cache':
     command     => 'php artisan view:clear',
     cwd         => $basedir,
@@ -109,7 +109,7 @@ class deployment::museumpas (
     logoutput   => true,
     subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
     refreshonly => true,
-    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
+    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'], Exec['clear museumpas cache'] ],
     noop        => $noop_deploy
   }
 
