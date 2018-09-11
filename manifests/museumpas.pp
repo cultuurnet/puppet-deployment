@@ -57,6 +57,17 @@ class deployment::museumpas (
     noop      => $noop_deploy
   }
 
+  exec { 'put museumpas in maintenance mode':
+    command     => 'php artisan down',
+    cwd         => $basedir,
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    logoutput   => true,
+    subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
+    refreshonly => true,
+    require     => File['museumpas-website-config'],
+    noop        => $noop_deploy
+  }
+
   exec { 'run museumpas database migrations':
     command     => 'php artisan migrate --force',
     cwd         => $basedir,
@@ -64,7 +75,7 @@ class deployment::museumpas (
     logoutput   => true,
     subscribe   => Package['museumpas-website'],
     refreshonly => true,
-    require     => [ File['museumpas-website-config'], Exec['import museumpas database dump'] ],
+    require     => [ File['museumpas-website-config'], Exec['import museumpas database dump'], Exec['put museumpas in maintenance mode'] ],
     noop        => $noop_deploy
   }
 
@@ -122,6 +133,17 @@ class deployment::museumpas (
     subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
     refreshonly => true,
     require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
+    noop        => $noop_deploy
+  }
+
+  exec { 'put museumpas in production mode':
+    command     => 'php artisan up',
+    cwd         => $basedir,
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    logoutput   => true,
+    subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
+    refreshonly => true,
+    require     => [ File['museumpas-website-config'], Exec['create storage link'], Exec['clear museumpas views cache'] ],
     noop        => $noop_deploy
   }
 
