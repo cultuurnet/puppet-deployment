@@ -58,7 +58,7 @@ class deployment::museumpas (
   }
 
   exec { 'run museumpas database migrations':
-    command     => 'php artisan migrate',
+    command     => 'php artisan migrate --force',
     cwd         => $basedir,
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     logoutput   => true,
