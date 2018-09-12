@@ -2,6 +2,7 @@ class deployment::museumpas (
   $config_source,
   $maintenance_source,
   $db_name,
+  $robots_source = undef,
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
@@ -32,7 +33,6 @@ class deployment::museumpas (
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[museumpas-website]',
-    notify  => 'Class[Apache::Service]',
     noop    => $noop_deploy
   }
 
@@ -45,6 +45,18 @@ class deployment::museumpas (
     group   => 'www-data',
     require => 'Package[museumpas-website]',
     noop    => $noop_deploy
+  }
+
+  if $robots_source {
+    file { 'museumpas-robots.txt':
+      ensure  => 'file',
+      path    => "${basedir}/public/robots.txt",
+      source  => $robots_source,
+      owner   => 'www-data',
+      group   => 'www-data',
+      require => 'Package[museumpas-website]',
+      noop    => $noop_deploy
+    }
   }
 
   exec { 'import museumpas database dump':
