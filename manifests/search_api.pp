@@ -14,6 +14,7 @@ class deployment::search_api (
   $glassfish_portbase   = '4800',
   $glassfish_start_heap = undef,
   $glassfish_max_heap   = undef,
+  $glassfish_gc_logging = false,
   $cache_size           = '300000',
   $fast_index_only      = false,
   $glassfish_jmx        = true
@@ -108,6 +109,11 @@ class deployment::search_api (
     jvmoption { "-Dcom.sun.management.jmxremote.authenticate=false": }
     jvmoption { "-Dcom.sun.management.jmxremote.ssl=false": }
     jvmoption { "-Djava.rmi.server.hostname=127.0.0.1": }
+  }
+
+  if $glassfish_gc_logging {
+    jvmoption { "-Xloggc:/opt/glassfish/glassfish/domains/${glassfish_domain}/logs/gc.log": }
+    jvmoption { "-verbose:gc": }
   }
 
   package { 'mysql-connector-java':
