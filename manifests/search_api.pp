@@ -229,7 +229,7 @@ class deployment::search_api (
   class { 'solr':
     start_heap            => $solr_start_heap,
     max_heap              => $solr_max_heap,
-    java_options          => $java_options
+    java_options          => $java_options,
     cores                 => {
       'sapi'              => {
         schema_source     => '/opt/sapi/sapi/schema.xml',
