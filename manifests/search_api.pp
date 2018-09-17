@@ -11,6 +11,7 @@ class deployment::search_api (
   $solr_start_heap      = '512m',
   $solr_max_heap        = '512m',
   $solr_jmx             = true,
+  $solr_jmx_port        = '9002'
   $service_name         = $::deployment::search_api::glassfish_domain,
   $search_hostname      = 'localhost',
   $glassfish_portbase   = '4800',
@@ -20,6 +21,7 @@ class deployment::search_api (
   $cache_size           = '300000',
   $fast_index_only      = false,
   $glassfish_jmx        = true
+  $glassfish_jmx_port   = '9001'
 ) {
 
   $passwordfile = "/home/${user}/asadmin.pass"
@@ -106,7 +108,7 @@ class deployment::search_api (
 
   if $glassfish_jmx {
     jvmoption { "-Dcom.sun.management.jmxremote": }
-    jvmoption { "-Dcom.sun.management.jmxremote.port=9001": }
+    jvmoption { "-Dcom.sun.management.jmxremote.port=${glassfish_jmx_port}": }
     jvmoption { "-Dcom.sun.management.jmxremote.local.only=false": }
     jvmoption { "-Dcom.sun.management.jmxremote.authenticate=false": }
     jvmoption { "-Dcom.sun.management.jmxremote.ssl=false": }
@@ -216,7 +218,7 @@ class deployment::search_api (
   if $solr_jmx {
     $java_options = [
       '-Dcom.sun.management.jmxremote',
-      '-Dcom.sun.management.jmxremote.port=9001',
+      "-Dcom.sun.management.jmxremote.port=${solr_jmx_port}",
       '-Dcom.sun.management.jmxremote.local.only=false',
       '-Dcom.sun.management.jmxremote.authenticate=false',
       '-Dcom.sun.management.jmxremote.ssl=false',
