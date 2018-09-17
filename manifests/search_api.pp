@@ -11,7 +11,7 @@ class deployment::search_api (
   $solr_start_heap      = '512m',
   $solr_max_heap        = '512m',
   $solr_jmx             = true,
-  $solr_jmx_port        = '9002'
+  $solr_jmx_port        = '9002',
   $service_name         = $::deployment::search_api::glassfish_domain,
   $search_hostname      = 'localhost',
   $glassfish_portbase   = '4800',
@@ -20,7 +20,7 @@ class deployment::search_api (
   $glassfish_gc_logging = false,
   $cache_size           = '300000',
   $fast_index_only      = false,
-  $glassfish_jmx        = true
+  $glassfish_jmx        = true,
   $glassfish_jmx_port   = '9001'
 ) {
 
