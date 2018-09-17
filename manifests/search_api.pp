@@ -8,7 +8,9 @@ class deployment::search_api (
   $mysql_database,
   $solr_url,
   $settings_source,
+  $solr_start_heap      = '512m',
   $solr_max_heap        = '512m',
+  $solr_jmx             = true,
   $service_name         = $::deployment::search_api::glassfish_domain,
   $search_hostname      = 'localhost',
   $glassfish_portbase   = '4800',
@@ -211,8 +213,23 @@ class deployment::search_api (
     subscribe   => App['sapi']
   }
 
+  if $solr_jmx {
+    $java_options = [
+      '-Dcom.sun.management.jmxremote',
+      '-Dcom.sun.management.jmxremote.port=9001',
+      '-Dcom.sun.management.jmxremote.local.only=false',
+      '-Dcom.sun.management.jmxremote.authenticate=false',
+      '-Dcom.sun.management.jmxremote.ssl=false',
+      '-Djava.rmi.server.hostname=127.0.0.1'
+    ]
+  } else {
+    $java_options = []
+  }
+
   class { 'solr':
+    start_heap            => $solr_start_heap,
     max_heap              => $solr_max_heap,
+    java_options          => $java_options
     cores                 => {
       'sapi'              => {
         schema_source     => '/opt/sapi/sapi/schema.xml',
