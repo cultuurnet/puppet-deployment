@@ -8,6 +8,7 @@ class deployment::search_api (
   $mysql_database,
   $solr_url,
   $settings_source,
+  $timezone             = 'UTC',
   $solr_start_heap      = '512m',
   $solr_max_heap        = '512m',
   $solr_jmx             = true,
@@ -105,6 +106,8 @@ class deployment::search_api (
       Jvmoption["Clear domain ${glassfish_domain} default max heap"] -> Jvmoption["Domain ${glassfish_domain} max heap"]
     }
   }
+
+  jvmoption { "-Duser.timezone=${timezone}": }
 
   if $glassfish_jmx {
     jvmoption { "-Dcom.sun.management.jmxremote": }
@@ -217,6 +220,7 @@ class deployment::search_api (
 
   if $solr_jmx {
     $java_options = [
+      "-Duser.timezone=${timezone}",
       '-Dcom.sun.management.jmxremote',
       "-Dcom.sun.management.jmxremote.port=${solr_jmx_port}",
       '-Dcom.sun.management.jmxremote.local.only=false',
@@ -225,7 +229,9 @@ class deployment::search_api (
       '-Djava.rmi.server.hostname=127.0.0.1'
     ]
   } else {
-    $java_options = []
+    $java_options = [
+      "-Duser.timezone=${timezone}"
+    ]
   }
 
   class { 'solr':
