@@ -12,7 +12,6 @@ class deployment::museumpas (
 
   package { 'museumpas-website':
     ensure => 'latest',
-    notify => 'Class[Apache::Service]',
     noop   => $noop_deploy
   }
 
