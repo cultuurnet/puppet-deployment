@@ -19,6 +19,7 @@ class deployment::search_api (
   $glassfish_start_heap = undef,
   $glassfish_max_heap   = undef,
   $glassfish_gc_logging = false,
+  $verbose_logging      = true,
   $cache_size           = '300000',
   $fast_index_only      = false,
   $glassfish_jmx        = true,
@@ -202,20 +203,38 @@ class deployment::search_api (
     require      => Jdbcresource['jdbc/search']
   }
 
-  log_level { 'com.sun.jersey.api.container.filter.LoggingFilter':
-    value        => 'WARNING'
-  }
+  if $verbose_logging {
+    log_level { 'com.sun.jersey.api.container.filter.LoggingFilter':
+      value        => 'INFO'
+    }
 
-  log_level { 'com.sun.jersey.api.client.filter.LoggingFilter':
-    value        => 'WARNING'
-  }
+    log_level { 'com.sun.jersey.api.client.filter.LoggingFilter':
+      value        => 'INFO'
+    }
 
-  log_level { 'com.lodgon.cultuurnet.ImportQueue':
-    value        => 'INFO'
-  }
+    log_level { 'com.lodgon.cultuurnet.ImportQueue':
+      value        => 'FINEST'
+    }
 
-  log_level { 'java.util.logging.ConsoleHandler':
-    value        => 'WARNING'
+    log_level { 'java.util.logging.ConsoleHandler':
+      value        => 'FINEST'
+    }
+  } else {
+    log_level { 'com.sun.jersey.api.container.filter.LoggingFilter':
+      value        => 'WARNING'
+    }
+
+    log_level { 'com.sun.jersey.api.client.filter.LoggingFilter':
+      value        => 'WARNING'
+    }
+
+    log_level { 'com.lodgon.cultuurnet.ImportQueue':
+      value        => 'INFO'
+    }
+
+    log_level { 'java.util.logging.ConsoleHandler':
+      value        => 'WARNING'
+    }
   }
 
   $settings.each |$name, $setting| {
