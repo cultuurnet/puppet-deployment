@@ -49,6 +49,14 @@ class deployment::search_api (
     notify       => Exec["restart_service_${service_name}"]
   }
 
+  Log_level {
+    ensure       => 'present',
+    user         => $user,
+    passwordfile => $passwordfile,
+    portbase     => $glassfish_portbase,
+    require      => [ Class['glassfish'], Glassfish::Create_domain[$glassfish_domain], App['sapi']],
+  }
+
   include java8
 
   class { 'glassfish':
@@ -192,6 +200,22 @@ class deployment::search_api (
     passwordfile => $passwordfile,
     source       => '/opt/sapi/search-standalone.war',
     require      => Jdbcresource['jdbc/search']
+  }
+
+  log_level { 'com.sun.jersey.api.container.filter.LoggingFilter':
+    value        => 'WARNING'
+  }
+
+  log_level { 'com.sun.jersey.api.client.filter.LoggingFilter':
+    value        => 'WARNING'
+  }
+
+  log_level { 'com.lodgon.cultuurnet.ImportQueue':
+    value        => 'INFO'
+  }
+
+  log_level { 'java.util.logging.ConsoleHandler':
+    value        => 'WARNING'
   }
 
   $settings.each |$name, $setting| {
