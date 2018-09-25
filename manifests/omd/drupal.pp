@@ -95,9 +95,9 @@ class deployment::omd::drupal (
   }
 
   if $update_facts {
-    exec { 'update_facts omd':
+    exec { "update_facts ${title}":
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
-      subscribe   => 'Package[omd]',
+      subscribe   => 'Package[omd-drupal]',
       refreshonly => true,
       noop        => $noop_deploy
     }

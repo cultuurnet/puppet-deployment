@@ -6,6 +6,8 @@ class deployment::omd::angular (
   $puppetdb_url = ''
 ) {
 
+  contain deployment
+
   package { 'omd-angular-app':
     ensure => 'latest',
     notify => 'Class[Apache::Service]',
@@ -39,9 +41,9 @@ class deployment::omd::angular (
   }
 
   if $update_facts {
-    exec { 'update_facts omd':
+    exec { "update_facts ${title}":
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
-      subscribe   => 'Package[omd]',
+      subscribe   => 'Package[omd-angular-app]',
       refreshonly => true,
       noop        => $noop_deploy
     }
