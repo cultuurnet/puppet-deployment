@@ -4,6 +4,7 @@ class deployment::udb3::angular (
   $project_prefix = 'udb3',
   $app_package_name = 'udb3-angular-app',
   $lib_package_name = 'udb3-angular',
+  $app_rootdir = '/var/www/udb-app',
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
@@ -23,7 +24,7 @@ class deployment::udb3::angular (
 
   file { 'udb3-angular-app-config':
     ensure  => 'file',
-    path    => '/var/www/udb-app/config.json',
+    path    => "${app_rootdir}/config.json",
     source  => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
@@ -40,7 +41,7 @@ class deployment::udb3::angular (
   }
 
   exec { 'angular-deploy-config':
-    command     => 'angular-deploy-config /var/www/udb-app',
+    command     => "angular-deploy-config ${app_rootdir}",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     subscribe   => [ Package[$app_package_name], File['udb3-angular-app-config'], File['udb3-angular-app-deploy-config']],
     refreshonly => true,
