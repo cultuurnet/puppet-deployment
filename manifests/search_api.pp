@@ -129,6 +129,7 @@ class deployment::search_api (
 
   if $glassfish_gc_logging {
     jvmoption { "-Xloggc:/opt/glassfish/glassfish/domains/${glassfish_domain}/logs/gc.log": }
+    jvmoption { '-XX:+PrintGCTimeStamps': ensure => 'absent' }
     jvmoption { '-XX:+PrintGCDateStamps': }
     jvmoption { '-verbose:gc': }
   }
