@@ -129,7 +129,8 @@ class deployment::search_api (
 
   if $glassfish_gc_logging {
     jvmoption { "-Xloggc:/opt/glassfish/glassfish/domains/${glassfish_domain}/logs/gc.log": }
-    jvmoption { "-verbose:gc": }
+    jvmoption { '-XX:+PrintGCDateStamps': }
+    jvmoption { '-verbose:gc': }
   }
 
   package { 'mysql-connector-java':
