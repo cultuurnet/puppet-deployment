@@ -9,9 +9,6 @@ define deployment::udb3::angular::instance (
   $puppetdb_url = ''
 ) {
 
-  contain deployment
-  contain deployment::udb3::angular::common
-
   package { $app_package_name:
     ensure => 'latest',
     noop   => $noop_deploy
