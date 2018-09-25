@@ -32,7 +32,7 @@ define deployment::udb3::angular::instance (
   exec { "${title}-angular-deploy-config":
     command     => "angular-deploy-config ${app_rootdir}",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
-    subscribe   => [ Package[$app_package_name], File["${title}-angular-app-config"], Class['deployment::udb3::angular::common']],
+    subscribe   => [ Package[$app_package_name], File["${title}-angular-app-config"], File['udb3-angular-deploy-config']],
     refreshonly => true,
     require     => Class['deployment'],
     noop        => $noop_deploy

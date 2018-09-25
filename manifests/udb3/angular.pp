@@ -14,4 +14,6 @@ class deployment::udb3::angular (
   }
 
   create_resources('deployment::udb3::angular::instance', $instances)
+
+  File['udb3-angular-app-deploy-config'] -> Deployment::Udb3::Angular::Instance <| |>
 }
