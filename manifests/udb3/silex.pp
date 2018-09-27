@@ -6,6 +6,7 @@ class deployment::udb3::silex (
   $externalid_organizer_mapping_source,
   $db_name,
   $pubkey_source,
+  $event_conclude_ensure = 'present',
   $event_conclude_hour = '0',
   $event_conclude_minute = '0',
   $noop_deploy = false,
@@ -161,11 +162,12 @@ class deployment::udb3::silex (
   }
 
   cron { 'event_conclude':
-    command    => '/var/www/udb-silex/bin/udb3.php event:conclude',
-    require    => 'Package[udb3-silex]',
-    user       => 'root',
-    hour       => $event_conclude_hour,
-    minute     => $event_conclude_minute
+    ensure  => $event_conclude_ensure,
+    command => '/var/www/udb-silex/bin/udb3.php event:conclude',
+    require => 'Package[udb3-silex]',
+    user    => 'root',
+    hour    => $event_conclude_hour,
+    minute  => $event_conclude_minute
   }
 
   deployment::versions { $title:
