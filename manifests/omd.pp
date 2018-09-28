@@ -11,7 +11,7 @@ class deployment::omd (
       contain deployment::omd::drupal
     }
     if $with_media_download_manager {
-      contain deployment::omd::media_download_manager
+      contain deployment::omd::mediadownloadmanager
     }
   }
 }
