@@ -1,7 +1,7 @@
 class deployment::omd::drupal (
-  $drupal_settings_source,
-  $drupal_db_source,
-  $drupal_fs_source,
+  $settings_source,
+  $db_source,
+  $fs_source,
   $pubkey_source,
   $noop_deploy = false,
   $update_facts = false,
@@ -32,7 +32,7 @@ class deployment::omd::drupal (
     path    => '/var/www/omd-drupal/sites/default/settings.php',
     owner   => 'www-data',
     group   => 'www-data',
-    source  => $drupal_settings_source,
+    source  => $settings_source,
     require => 'Package[omd-drupal]',
     notify  => 'Class[Apache::Service]',
     noop    => $noop_deploy
@@ -49,7 +49,7 @@ class deployment::omd::drupal (
   }
 
   exec { 'omd-db-install':
-    command     => "drush -r /var/www/omd-drupal sql-query --file=${drupal_db_source}",
+    command     => "drush -r /var/www/omd-drupal sql-query --file=${db_source}",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     onlyif      => 'test 0 -eq $(drush -r /var/www/omd-drupal sql-query "show tables" | sed -e "/^$/d" | wc -l)',
     refreshonly => true,
@@ -86,7 +86,7 @@ class deployment::omd::drupal (
 
   file { '/var/www/omd-drupal/sites/default/files':
     ensure  => 'directory',
-    source  => $drupal_fs_source,
+    source  => $fs_source,
     owner   => 'www-data',
     group   => 'www-data',
     recurse => true,
