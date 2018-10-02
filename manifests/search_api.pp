@@ -21,6 +21,7 @@ class deployment::search_api (
   $glassfish_gc_logging = false,
   $verbose_logging      = true,
   $cache_size           = '300000',
+  $cache_clear_periodic = 'absent',
   $fast_index_only      = false,
   $glassfish_jmx        = true,
   $glassfish_jmx_port   = '9001'
@@ -298,13 +299,25 @@ class deployment::search_api (
   }
 
   cron { 'reindex_job':
-    command    => "/usr/bin/curl 'http://${search_hostname}:${glassfish_http_port}/search/rest/import/queue/reindex?max=500'",
-    require    => 'App[sapi]',
-    user       => 'root',
-    hour       => '*',
-    minute     => '*',
-    weekday    => '*',
-    monthday   => '*',
-    month      => '*'
+    command  => "/usr/bin/curl 'http://${search_hostname}:${glassfish_http_port}/search/rest/import/queue/reindex?max=500'",
+    require  => 'App[sapi]',
+    user     => 'root',
+    hour     => '*',
+    minute   => '*',
+    weekday  => '*',
+    monthday => '*',
+    month    => '*'
+  }
+
+  cron { 'cache_clear_periodic':
+    command  => "/usr/bin/curl 'http://${search_hostname}:${glassfish_http_port}/search/rest/import/clearcache'",
+    ensure   => $cache_clear_periodic,
+    require  => 'App[sapi]',
+    user     => 'root',
+    hour     => '0',
+    minute   => '0',
+    weekday  => '*',
+    monthday => '*',
+    month    => '*'
   }
 }
