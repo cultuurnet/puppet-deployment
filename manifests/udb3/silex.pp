@@ -6,6 +6,7 @@ class deployment::udb3::silex (
   $externalid_organizer_mapping_source,
   $db_name,
   $pubkey_source,
+  $project_prefix = 'udb3',
   $event_conclude_ensure = 'present',
   $event_conclude_hour = '0',
   $event_conclude_minute = '0',
@@ -171,7 +172,7 @@ class deployment::udb3::silex (
   }
 
   deployment::versions { $title:
-    project      => 'udb3',
+    project      => $project_prefix,
     packages     => [ 'udb3-silex', 'udb3-php'],
     noop_deploy  => $noop_deploy,
     update_facts => $update_facts,

@@ -3,6 +3,7 @@ class deployment::udb3::uitpas (
   $pubkey_source,
   $externalid_place_mapping_source,
   $externalid_organizer_mapping_source,
+  $project_prefix = 'udb3',
   $noop_deploy = false,
   $update_facts = false,
   $puppetdb_url = ''
@@ -73,7 +74,7 @@ class deployment::udb3::uitpas (
   }
 
   deployment::versions { $title:
-    project      => 'udb3',
+    project      => $project_prefix,
     packages     => 'udb3-uitpas',
     noop_deploy  => $noop_deploy,
     update_facts => $update_facts,

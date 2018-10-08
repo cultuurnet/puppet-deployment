@@ -1,6 +1,7 @@
 class deployment::udb3::movie_api_fetcher (
   $silex_config_source,
   $db_name,
+  $project_prefix = 'udb3',
   $kinepolis_theaters_source = 'puppet:///modules/deployment/movie_api_fetcher/kinepolis_theaters.yml',
   $kinepolis_terms_source    = 'puppet:///modules/deployment/movie_api_fetcher/kinepolis_terms.yml',
   $enable_api_fetcher        = false,
@@ -118,7 +119,7 @@ class deployment::udb3::movie_api_fetcher (
   }
 
   deployment::versions { $title:
-    project      => 'udb3',
+    project      => $project_prefix,
     packages     => [ 'udb3-movie-api-fetcher'],
     noop_deploy  => $noop_deploy,
     update_facts => $update_facts,

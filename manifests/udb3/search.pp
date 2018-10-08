@@ -5,6 +5,7 @@ class deployment::udb3::search (
   $facet_mapping_themes_source,
   $facet_mapping_types_source,
   $migrate_data = true,
+  $project_prefix = 'udb3',
   $migrate_timeout = '300',
   $reindex_permanent_hour = '0',
   $reindex_permanent_minute = '0',
@@ -152,7 +153,7 @@ class deployment::udb3::search (
   }
 
   deployment::versions { $title:
-    project      => 'udb3',
+    project      => $project_prefix,
     packages     => [ 'udb3-search', 'udb3-geojson-data'],
     noop_deploy  => $noop_deploy,
     update_facts => $update_facts,
