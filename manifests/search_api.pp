@@ -316,7 +316,7 @@ class deployment::search_api (
 
   cron { 'cache_clear_periodic':
     command  => "/usr/bin/curl 'http://${search_hostname}:${glassfish_http_port}/search/rest/import/clearcache'",
-    ensure   => $ensure_cache_clear_periodic
+    ensure   => $ensure_cache_clear_periodic,
     require  => 'App[sapi]',
     user     => 'root',
     hour     => '0',
