@@ -21,7 +21,7 @@ class deployment::search_api (
   $glassfish_gc_logging = false,
   $verbose_logging      = true,
   $cache_size           = '300000',
-  $cache_clear_periodic = 'absent',
+  $cache_clear_periodic = false,
   $fast_index_only      = false,
   $glassfish_jmx        = true,
   $glassfish_jmx_port   = '9001'
@@ -32,6 +32,11 @@ class deployment::search_api (
   $glassfish_default_start_heap = '512m'
   $glassfish_default_max_heap = '512m'
   $settings = parseyaml(file($settings_source))
+
+  $ensure_cache_clear_periodic = $cache_clear_periodic ? {
+    true    => 'present',
+    default => 'absent'
+  }
 
   Jvmoption {
     ensure       => 'present',
@@ -311,7 +316,7 @@ class deployment::search_api (
 
   cron { 'cache_clear_periodic':
     command  => "/usr/bin/curl 'http://${search_hostname}:${glassfish_http_port}/search/rest/import/clearcache'",
-    ensure   => $cache_clear_periodic,
+    ensure   => $ensure_cache_clear_periodic
     require  => 'App[sapi]',
     user     => 'root',
     hour     => '0',
