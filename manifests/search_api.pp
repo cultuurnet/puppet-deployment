@@ -23,6 +23,7 @@ class deployment::search_api (
   $cache_size           = '300000',
   $cache_clear_periodic = false,
   $fast_index_only      = false,
+  $taxonomy_url         = '',
   $glassfish_jmx        = true,
   $glassfish_jmx_port   = '9001'
 ) {
@@ -195,6 +196,10 @@ class deployment::search_api (
 
   systemproperty { 'search_fastindexonly':
     value        => "${fast_index_only}"
+  }
+
+  systemproperty { 'search_taxonomy_url':
+    value        => "${taxonomy_url}"
   }
 
   package { 'sapi':
