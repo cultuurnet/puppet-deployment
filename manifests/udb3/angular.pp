@@ -1,6 +1,5 @@
 class deployment::udb3::angular (
   $deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
-  $app_rootdir          = '/var/www/udb-app',
   $instances            = {}
 ) {
 
@@ -13,7 +12,11 @@ class deployment::udb3::angular (
     mode   => '0755'
   }
 
-  create_resources('deployment::udb3::angular::instance', $instances)
+  $instances.each | $instance, $configuration| {
+    deployment::udb3::angular::instance { $instance:
+      * => $configuration
+    }
+  }
 
   File['udb3-angular-app-deploy-config'] -> Deployment::Udb3::Angular::Instance <| |>
 }
