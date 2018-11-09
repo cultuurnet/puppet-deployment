@@ -7,6 +7,7 @@ class deployment::uitid (
   $mysql_host,
   $mysql_port,
   $mysql_database,
+  $package_version   = 'latest',
   $service_name      = $::deployment::uitid::payara_domain,
   $payara_portbase   = '4800',
   $payara_start_heap = undef,
@@ -159,7 +160,7 @@ class deployment::uitid (
   }
 
   package { 'uitpas-app':
-    ensure => 'latest',
+    ensure => $package_version,
     notify => App['uitpas-app']
   }
 
