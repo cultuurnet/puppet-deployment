@@ -155,8 +155,7 @@ class deployment::uitid (
     portbase       => $payara_portbase,
     user           => $user,
     passwordfile   => $passwordfile,
-    connectionpool => 'mysql_uitid_j2eePool',
-    require        => Class['mysql::server']
+    connectionpool => 'mysql_uitid_j2eePool'
   }
 
   package { 'uitpas-app':
@@ -169,8 +168,7 @@ class deployment::uitid (
     path        => [ '/usr/local/bin', '/usr/bin', '/bin' ],
     onlyif      => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = \"${mysql_database}\";')",
     refreshonly => true,
-    subscribe   => Package['uitpas-app'],
-    require     => Class['mysql::server']
+    subscribe   => Package['uitpas-app']
   }
 
   app { 'uitpas-app':
