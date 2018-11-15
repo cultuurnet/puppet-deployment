@@ -1,6 +1,7 @@
 class deployment::udb3::iis (
   $silex_config_source,
   $importer_config_source,
+  $uuid_mapping_source,
   $importer_rootdir,
   $db_name,
   $project_prefix = 'udb3',
@@ -56,6 +57,17 @@ class deployment::udb3::iis (
     ensure  => 'file',
     path    => '/var/www/udb-iis-importer/config.yml',
     source  => $importer_config_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[udb3-iis-importer]',
+    notify  => 'Class[Supervisord::Service]',
+    noop    => $noop_deploy
+  }
+
+  file { 'udb3-iis-importer-uuid-mapping':
+    ensure  => 'file',
+    path    => '/var/www/udb-iis-importer/users.yml',
+    source  => $uuid_mapping_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-iis-importer]',
