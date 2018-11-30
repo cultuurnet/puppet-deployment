@@ -146,8 +146,9 @@ class deployment::uitid (
       'Password'          => $mysql_password,
       'URL'               => "jdbc:mysql://${mysql_host}:${mysql_port}/${mysql_database}",
       'driverClass'       => 'com.mysql.jdbc.Driver',
+      'characterEncoding' => 'UTF-8',
       'useUnicode'        => true,
-      'characterEncoding' => 'UTF-8'
+      'useSSL'            => false
     },
     require             => [ Class['glassfish'], Glassfish::Create_domain[$payara_domain] ]
   }
