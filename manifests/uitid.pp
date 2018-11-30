@@ -55,7 +55,8 @@ class deployment::uitid (
   }
 
   package { 'mysql-connector-java':
-    ensure => 'latest'
+    ensure => 'latest',
+    notify => Exec["restart_service_${service_name}"]
   }
 
   # Hack to circumvent dependency problems with using glassfish::install_jars
