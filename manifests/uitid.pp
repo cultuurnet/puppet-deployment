@@ -55,15 +55,16 @@ class deployment::uitid (
   }
 
   package { 'mysql-connector-java':
-    ensure => 'present'
+    ensure => 'latest'
   }
 
   # Hack to circumvent dependency problems with using glassfish::install_jars
   file { 'mysql-connector-java':
-    ensure  => 'link',
-    path    => '/opt/payara/glassfish/lib/mysql-connector-java.jar',
-    target  => '/opt/mysql-connector-java/mysql-connector-java.jar',
-    require => [ Package['mysql-connector-java'], Class['glassfish::install'] ]
+    ensure    => 'link',
+    path      => '/opt/payara/glassfish/lib/mysql-connector-java.jar',
+    target    => '/opt/mysql-connector-java/mysql-connector-java.jar',
+    require   => Class['glassfish::install'],
+    subscribe => Package['mysql-connector-java']
   }
 
   glassfish::create_domain { $payara_domain:
@@ -145,7 +146,7 @@ class deployment::uitid (
       'URL'               => "jdbc:mysql://${mysql_host}:${mysql_port}/${mysql_database}",
       'driverClass'       => 'com.mysql.jdbc.Driver',
       'useUnicode'        => true,
-      'characterEncoding' => 'utf8'
+      'characterEncoding' => 'UTF-8'
     },
     require             => [ Class['glassfish'], Glassfish::Create_domain[$payara_domain] ]
   }
