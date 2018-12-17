@@ -25,7 +25,9 @@ class deployment::search_api (
   $fast_index_only      = false,
   $taxonomy_url         = '',
   $glassfish_jmx        = true,
-  $glassfish_jmx_port   = '9001'
+  $glassfish_jmx_port   = '9001',
+  $manage_search_admins = false,
+  $search_admins_uid    = []
 ) {
 
   $passwordfile = "/home/${user}/asadmin.pass"
@@ -257,6 +259,15 @@ class deployment::search_api (
       value    => $setting['value'],
       require  => App['sapi'],
       notify   => Exec["restart_service_${service_name}"]
+    }
+  }
+
+  if $manage_search_admins {
+    $search_admins_uid.each |uid| {
+      deployment::search_api::admin_user { $uid:
+        database => $mysql_database,
+        require  => App['sapi']
+      }
     }
   }
 
