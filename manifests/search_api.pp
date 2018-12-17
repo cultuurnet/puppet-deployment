@@ -263,7 +263,7 @@ class deployment::search_api (
   }
 
   if $manage_search_admins {
-    $search_admins_uid.each |uid| {
+    $search_admins_uid.each |$uid| {
       deployment::search_api::admin_user { $uid:
         database => $mysql_database,
         require  => App['sapi']
