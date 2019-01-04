@@ -1,7 +1,9 @@
 require_relative 'util/cultuurnetapps.rb'
 
-Facter.add('balie_version') do
+prefix = File.basename( __FILE__, '_version.rb' )
+
+Facter.add("#{prefix}_version") do
   setcode do
-    Facter::Util::CultuurNetApps.get_version 'balie'
+    Facter::Util::CultuurNetApps.get_version prefix
   end
 end
