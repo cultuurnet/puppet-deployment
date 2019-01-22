@@ -1,5 +1,4 @@
 class deployment::udb3 (
-  $with_rabbitmq          = true,
   $with_silex             = true,
   $with_angular           = true,
   $with_cdbxml            = true,
@@ -10,10 +9,6 @@ class deployment::udb3 (
   $with_iis               = true,
   $with_movie_api_fetcher = true
 ){
-
-  if $with_rabbitmq {
-    contain profiles::udb3::rabbitmq
-  }
 
   unless $facts['noop_deploy'] == 'true' {
     if $with_silex {
