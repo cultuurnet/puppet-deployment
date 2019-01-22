@@ -12,7 +12,7 @@ class deployment::udb3 (
 ){
 
   if $with_rabbitmq {
-    contain deployment::udb3::rabbitmq
+    contain profiles::udb3::rabbitmq
   }
 
   unless $facts['noop_deploy'] == 'true' {
