@@ -161,28 +161,28 @@ class deployment::uitiduitpas (
     connectionpool => 'mysql_uitid_j2eePool'
   }
 
-  package { 'uitpas-app':
+  package { 'uitiduitpas-app':
     ensure => $package_version,
-    notify => App['uitpas-app']
+    notify => App['uitiduitpas-app']
   }
 
-  exec { 'uitpas-app_schema_install':
-    command     => "mysql --defaults-extra-file=/root/.my.cnf ${mysql_database} < /opt/uitpas-app/createtables.sql",
+  exec { 'uitiduitpas-app_schema_install':
+    command     => "mysql --defaults-extra-file=/root/.my.cnf ${mysql_database} < /opt/uitiduitpas-app/createtables.sql",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin' ],
     onlyif      => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = \"${mysql_database}\";')",
     refreshonly => true,
-    subscribe   => Package['uitpas-app']
+    subscribe   => Package['uitiduitpas-app']
   }
 
-  app { 'uitpas-app':
+  app { 'uitiduitpas-app':
     ensure        => 'present',
     portbase      => $payara_portbase,
     user          => $user,
     passwordfile  => $passwordfile,
     contextroot   => 'uitid',
     precompilejsp => false,
-    source        => '/opt/uitpas-app/uitpas-app.war',
-    require       => [ Jdbcresource['jdbc/cultuurnet'], Exec['uitpas-app_schema_install'] ]
+    source        => '/opt/uitiduitpas-app/uitiduitpas-app.war',
+    require       => [ Jdbcresource['jdbc/cultuurnet'], Exec['uitiduitpas-app_schema_install'] ]
   }
 
   exec { "bootstrap_${service_name}":
@@ -190,8 +190,8 @@ class deployment::uitiduitpas (
     path        => [ '/usr/local/bin', '/usr/bin', '/bin' ],
     onlyif      => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(*) from DALIUSER;' ${mysql_database})",
     refreshonly => true,
-    subscribe   => Package['uitpas-app'],
-    require     => App['uitpas-app']
+    subscribe   => Package['uitiduitpas-app'],
+    require     => App['uitiduitpas-app']
   }
 
   $settings.each |$name, $setting| {
@@ -205,7 +205,7 @@ class deployment::uitiduitpas (
       database => $mysql_database,
       value    => $setting['value'],
       ensure   => $ensure,
-      require  => [ App['uitpas-app'], Exec["bootstrap_${service_name}"] ],
+      require  => [ App['uitiduitpas-app'], Exec["bootstrap_${service_name}"] ],
       notify   => Exec["restart_service_${service_name}"]
     }
   }
@@ -221,6 +221,6 @@ class deployment::uitiduitpas (
   exec { "restart_service_${service_name}":
     command     => "/usr/sbin/service ${service_name} restart",
     refreshonly => true,
-    subscribe   => App['uitpas-app']
+    subscribe   => App['uitiduitpas-app']
   }
 }
