@@ -29,7 +29,7 @@ class deployment::uitiduitpas (
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $payara_portbase,
-    require      => [ Class['glassfish'], Glassfish::Create_domain[$payara_domain]],
+    require      => Glassfish::Create_domain[$payara_domain],
     notify       => Exec["restart_service_${service_name}"]
   }
 
@@ -38,7 +38,7 @@ class deployment::uitiduitpas (
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $payara_portbase,
-    require      => [ Class['glassfish'], Glassfish::Create_domain[$payara_domain]],
+    require      => Glassfish::Create_domain[$payara_domain],
     notify       => Exec["restart_service_${service_name}"]
   }
 
@@ -47,7 +47,7 @@ class deployment::uitiduitpas (
     service_name   => $service_name,
     create_service => true,
     start_domain   => true,
-    require        => [ File['mysql-connector-java'], Class['profiles::glassfish'] ]
+    require        => Class['profiles::glassfish']
   }
 
   # This will only work if the default start heap value (512m) is present in
@@ -106,6 +106,13 @@ class deployment::uitiduitpas (
   }
 
   jdbcconnectionpool { 'mysql_uitid_j2eePool':
+    ensure              => 'absent',
+    user                => $user,
+    passwordfile        => $passwordfile,
+    portbase            => $payara_portbase,
+  }
+
+  jdbcconnectionpool { 'mysql_uitiduitpas_j2eePool':
     ensure              => 'present',
     user                => $user,
     passwordfile        => $passwordfile,
@@ -124,7 +131,7 @@ class deployment::uitiduitpas (
       'useUnicode'        => true,
       'useSSL'            => false
     },
-    require             => [ Class['glassfish'], Glassfish::Create_domain[$payara_domain] ]
+    require             => Glassfish::Create_domain[$payara_domain]
   }
 
   jdbcresource { 'jdbc/cultuurnet':
@@ -132,7 +139,7 @@ class deployment::uitiduitpas (
     portbase       => $payara_portbase,
     user           => $user,
     passwordfile   => $passwordfile,
-    connectionpool => 'mysql_uitid_j2eePool'
+    connectionpool => 'mysql_uitiduitpas_j2eePool'
   }
 
   package { 'uitiduitpas-app':
