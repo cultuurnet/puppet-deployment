@@ -105,13 +105,6 @@ class deployment::uitiduitpas (
     value => $base_url
   }
 
-  jdbcconnectionpool { 'mysql_uitid_j2eePool':
-    ensure              => 'absent',
-    user                => $user,
-    passwordfile        => $passwordfile,
-    portbase            => $payara_portbase,
-  }
-
   jdbcconnectionpool { 'mysql_uitiduitpas_j2eePool':
     ensure              => 'present',
     user                => $user,

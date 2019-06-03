@@ -7,13 +7,11 @@ class deployment::uitid (
   $mysql_host,
   $mysql_port,
   $mysql_database,
-  $package_version   = 'latest',
   $service_name      = $::deployment::uitid::payara_domain,
-  $payara_portbase   = '4800',
+  $payara_portbase   = '14800',
   $payara_start_heap = undef,
   $payara_max_heap   = undef,
   $timezone          = 'UTC',
-  $settings          = {},
   $payara_jmx        = true
 ) {
 
@@ -22,14 +20,14 @@ class deployment::uitid (
   $payara_default_start_heap = '512m'
   $payara_default_max_heap = '512m'
 
-  include java8
+  contain profiles::glassfish
 
   Jvmoption {
     ensure       => 'present',
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $payara_portbase,
-    require      => [ Class['glassfish'], Glassfish::Create_domain[$payara_domain]],
+    require      => Glassfish::Create_domain[$payara_domain],
     notify       => Exec["restart_service_${service_name}"]
   }
 
@@ -38,34 +36,8 @@ class deployment::uitid (
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $payara_portbase,
-    require      => [ Class['glassfish'], Glassfish::Create_domain[$payara_domain]],
+    require      => Glassfish::Create_domain[$payara_domain],
     notify       => Exec["restart_service_${service_name}"]
-  }
-
-  class { 'glassfish':
-    install_method      => 'package',
-    package_prefix      => 'payara',
-    version             => '4.1.1.171.1',
-    create_service      => false,
-    enable_secure_admin => false,
-    manage_java         => false,
-    parent_dir          => '/opt',
-    install_dir         => 'payara',
-    require             => [ Class['apt::update'], Class['java8']]
-  }
-
-  package { 'mysql-connector-java':
-    ensure => 'latest',
-    notify => Exec["restart_service_${service_name}"]
-  }
-
-  # Hack to circumvent dependency problems with using glassfish::install_jars
-  file { 'mysql-connector-java':
-    ensure    => 'link',
-    path      => '/opt/payara/glassfish/lib/mysql-connector-java.jar',
-    target    => '/opt/mysql-connector-java/mysql-connector-java.jar',
-    require   => Class['glassfish::install'],
-    subscribe => Package['mysql-connector-java']
   }
 
   glassfish::create_domain { $payara_domain:
@@ -73,7 +45,7 @@ class deployment::uitid (
     service_name   => $service_name,
     create_service => true,
     start_domain   => true,
-    require        => File['mysql-connector-java']
+    require        => Class['profiles::glassfish']
   }
 
   # This will only work if the default start heap value (512m) is present in
@@ -120,7 +92,7 @@ class deployment::uitid (
 
   if $payara_jmx {
     jvmoption { "-Dcom.sun.management.jmxremote": }
-    jvmoption { "-Dcom.sun.management.jmxremote.port=9001": }
+    jvmoption { "-Dcom.sun.management.jmxremote.port=9002": }
     jvmoption { "-Dcom.sun.management.jmxremote.local.only=false": }
     jvmoption { "-Dcom.sun.management.jmxremote.authenticate=false": }
     jvmoption { "-Dcom.sun.management.jmxremote.ssl=false": }
@@ -150,77 +122,14 @@ class deployment::uitid (
       'useUnicode'        => true,
       'useSSL'            => false
     },
-    require             => [ Class['glassfish'], Glassfish::Create_domain[$payara_domain] ]
+    require             => Glassfish::Create_domain[$payara_domain]
   }
 
-  jdbcresource { 'jdbc/cultuurnet':
+  jdbcresource { 'jdbc/cultuurnet_uitid':
     ensure         => 'present',
     portbase       => $payara_portbase,
     user           => $user,
     passwordfile   => $passwordfile,
     connectionpool => 'mysql_uitid_j2eePool'
-  }
-
-  package { 'uitpas-app':
-    ensure => $package_version,
-    notify => App['uitpas-app']
-  }
-
-  exec { 'uitpas-app_schema_install':
-    command     => "mysql --defaults-extra-file=/root/.my.cnf ${mysql_database} < /opt/uitpas-app/createtables.sql",
-    path        => [ '/usr/local/bin', '/usr/bin', '/bin' ],
-    onlyif      => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = \"${mysql_database}\";')",
-    refreshonly => true,
-    subscribe   => Package['uitpas-app']
-  }
-
-  app { 'uitpas-app':
-    ensure        => 'present',
-    portbase      => $payara_portbase,
-    user          => $user,
-    passwordfile  => $passwordfile,
-    contextroot   => 'uitid',
-    precompilejsp => false,
-    source        => '/opt/uitpas-app/uitpas-app.war',
-    require       => [ Jdbcresource['jdbc/cultuurnet'], Exec['uitpas-app_schema_install'] ]
-  }
-
-  exec { "bootstrap_${service_name}":
-    command     => "curl http://localhost:${application_http_port}/uitid/rest/bootstrap/test",
-    path        => [ '/usr/local/bin', '/usr/bin', '/bin' ],
-    onlyif      => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(*) from DALIUSER;' ${mysql_database})",
-    refreshonly => true,
-    subscribe   => Package['uitpas-app'],
-    require     => App['uitpas-app']
-  }
-
-  $settings.each |$name, $setting| {
-    if $setting['ensure'] {
-      $ensure = $setting['ensure']
-    } else {
-      $ensure = 'present'
-    }
-
-    deployment::uitid::setting { $name:
-      database => $mysql_database,
-      value    => $setting['value'],
-      ensure   => $ensure,
-      require  => [ App['uitpas-app'], Exec["bootstrap_${service_name}"] ],
-      notify   => Exec["restart_service_${service_name}"]
-    }
-  }
-
-  # Force domain restart at the end of the deployment procedure.
-  # Unfortunately we need an 'exec' here, notifying the domain after
-  # application deployment and applying settings would result in a
-  # dependency cycle, as it has to be created before the glassfish
-  # resources can be applied.
-  # Also, the database schema is created by the application deployment,
-  # which means the application settings can only be applied after
-  # that. This is a reversal of the PCS pattern.
-  exec { "restart_service_${service_name}":
-    command     => "/usr/sbin/service ${service_name} restart",
-    refreshonly => true,
-    subscribe   => App['uitpas-app']
   }
 }
