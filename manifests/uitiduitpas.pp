@@ -8,7 +8,7 @@ class deployment::uitiduitpas (
   $mysql_port,
   $mysql_database,
   $package_version   = 'latest',
-  $service_name      = $::deployment::uitid::payara_domain,
+  $service_name      = $::deployment::uitiduitpas::payara_domain,
   $payara_portbase   = '4800',
   $payara_start_heap = undef,
   $payara_max_heap   = undef,
