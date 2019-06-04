@@ -1,14 +1,13 @@
-class deployment::uitid (
+class deployment::uitpas (
   $user,
   $payara_domain,
-  $base_url,
   $mysql_user,
   $mysql_password,
   $mysql_host,
   $mysql_port,
   $mysql_database,
-  $service_name      = $::deployment::uitid::payara_domain,
-  $payara_portbase   = '14800',
+  $service_name      = $::deployment::uitpas::payara_domain,
+  $payara_portbase   = '24800',
   $payara_start_heap = undef,
   $payara_max_heap   = undef,
   $timezone          = 'UTC',
@@ -90,18 +89,26 @@ class deployment::uitid (
 
   if $payara_jmx {
     jvmoption { "-Dcom.sun.management.jmxremote": }
-    jvmoption { "-Dcom.sun.management.jmxremote.port=9002": }
+    jvmoption { "-Dcom.sun.management.jmxremote.port=9003": }
     jvmoption { "-Dcom.sun.management.jmxremote.local.only=false": }
     jvmoption { "-Dcom.sun.management.jmxremote.authenticate=false": }
     jvmoption { "-Dcom.sun.management.jmxremote.ssl=false": }
     jvmoption { "-Djava.rmi.server.hostname=127.0.0.1": }
   }
 
-  systemproperty { 'uitid_baseurl':
-    value => $base_url
+  systemproperty { 'uitpas_cfauth_base':
+    value => 'https://acc.uitid.be/uitid/rest'
   }
 
-  jdbcconnectionpool { 'mysql_uitid_j2eePool':
+  systemproperty { 'uitpas_cfauth_key':
+    value => '6c085f15712c7393a50b61d630f775d5'
+  }
+
+  systemproperty { 'uitpas_cfauth_secret':
+    value => 'cd52d819e50c29a41cd82a61412c7b1c'
+  }
+
+  jdbcconnectionpool { 'mysql_uitpas_j2eePool':
     ensure              => 'present',
     user                => $user,
     passwordfile        => $passwordfile,
@@ -123,11 +130,11 @@ class deployment::uitid (
     require             => Glassfish::Create_domain[$payara_domain]
   }
 
-  jdbcresource { 'jdbc/cultuurnet_uitid':
+  jdbcresource { 'jdbc/cultuurnet_uitpas':
     ensure         => 'present',
     portbase       => $payara_portbase,
     user           => $user,
     passwordfile   => $passwordfile,
-    connectionpool => 'mysql_uitid_j2eePool'
+    connectionpool => 'mysql_uitpas_j2eePool'
   }
 }
