@@ -26,7 +26,6 @@ class deployment::uitid (
     ensure       => 'present',
     user         => $user,
     passwordfile => $passwordfile,
-    portbase     => $payara_portbase,
     require      => Glassfish::Create_domain[$payara_domain]
   }
 
@@ -53,12 +52,14 @@ class deployment::uitid (
   if $payara_start_heap {
     unless $payara_default_start_heap == $payara_start_heap {
       jvmoption { "Clear domain ${payara_domain} default start heap":
-        ensure => 'absent',
-        option => "-Xms${payara_default_start_heap}"
+        ensure   => 'absent',
+        portbase => $payara_portbase,
+        option   => "-Xms${payara_default_start_heap}"
       }
 
       jvmoption { "Domain ${payara_domain} start heap":
-        option => "-Xms${payara_start_heap}"
+        portbase => $payara_portbase,
+        option   => "-Xms${payara_start_heap}"
       }
 
       Jvmoption["Clear domain ${payara_domain} default start heap"] -> Jvmoption["Domain ${payara_domain} start heap"]
@@ -72,12 +73,14 @@ class deployment::uitid (
   if $payara_max_heap {
     unless $payara_default_max_heap == $payara_max_heap {
       jvmoption { "Clear domain ${payara_domain} default max heap":
-        ensure => 'absent',
-        option => "-Xmx${payara_default_max_heap}"
+        ensure   => 'absent',
+        portbase => $payara_portbase,
+        option   => "-Xmx${payara_default_max_heap}"
       }
 
       jvmoption { "Domain ${payara_domain} max heap":
-        option => "-Xmx${payara_max_heap}"
+        portbase => $payara_portbase,
+        option   => "-Xmx${payara_max_heap}"
       }
 
       Jvmoption["Clear domain ${payara_domain} default max heap"] -> Jvmoption["Domain ${payara_domain} max heap"]
@@ -85,16 +88,29 @@ class deployment::uitid (
   }
 
   jvmoption { "Domain ${payara_domain} timezone":
-    option => "-Duser.timezone=${timezone}",
+    portbase => $payara_portbase,
+    option   => "-Duser.timezone=${timezone}",
   }
 
   if $payara_jmx {
-    jvmoption { "-Dcom.sun.management.jmxremote": }
-    jvmoption { "-Dcom.sun.management.jmxremote.port=9002": }
-    jvmoption { "-Dcom.sun.management.jmxremote.local.only=false": }
-    jvmoption { "-Dcom.sun.management.jmxremote.authenticate=false": }
-    jvmoption { "-Dcom.sun.management.jmxremote.ssl=false": }
-    jvmoption { "-Djava.rmi.server.hostname=127.0.0.1": }
+    jvmoption { "-Dcom.sun.management.jmxremote":
+      portbase => $payara_portbase
+    }
+    jvmoption { "-Dcom.sun.management.jmxremote.port=9002":
+      portbase => $payara_portbase
+    }
+    jvmoption { "-Dcom.sun.management.jmxremote.local.only=false":
+      portbase => $payara_portbase
+    }
+    jvmoption { "-Dcom.sun.management.jmxremote.authenticate=false":
+      portbase => $payara_portbase
+    }
+    jvmoption { "-Dcom.sun.management.jmxremote.ssl=false":
+      portbase => $payara_portbase
+    }
+    jvmoption { "-Djava.rmi.server.hostname=127.0.0.1":
+      portbase => $payara_portbase
+    }
   }
 
   systemproperty { 'uitid_baseurl':
