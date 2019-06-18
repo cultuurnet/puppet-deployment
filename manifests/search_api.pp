@@ -45,7 +45,6 @@ class deployment::search_api (
     ensure       => 'present',
     user         => $user,
     passwordfile => $passwordfile,
-    portbase     => $glassfish_portbase,
     require      => [ Class['glassfish'], Glassfish::Create_domain[$glassfish_domain]],
     notify       => Exec["restart_service_${service_name}"]
   }
@@ -94,12 +93,14 @@ class deployment::search_api (
   if $glassfish_start_heap {
     unless $glassfish_default_start_heap == $glassfish_start_heap {
       jvmoption { "Clear domain ${glassfish_domain} default start heap":
-        ensure => 'absent',
-        option => "-Xms${glassfish_default_start_heap}"
+        ensure   => 'absent',
+        portbase => $glassfish_portbase,
+        option   => "-Xms${glassfish_default_start_heap}"
       }
 
       jvmoption { "Domain ${glassfish_domain} start heap":
-        option => "-Xms${glassfish_start_heap}"
+        portbase => $glassfish_portbase,
+        option   => "-Xms${glassfish_start_heap}"
       }
 
       Jvmoption["Clear domain ${glassfish_domain} default start heap"] -> Jvmoption["Domain ${glassfish_domain} start heap"]
@@ -113,34 +114,58 @@ class deployment::search_api (
   if $glassfish_max_heap {
     unless $glassfish_default_max_heap == $glassfish_max_heap {
       jvmoption { "Clear domain ${glassfish_domain} default max heap":
-        ensure => 'absent',
-        option => "-Xmx${glassfish_default_max_heap}"
+        ensure   => 'absent',
+        portbase => $glassfish_portbase,
+        option   => "-Xmx${glassfish_default_max_heap}"
       }
 
       jvmoption { "Domain ${glassfish_domain} max heap":
-        option => "-Xmx${glassfish_max_heap}"
+        portbase => $glassfish_portbase,
+        option   => "-Xmx${glassfish_max_heap}"
       }
 
       Jvmoption["Clear domain ${glassfish_domain} default max heap"] -> Jvmoption["Domain ${glassfish_domain} max heap"]
     }
   }
 
-  jvmoption { "-Duser.timezone=${timezone}": }
+  jvmoption { "-Duser.timezone=${timezone}":
+    portbase => $glassfish_portbase
+  }
 
   if $glassfish_jmx {
-    jvmoption { "-Dcom.sun.management.jmxremote": }
-    jvmoption { "-Dcom.sun.management.jmxremote.port=${glassfish_jmx_port}": }
-    jvmoption { "-Dcom.sun.management.jmxremote.local.only=false": }
-    jvmoption { "-Dcom.sun.management.jmxremote.authenticate=false": }
-    jvmoption { "-Dcom.sun.management.jmxremote.ssl=false": }
-    jvmoption { "-Djava.rmi.server.hostname=127.0.0.1": }
+    jvmoption { "-Dcom.sun.management.jmxremote":
+      portbase => $glassfish_portbase
+    }
+    jvmoption { "-Dcom.sun.management.jmxremote.port=${glassfish_jmx_port}":
+      portbase => $glassfish_portbase
+    }
+    jvmoption { "-Dcom.sun.management.jmxremote.local.only=false":
+      portbase => $glassfish_portbase
+    }
+    jvmoption { "-Dcom.sun.management.jmxremote.authenticate=false":
+      portbase => $glassfish_portbase
+    }
+    jvmoption { "-Dcom.sun.management.jmxremote.ssl=false":
+      portbase => $glassfish_portbase
+    }
+    jvmoption { "-Djava.rmi.server.hostname=127.0.0.1":
+      portbase => $glassfish_portbase
+    }
   }
 
   if $glassfish_gc_logging {
-    jvmoption { "-Xloggc:/opt/glassfish/glassfish/domains/${glassfish_domain}/logs/gc.log": }
-    jvmoption { '-XX:-PrintGCTimeStamps': }
-    jvmoption { '-XX:+PrintGCDateStamps': }
-    jvmoption { '-verbose:gc': }
+    jvmoption { "-Xloggc:/opt/glassfish/glassfish/domains/${glassfish_domain}/logs/gc.log":
+      portbase => $glassfish_portbase
+    }
+    jvmoption { '-XX:-PrintGCTimeStamps':
+      portbase => $glassfish_portbase
+    }
+    jvmoption { '-XX:+PrintGCDateStamps':
+      portbase => $glassfish_portbase
+    }
+    jvmoption { '-verbose:gc':
+      portbase => $glassfish_portbase
+    }
   }
 
   package { 'mysql-connector-java':
