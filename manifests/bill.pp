@@ -1,7 +1,5 @@
 class deployment::bill (
   $config_source,
-  $maintenance_source,
-  $db_name,
   $robots_source = undef,
   $htaccess_source = undef,
   $noop_deploy = false,
@@ -16,31 +14,20 @@ class deployment::bill (
     noop   => $noop_deploy
   }
 
-  package { 'bill-database':
-    ensure => 'latest',
-    noop   => $noop_deploy
-  }
+  #package { 'bill-database':
+  #  ensure => 'latest',
+  #noop   => $noop_deploy
+  #}
 
-  package { 'bill-files':
-    ensure => 'latest',
-    noop   => $noop_deploy
-  }
+  #package { 'bill-files':
+  #  ensure => 'latest',
+  #noop   => $noop_deploy
+  #}
 
   file { 'bill-website-config':
     ensure  => 'file',
     path    => "${basedir}/.env",
     source  => $config_source,
-    owner   => 'www-data',
-    group   => 'www-data',
-    require => 'Package[bill-website]',
-    noop    => $noop_deploy
-  }
-
-  file { 'bill-maintenance-pages':
-    ensure  => 'directory',
-    path    => "${basedir}/public/maintenance",
-    recurse => true,
-    source  => $maintenance_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[bill-website]',
