@@ -73,7 +73,7 @@ class deployment::bill (
   exec { 'run BILL database migrations':
     command     => 'craft migrate/all',
     cwd         => $basedir,
-    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin', $basedir],
     user        => 'www-data',
     environment => [ 'HOME=/'],
     logoutput   => true,
@@ -84,7 +84,7 @@ class deployment::bill (
   }
 
   exec { 'composer script post-autoload-dump':
-    command     => 'vendor/bin/composer run-script post-autoload-dump',
+    command     => 'vendor/bin/composer dump-autoload -o',
     cwd         => $basedir,
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', $basedir],
     user        => 'www-data',
