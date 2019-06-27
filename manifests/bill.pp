@@ -83,19 +83,6 @@ class deployment::bill (
     noop        => $noop_deploy
   }
 
-  exec { 'composer script post-autoload-dump':
-    command     => 'vendor/bin/composer dump-autoload -o',
-    cwd         => $basedir,
-    path        => [ '/usr/local/bin', '/usr/bin', '/bin', $basedir],
-    user        => 'www-data',
-    environment => [ 'HOME=/tmp'],
-    logoutput   => true,
-    subscribe   => Package['bill-website'],
-    refreshonly => true,
-    require     => File['bill-website-config'],
-    noop        => $noop_deploy
-  }
-
   if $update_facts {
     exec { 'update_facts bill':
       command     => "/usr/local/bin/update_facts ${puppetdb_url}",
