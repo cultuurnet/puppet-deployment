@@ -1,6 +1,7 @@
 class deployment::bill (
   $db_name,
   $config_source,
+  $license_source,
   $robots_source = undef,
   $htaccess_source = undef,
   $noop_deploy = false,
@@ -32,6 +33,16 @@ class deployment::bill (
     ensure  => 'file',
     path    => "${basedir}/.env",
     source  => $config_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => Package['bill-website'],
+    noop    => $noop_deploy
+  }
+
+  file { 'bill-license':
+    ensure  => 'file',
+    path    => "${basedir}/config/license.key",
+    source  => $license_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => Package['bill-website'],
