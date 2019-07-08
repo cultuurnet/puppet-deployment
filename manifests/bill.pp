@@ -10,6 +10,8 @@ class deployment::bill (
 
   $basedir = '/var/www/bill'
 
+  contain ::deployment
+
   package { 'bill-website':
     ensure => 'latest',
     noop   => $noop_deploy
