@@ -41,6 +41,8 @@ class deployment::search_api (
     default => 'absent'
   }
 
+  contain profiles::glassfish
+
   Jvmoption {
     ensure       => 'present',
     user         => $user,
@@ -64,19 +66,6 @@ class deployment::search_api (
     passwordfile => $passwordfile,
     portbase     => $glassfish_portbase,
     require      => [ Class['glassfish'], Glassfish::Create_domain[$glassfish_domain], App['sapi']],
-  }
-
-  include java8
-
-  class { 'glassfish':
-    install_method      => 'package',
-    package_prefix      => 'glassfish',
-    create_service      => false,
-    enable_secure_admin => false,
-    manage_java         => false,
-    parent_dir          => '/opt',
-    install_dir         => 'glassfish',
-    require             => [ Class['apt::update'], Class['java8']]
   }
 
   glassfish::create_domain { $glassfish_domain:
@@ -166,18 +155,6 @@ class deployment::search_api (
     jvmoption { '-verbose:gc':
       portbase => $glassfish_portbase
     }
-  }
-
-  package { 'mysql-connector-java':
-    ensure => 'present'
-  }
-
-  glassfish::install_jars { 'mysql-connector-java.jar':
-    install_location => 'domain',
-    domain_name      => $glassfish_domain,
-    service_name     => $service_name,
-    source           => '/opt/mysql-connector-java/mysql-connector-java.jar',
-    require          => Package['mysql-connector-java']
   }
 
   jdbcconnectionpool { 'mysql_searchdb_j2eePool':
