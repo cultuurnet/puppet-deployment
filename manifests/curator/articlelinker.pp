@@ -34,8 +34,10 @@ class deployment::curator::articlelinker (
 
   if $service_manage {
     service { 'curator-articlelinker':
-      ensure => $service_ensure,
-      enable => $service_enable,
+      ensure    => $service_ensure,
+      enable    => $service_enable,
+      require   => Package['curator-articlelinker'],
+      hasstatus => true
     }
 
     File['/var/www/curator-articlelinker/config.json'] ~> Service['curator-articlelinker']
