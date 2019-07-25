@@ -22,8 +22,8 @@ class deployment::curator::api (
     notify  => Class['apache::service']
   }
 
-  exec { 'curator-api_db_migrate':
-    command     => 'php bin/console doctrine:schema:create',
+  exec { 'curator-api_db_schema_update':
+    command     => 'php bin/console doctrine:schema:update --force',
     cwd         => '/var/www/curator-api',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/curator-api'],
     subscribe   => Package['curator-api'],
