@@ -1,6 +1,7 @@
 #!/opt/puppetlabs/puppet/bin/ruby
 
 require 'puppet/face'
+require 'puppet/version'
 require 'net/https'
 require 'uri'
 require 'yaml'
@@ -9,16 +10,21 @@ require 'date'
 
 module Facts
   def self.config(setting)
-    begin
-      orig_stdout = $stdout
-      out = StringIO.new
-      $stdout = out
-      Puppet::Face[:config, :current].print(setting)
+    if Puppet.version.split('.')[0].to_i >= 6
+      out = Puppet::Face[:config, :current].print(setting)
 
-      out.string.chomp
+      out[setting]
+    else
+      begin
+        orig_stdout = $stdout
+        out = StringIO.new
+        $stdout = out
+        Puppet::Face[:config, :current].print(setting)
 
-    ensure
-      $stdout = orig_stdout
+        out.string.chomp
+      ensure
+        $stdout = orig_stdout
+      end
     end
   end
 
