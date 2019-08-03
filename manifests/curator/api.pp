@@ -25,6 +25,8 @@ class deployment::curator::api (
   exec { 'curator-api_db_schema_update':
     command     => 'php bin/console doctrine:schema:update --force',
     cwd         => '/var/www/curator-api',
+    user        => 'www-data',
+    group       => 'www-data',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/curator-api'],
     subscribe   => Package['curator-api'],
     refreshonly => true
