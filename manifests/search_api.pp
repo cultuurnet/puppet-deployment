@@ -42,7 +42,8 @@ class deployment::search_api (
   }
 
   class { 'profiles::glassfish':
-    flavor => 'glassfish'
+    flavor  => 'glassfish',
+    version => '3.1.2.2'
   }
 
   Jvmoption {
