@@ -6,6 +6,8 @@ class deployment::curator::api (
 
   realize Apt::Source['publiq-curator']
 
+  include php
+
   package { 'curator-api':
     ensure  => 'latest',
     notify  => Class['apache::service'],
