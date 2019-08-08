@@ -25,7 +25,7 @@ class deployment::curator::api (
   }
 
   exec { 'curator-api_db_schema_update':
-    command     => 'php bin/console doctrine:migrations:migrate',
+    command     => 'php bin/console doctrine:migrations:migrate --no-interaction',
     cwd         => '/var/www/curator-api',
     user        => 'www-data',
     group       => 'www-data',
