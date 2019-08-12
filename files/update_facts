@@ -4,7 +4,6 @@ require 'puppet/face'
 require 'puppet/version'
 require 'net/https'
 require 'uri'
-require 'yaml'
 require 'json'
 require 'date'
 
@@ -63,7 +62,7 @@ module Facts
       :certname => certname,
       :environment => environment,
       :producer_timestamp => timestamp,
-      :values => YAML.load(%x[/opt/puppetlabs/bin/facter -py])
+      :values => JSON.load(%x[/opt/puppetlabs/bin/facter -pj])
     }.to_json
 
     response = connection.request(request)
