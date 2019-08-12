@@ -1,5 +1,6 @@
 #!/opt/puppetlabs/puppet/bin/ruby
 
+require 'optparse'
 require 'puppet/face'
 require 'puppet/version'
 require 'net/https'
@@ -69,6 +70,19 @@ module Facts
   end
 end
 
-puppetdb_url = ARGV[0]
+options = {}
 
-Facts.replace(puppetdb_url)
+OptionParser.new do |parser|
+  parser.banner = "Usage: update_facts [options]"
+
+  parser.on("-h", "--help", "Show this help message") do ||
+    puts parser
+    exit 1
+  end
+
+  parser.on("-p", "--puppetdb SERVER_URL", "PuppetDB server URL to send facts to") do |v|
+    options[:puppetdb] = v
+  end
+end.parse!
+
+Facts.replace(options[:puppetdb])
