@@ -17,9 +17,5 @@ class deployment {
     path   => '/usr/local/bin/get_fact_value',
   }
 
-  if ! defined(Package['jq']) {
-    package { 'jq':
-      ensure => 'installed'
-    }
-  }
+  realize Package['jq']
 }
