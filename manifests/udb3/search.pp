@@ -107,7 +107,7 @@ class deployment::udb3::search (
 
   file { 'udb3-search-region-mapping':
     ensure  => 'file',
-    path    => '/var/www/udb-search/vendor/cultuurnet/udb3-search-elasticsearch/src/Operations/json/mapping_region.json',
+    path    => '/var/www/udb-search/src/ElasticSearch/Operations/json/mapping_region.json',
     source  => $region_mapping_source,
     require => 'Package[udb3-search]',
     noop    => $noop_deploy
