@@ -121,41 +121,52 @@ class deployment::search_api (
   }
 
   jvmoption { "-Duser.timezone=${timezone}":
+    option   => "-Duser.timezone=${timezone}",
     portbase => $glassfish_portbase
   }
 
   if $glassfish_jmx {
-    jvmoption { "-Dcom.sun.management.jmxremote":
+    jvmoption { '-Dcom.sun.management.jmxremote':
+      option   => '-Dcom.sun.management.jmxremote',
       portbase => $glassfish_portbase
     }
     jvmoption { "-Dcom.sun.management.jmxremote.port=${glassfish_jmx_port}":
+      option   => "-Dcom.sun.management.jmxremote.port=${glassfish_jmx_port}",
       portbase => $glassfish_portbase
     }
-    jvmoption { "-Dcom.sun.management.jmxremote.local.only=false":
+    jvmoption { '-Dcom.sun.management.jmxremote.local.only=false':
+      option   => '-Dcom.sun.management.jmxremote.local.only=false',
       portbase => $glassfish_portbase
     }
-    jvmoption { "-Dcom.sun.management.jmxremote.authenticate=false":
+    jvmoption { '-Dcom.sun.management.jmxremote.authenticate=false':
+      option   => '-Dcom.sun.management.jmxremote.authenticate=false',
       portbase => $glassfish_portbase
     }
-    jvmoption { "-Dcom.sun.management.jmxremote.ssl=false":
+    jvmoption { '-Dcom.sun.management.jmxremote.ssl=false':
+      option   => '-Dcom.sun.management.jmxremote.ssl=false',
       portbase => $glassfish_portbase
     }
-    jvmoption { "-Djava.rmi.server.hostname=127.0.0.1":
+    jvmoption { '-Djava.rmi.server.hostname=127.0.0.1':
+      option   => '-Djava.rmi.server.hostname=127.0.0.1',
       portbase => $glassfish_portbase
     }
   }
 
   if $glassfish_gc_logging {
     jvmoption { "-Xloggc:/opt/glassfish/glassfish/domains/${glassfish_domain}/logs/gc.log":
+      option   => "-Xloggc:/opt/glassfish/glassfish/domains/${glassfish_domain}/logs/gc.log",
       portbase => $glassfish_portbase
     }
     jvmoption { '-XX:-PrintGCTimeStamps':
+      option   => '-XX:-PrintGCTimeStamps',
       portbase => $glassfish_portbase
     }
     jvmoption { '-XX:+PrintGCDateStamps':
+      option   => '-XX:+PrintGCDateStamps',
       portbase => $glassfish_portbase
     }
     jvmoption { '-verbose:gc':
+      option   => '-verbose:gc',
       portbase => $glassfish_portbase
     }
   }
