@@ -122,6 +122,7 @@ class deployment::uitid (
     user                => $user,
     passwordfile        => $passwordfile,
     portbase            => $payara_portbase,
+    wrapjdbcobjects     => false,
     resourcetype        => 'javax.sql.DataSource',
     dsclassname         => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
     properties          => {
