@@ -51,7 +51,7 @@ class deployment::omd::mediadownloadmanager (
 
   if $update_facts {
     exec { 'update_facts omd media download manager':
-      command     => "/usr/local/bin/update_facts ${puppetdb_url}",
+      command     => "/usr/local/bin/update_facts -p ${puppetdb_url}",
       subscribe   => 'Package[omd-media-download-manager]',
       refreshonly => true,
       noop        => $noop_deploy

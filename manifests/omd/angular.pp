@@ -42,7 +42,7 @@ class deployment::omd::angular (
 
   if $update_facts {
     exec { "update_facts ${title}":
-      command     => "/usr/local/bin/update_facts ${puppetdb_url}",
+      command     => "/usr/local/bin/update_facts -p ${puppetdb_url}",
       subscribe   => 'Package[omd-angular-app]',
       refreshonly => true,
       noop        => $noop_deploy

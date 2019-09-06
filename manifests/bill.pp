@@ -98,7 +98,7 @@ class deployment::bill (
 
   if $update_facts {
     exec { 'update_facts bill':
-      command     => "/usr/local/bin/update_facts ${puppetdb_url}",
+      command     => "/usr/local/bin/update_facts -p ${puppetdb_url}",
       subscribe   => Package['bill-website'],
       refreshonly => true,
       noop        => $noop_deploy

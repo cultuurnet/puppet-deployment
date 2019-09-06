@@ -173,7 +173,7 @@ class deployment::museumpas (
 
   if $update_facts {
     exec { 'update_facts museumpas':
-      command     => "/usr/local/bin/update_facts ${puppetdb_url}",
+      command     => "/usr/local/bin/update_facts -p ${puppetdb_url}",
       subscribe   => 'Package[museumpas-website]',
       refreshonly => true,
       noop        => $noop_deploy
