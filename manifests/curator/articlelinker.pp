@@ -13,6 +13,7 @@ class deployment::curator::articlelinker (
 
   package { 'curator-articlelinker':
     ensure  => 'latest',
+    notify  => Deployment::Versions[$title],
     require => Apt::Source['publiq-curator']
   }
 

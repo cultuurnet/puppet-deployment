@@ -10,7 +10,7 @@ class deployment::curator::api (
 
   package { 'curator-api':
     ensure  => 'latest',
-    notify  => Class['apache::service'],
+    notify  => [ Class['apache::service'], Deployment::Versions[$title]],
     require => Apt::Source['publiq-curator']
   }
 
@@ -26,6 +26,16 @@ class deployment::curator::api (
 
   exec { 'curator-api_db_schema_update':
     command     => 'php bin/console doctrine:migrations:migrate --no-interaction',
+    cwd         => '/var/www/curator-api',
+    user        => 'www-data',
+    group       => 'www-data',
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/curator-api'],
+    subscribe   => Package['curator-api'],
+    refreshonly => true
+  }
+
+  exec { 'curator-api_cache_clear':
+    command     => 'php bin/console cache:clear',
     cwd         => '/var/www/curator-api',
     user        => 'www-data',
     group       => 'www-data',
