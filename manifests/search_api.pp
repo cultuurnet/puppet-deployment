@@ -159,8 +159,8 @@ class deployment::search_api (
   }
 
   if $glassfish_gc_logging {
-    jvmoption { "-Xloggc:/opt/glassfish/glassfish/domains/${glassfish_domain}/logs/gc.log":
-      option   => "-Xloggc:/opt/glassfish/glassfish/domains/${glassfish_domain}/logs/gc.log",
+    jvmoption { "-Xloggc:/opt/payara/glassfish/domains/${glassfish_domain}/logs/gc.log":
+      option   => "-Xloggc:/opt/payara/glassfish/domains/${glassfish_domain}/logs/gc.log",
       portbase => $glassfish_portbase
     }
     jvmoption { '-XX:-PrintGCTimeStamps':
