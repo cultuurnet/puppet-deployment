@@ -15,6 +15,7 @@ class deployment::search_api (
   $solr_jmx_port        = '9002',
   $service_name         = $::deployment::search_api::glassfish_domain,
   $search_hostname      = 'localhost',
+  $glassfish_flavor     = 'glassfish',
   $glassfish_portbase   = '4800',
   $glassfish_start_heap = undef,
   $glassfish_max_heap   = undef,
@@ -77,7 +78,7 @@ class deployment::search_api (
 
   java_ks { 'publiq Development CA':
     certificate  => '/usr/local/share/ca-certificates/publiq/publiq-root-ca.crt',
-    target       => "/opt/payara/glassfish/domains/${glassfish_domain}/config/cacerts.jks",
+    target       => "/opt/${glassfish_flavor}/glassfish/domains/${glassfish_domain}/config/cacerts.jks",
     password     => 'changeit',
     trustcacerts => true,
     require      => [ 'Package[ca-certificates-publiq]', 'Glassfish::Create_domain[sapi]'],
@@ -159,8 +160,8 @@ class deployment::search_api (
   }
 
   if $glassfish_gc_logging {
-    jvmoption { "-Xloggc:/opt/payara/glassfish/domains/${glassfish_domain}/logs/gc.log":
-      option   => "-Xloggc:/opt/payara/glassfish/domains/${glassfish_domain}/logs/gc.log",
+    jvmoption { "-Xloggc:/opt/${glassfish_flavor}/glassfish/domains/${glassfish_domain}/logs/gc.log":
+      option   => "-Xloggc:/opt/${glassfish_flavor}/glassfish/domains/${glassfish_domain}/logs/gc.log",
       portbase => $glassfish_portbase
     }
     jvmoption { '-XX:-PrintGCTimeStamps':
@@ -362,5 +363,11 @@ class deployment::search_api (
     weekday  => '*',
     monthday => '*',
     month    => '*'
+  }
+
+  cron { 'cleanup_glassfish_logs':
+    command => "find /opt/${glassfish_flavor}/glassfish/domains/sapi/logs -type f -name "server.log_*" -mtime +7 -exec rm {} \;",
+    hour    => '*',
+    minute  => '15'
   }
 }
