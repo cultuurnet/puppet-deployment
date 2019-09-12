@@ -366,7 +366,7 @@ class deployment::search_api (
   }
 
   cron { 'cleanup_glassfish_logs':
-    command => "find /opt/${glassfish_flavor}/glassfish/domains/sapi/logs -type f -name "server.log_*" -mtime +7 -exec rm {} \;",
+    command => "find /opt/${glassfish_flavor}/glassfish/domains/sapi/logs -type f -name \"server.log_*\" -mtime +7 -exec rm {} \;",
     hour    => '*',
     minute  => '15'
   }
