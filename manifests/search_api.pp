@@ -42,7 +42,9 @@ class deployment::search_api (
     default => 'absent'
   }
 
-  include profiles::glassfish
+  class { 'profiles::glassfish':
+    flavor => $glassfish_flavor
+  }
 
   Jvmoption {
     ensure       => 'present',
