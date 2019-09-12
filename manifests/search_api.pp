@@ -41,10 +41,7 @@ class deployment::search_api (
     default => 'absent'
   }
 
-  class { 'profiles::glassfish':
-    flavor  => 'glassfish',
-    version => '3.1.2.2'
-  }
+  include profiles::glassfish
 
   Jvmoption {
     ensure       => 'present',
@@ -76,6 +73,15 @@ class deployment::search_api (
     service_name   => $service_name,
     create_service => true,
     start_domain   => true
+  }
+
+  java_ks { 'publiq Development CA':
+    certificate  => '/usr/local/share/ca-certificates/publiq/publiq-root-ca.crt',
+    target       => "/opt/payara/glassfish/domains/${glassfish_domain}/config/cacerts.jks",
+    password     => 'changeit',
+    trustcacerts => true,
+    require      => [ 'Package[ca-certificates-publiq]', 'Glassfish::Create_domain[sapi]'],
+    notify       => 'Exec[restart_service_sapi]'
   }
 
   # This will only work if the default start heap value (512m) is present in
