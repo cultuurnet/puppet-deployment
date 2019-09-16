@@ -340,7 +340,7 @@ class deployment::search_api (
         solrconfig_source => '/opt/sapi/solrconfig.xml'
       }
     },
-    require               => [ Package['sapi'], Class['java8']],
+    require               => [ Package['sapi'], Class['profiles::java8']],
     before                => App['sapi']
   }
 
