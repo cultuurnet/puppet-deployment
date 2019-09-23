@@ -119,11 +119,13 @@ class deployment::udb3 (
 
   unless $facts['noop_deploy'] == 'true' {
     if $with_silex {
+      realize Apt::Source['cultuurnet-tools']
       realize Apt::Source['cultuurnet-udb3']
       realize Profiles::Apt::Update['cultuurnet-udb3']
 
       contain deployment::udb3::silex
 
+      Profiles::Apt::Update['cultuurnet-tools'] -> Class['deployment::udb3::silex']
       Profiles::Apt::Update['cultuurnet-udb3'] -> Class['deployment::udb3::silex']
     }
     if $with_angular {
