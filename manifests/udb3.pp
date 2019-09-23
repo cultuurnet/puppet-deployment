@@ -121,6 +121,7 @@ class deployment::udb3 (
     if $with_silex {
       realize Apt::Source['cultuurnet-tools']
       realize Apt::Source['cultuurnet-udb3']
+      realize Profiles::Apt::Update['cultuurnet-tools']
       realize Profiles::Apt::Update['cultuurnet-udb3']
 
       contain deployment::udb3::silex
@@ -132,6 +133,7 @@ class deployment::udb3 (
       realize Apt::Source['cultuurnet-tools']
       realize Apt::Source['cultuurnet-udb3']
       realize Apt::Source['cultuurnet-udb-nl']
+      realize Profiles::Apt::Update['cultuurnet-tools']
       realize Profiles::Apt::Update['cultuurnet-udb3']
       realize Profiles::Apt::Update['cultuurnet-udb-nl']
 

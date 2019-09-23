@@ -6,8 +6,12 @@ class deployment::swaggerui (
 
   contain deployment
 
+  realize Apt::Source['cultuurnet-tools']
+  realize Profiles::Apt::Update['cultuurnet-tools']
+
   package { 'swagger-ui':
     ensure  => 'latest',
+    require => Profiles::Apt::Update['cultuurnet-tools'],
     noop    => $noop_deploy
   }
 
