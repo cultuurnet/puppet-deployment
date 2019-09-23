@@ -127,6 +127,7 @@ class deployment::udb3 (
       Profiles::Apt::Update['cultuurnet-udb3'] -> Class['deployment::udb3::silex']
     }
     if $with_angular {
+      realize Apt::Source['cultuurnet-tools']
       realize Apt::Source['cultuurnet-udb3']
       realize Apt::Source['cultuurnet-udb-nl']
       realize Profiles::Apt::Update['cultuurnet-udb3']
@@ -134,6 +135,7 @@ class deployment::udb3 (
 
       contain deployment::udb3::angular
 
+      Profiles::Apt::Update['cultuurnet-tools'] -> Class['deployment::udb3::angular']
       Profiles::Apt::Update['cultuurnet-udb3'] -> Class['deployment::udb3::angular']
       Profiles::Apt::Update['cultuurnet-udb-nl'] -> Class['deployment::udb3::angular']
     }
