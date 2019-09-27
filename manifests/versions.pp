@@ -13,7 +13,7 @@ define deployment::versions (
     if $update_facts {
       exec { "update_facts for ${package} package":
         command     => "/usr/local/bin/update_facts -p ${puppetdb_url}",
-        subscribe   => [ Package[$package], File['update_facts']],
+        subscribe   => Package[$package],
         refreshonly => true,
         noop        => $noop_deploy
       }
