@@ -13,6 +13,7 @@ class deployment::uitid (
   $payara_start_heap = undef,
   $payara_max_heap   = undef,
   $timezone          = 'UTC',
+  $settings          = {},
   $payara_jmx        = true
 ) {
 
