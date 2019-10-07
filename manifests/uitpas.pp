@@ -92,22 +92,28 @@ class deployment::uitpas (
   }
 
   if $payara_jmx {
-    jvmoption { "-Dcom.sun.management.jmxremote":
+    jvmoption { "Domain ${payara_domain} jvmoption -Dcom.sun.management.jmxremote":
+      option   => '-Dcom.sun.management.jmxremote',
       portbase => $payara_portbase
     }
-    jvmoption { "-Dcom.sun.management.jmxremote.port=9003":
+    jvmoption { "Domain ${payara_domain} jvmoption -Dcom.sun.management.jmxremote.port=9003":
+      option   => '-Dcom.sun.management.jmxremote.port=9003',
       portbase => $payara_portbase
     }
-    jvmoption { "-Dcom.sun.management.jmxremote.local.only=false":
+    jvmoption { "Domain ${payara_domain} jvmoption -Dcom.sun.management.jmxremote.local.only=false":
+      option   => '-Dcom.sun.management.jmxremote.local.only=false',
       portbase => $payara_portbase
     }
-    jvmoption { "-Dcom.sun.management.jmxremote.authenticate=false":
+    jvmoption { "Domain ${payara_domain} jvmoption -Dcom.sun.management.jmxremote.authenticate=false":
+      option   => '-Dcom.sun.management.jmxremote.authenticate=false',
       portbase => $payara_portbase
     }
-    jvmoption { "-Dcom.sun.management.jmxremote.ssl=false":
+    jvmoption { "Domain ${payara_domain} jvmoption -Dcom.sun.management.jmxremote.ssl=false":
+      option   => '-Dcom.sun.management.jmxremote.ssl=false',
       portbase => $payara_portbase
     }
-    jvmoption { "-Djava.rmi.server.hostname=127.0.0.1":
+    jvmoption { "Domain ${payara_domain} jvmoption -Djava.rmi.server.hostname=127.0.0.1":
+      option   => '-Djava.rmi.server.hostname=127.0.0.1',
       portbase => $payara_portbase
     }
   }
