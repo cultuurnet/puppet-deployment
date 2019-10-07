@@ -7,6 +7,7 @@ class deployment::uitid (
   $mysql_host,
   $mysql_port,
   $mysql_database,
+  $package_version   = 'latest',
   $service_name      = $::deployment::uitid::payara_domain,
   $payara_portbase   = '14800',
   $payara_start_heap = undef,
@@ -146,5 +147,68 @@ class deployment::uitid (
     user           => $user,
     passwordfile   => $passwordfile,
     connectionpool => 'mysql_uitid_j2eePool'
+  }
+
+  package { 'uitid-app':
+    ensure => $package_version,
+    notify => App['uitid-app']
+  }
+
+  exec { 'uitid-app_schema_install':
+    command     => "mysql --defaults-extra-file=/root/.my.cnf ${mysql_database} < /opt/uitid-app/createtables.sql",
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin' ],
+    onlyif      => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = \"${mysql_database}\";')",
+    refreshonly => true,
+    subscribe   => Package['uitid-app']
+  }
+
+  app { 'uitid-app':
+    ensure        => 'present',
+    portbase      => $payara_portbase,
+    user          => $user,
+    passwordfile  => $passwordfile,
+    contextroot   => 'uitid',
+    precompilejsp => false,
+    source        => '/opt/uitid-app/uitid-app.war',
+    require       => [ Jdbcresource['jdbc/cultuurnet_uitid'], Exec['uitid-app_schema_install'] ]
+  }
+
+  exec { "bootstrap_${service_name}":
+    command     => "curl http://localhost:${application_http_port}/uitid/rest/bootstrap/test",
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin' ],
+    onlyif      => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(*) from DALIUSER;' ${mysql_database})",
+    refreshonly => true,
+    subscribe   => Package['uitid-app'],
+    require     => App['uitid-app']
+  }
+
+  $settings.each |$name, $setting| {
+    if $setting['ensure'] {
+      $ensure = $setting['ensure']
+    } else {
+      $ensure = 'present'
+    }
+
+    deployment::uitid::setting { $name:
+      database => $mysql_database,
+      value    => $setting['value'],
+      ensure   => $ensure,
+      require  => [ App['uitid-app'], Exec["bootstrap_${service_name}"] ],
+      notify   => Exec["restart_service_${service_name}"]
+    }
+  }
+
+  # Force domain restart at the end of the deployment procedure.
+  # Unfortunately we need an 'exec' here, notifying the domain after
+  # application deployment and applying settings would result in a
+  # dependency cycle, as it has to be created before the glassfish
+  # resources can be applied.
+  # Also, the database schema is created by the application deployment,
+  # which means the application settings can only be applied after
+  # that. This is a reversal of the PCS pattern.
+  exec { "restart_service_${service_name}":
+    command     => "/usr/sbin/service ${service_name} restart",
+    refreshonly => true,
+    subscribe   => App['uitid-app']
   }
 }
