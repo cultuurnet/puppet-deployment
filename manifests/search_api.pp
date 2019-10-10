@@ -8,6 +8,7 @@ class deployment::search_api (
   $mysql_database,
   $solr_url,
   $settings_source,
+  $synonyms_source      = '/opt/solr/example/collection1/conf/synonyms.txt',
   $timezone             = 'UTC',
   $solr_start_heap      = '512m',
   $solr_max_heap        = '512m',
@@ -333,11 +334,13 @@ class deployment::search_api (
     cores                 => {
       'sapi'              => {
         schema_source     => '/opt/sapi/sapi/schema.xml',
-        solrconfig_source => '/opt/sapi/solrconfig.xml'
+        solrconfig_source => '/opt/sapi/solrconfig.xml',
+        synonyms_source   => $synonyms_source
       },
       'sapifast'          => {
         schema_source     => '/opt/sapi/sapifast/schema.xml',
-        solrconfig_source => '/opt/sapi/solrconfig.xml'
+        solrconfig_source => '/opt/sapi/solrconfig.xml',
+        synonyms_source   => $synonyms_source
       }
     },
     require               => [ Package['sapi'], Class['profiles::java8']],
