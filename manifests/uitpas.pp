@@ -6,6 +6,7 @@ class deployment::uitpas (
   $mysql_host,
   $mysql_port,
   $mysql_database,
+  $package_version   = 'latest',
   $service_name      = $::deployment::uitpas::payara_domain,
   $payara_portbase   = '24800',
   $payara_start_heap = undef,
@@ -14,6 +15,8 @@ class deployment::uitpas (
   $settings          = {},
   $payara_jmx        = true
 ) {
+
+  # TODO: apt repository
 
   $passwordfile = "/home/${user}/asadmin.pass"
   $application_http_port = $payara_portbase + 80

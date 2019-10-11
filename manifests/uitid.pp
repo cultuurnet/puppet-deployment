@@ -17,6 +17,8 @@ class deployment::uitid (
   $payara_jmx        = true
 ) {
 
+  # TODO: apt repository
+
   $passwordfile = "/home/${user}/asadmin.pass"
   $application_http_port = $payara_portbase + 80
   $payara_default_start_heap = '512m'
