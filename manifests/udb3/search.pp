@@ -4,15 +4,17 @@ class deployment::udb3::search (
   $facet_mapping_facilities_source,
   $facet_mapping_themes_source,
   $facet_mapping_types_source,
-  $migrate_data = true,
-  $project_prefix = 'udb3',
-  $migrate_timeout = '300',
-  $reindex_permanent_hour = '0',
+  $search_package_version   = 'latest',
+  $geojson_package_version  = 'latest',
+  $migrate_data             = true,
+  $project_prefix           = 'udb3',
+  $migrate_timeout          = '300',
+  $reindex_permanent_hour   = '0',
   $reindex_permanent_minute = '0',
-  $region_mapping_source = 'puppet:///modules/deployment/search/mapping_region.json',
-  $noop_deploy = false,
-  $update_facts = false,
-  $puppetdb_url = ''
+  $region_mapping_source    = 'puppet:///modules/deployment/search/mapping_region.json',
+  $noop_deploy              = false,
+  $update_facts             = false,
+  $puppetdb_url             = ''
 ) {
 
   File {
@@ -21,13 +23,13 @@ class deployment::udb3::search (
   }
 
   package { 'udb3-search':
-    ensure => 'latest',
+    ensure => $search_package_version,
     notify => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
     noop   => $noop_deploy
   }
 
   package { 'udb3-geojson-data':
-    ensure => 'latest',
+    ensure => $geojson_package_version,
     noop   => $noop_deploy
   }
 
