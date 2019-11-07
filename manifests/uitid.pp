@@ -223,7 +223,7 @@ class deployment::uitid (
   }
 
   cron { 'Send UiTalerts ASAP':
-    command  => "/usr/bin/curl 'http://${search_hostname}:${glassfish_http_port}/uitid/rest/savedSearch/batch/ASAP'",
+    command  => "/usr/bin/curl 'http://localhost:${application_http_port}/uitid/rest/savedSearch/batch/ASAP'",
     ensure   => $ensure_send_uitalerts,
     require  => 'App[uitid-app]',
     user     => 'root',
@@ -235,7 +235,7 @@ class deployment::uitid (
   }
 
   cron { 'Send UiTalerts DAILY':
-    command  => "/usr/bin/curl 'http://${search_hostname}:${glassfish_http_port}/uitid/rest/savedSearch/batch/DAILY'",
+    command  => "/usr/bin/curl 'http://localhost:${application_http_port}/uitid/rest/savedSearch/batch/DAILY'",
     ensure   => $ensure_send_uitalerts,
     require  => 'App[uitid-app]',
     user     => 'root',
@@ -247,7 +247,7 @@ class deployment::uitid (
   }
 
   cron { 'Send UiTalerts WEEKLY':
-    command  => "/usr/bin/curl 'http://${search_hostname}:${glassfish_http_port}/uitid/rest/savedSearch/batch/WEEKLY'",
+    command  => "/usr/bin/curl 'http://localhost:${application_http_port}/uitid/rest/savedSearch/batch/WEEKLY'",
     ensure   => $ensure_send_uitalerts,
     require  => 'App[uitid-app]',
     user     => 'root',
@@ -259,7 +259,7 @@ class deployment::uitid (
   }
 
   cron { 'Clear UiTalerts maillog':
-    command  => "/usr/bin/curl 'http://${search_hostname}:${glassfish_http_port}/uitid/rest/maillog/clearold'",
+    command  => "/usr/bin/curl 'http://localhost:${application_http_port}/uitid/rest/maillog/clearold'",
     ensure   => $ensure_send_uitalerts,
     require  => 'App[uitid-app]',
     user     => 'root',
