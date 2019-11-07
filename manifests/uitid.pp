@@ -7,14 +7,15 @@ class deployment::uitid (
   $mysql_host,
   $mysql_port,
   $mysql_database,
-  $package_version   = 'latest',
-  $service_name      = $::deployment::uitid::payara_domain,
-  $payara_portbase   = '14800',
-  $payara_start_heap = undef,
-  $payara_max_heap   = undef,
-  $timezone          = 'UTC',
-  $settings          = {},
-  $payara_jmx        = true
+  $package_version       = 'latest',
+  $service_name          = $::deployment::uitid::payara_domain,
+  $payara_portbase       = '14800',
+  $payara_start_heap     = undef,
+  $payara_max_heap       = undef,
+  $timezone              = 'UTC',
+  $settings              = {},
+  $payara_jmx            = true,
+  $ensure_send_uitalerts = 'absent'
 ) {
 
   # TODO: apt repository
@@ -219,5 +220,53 @@ class deployment::uitid (
     command     => "/usr/sbin/service ${service_name} restart",
     refreshonly => true,
     subscribe   => App['uitid-app']
+  }
+
+  cron { 'Send UiTalerts ASAP':
+    command  => "/usr/bin/curl 'http://${search_hostname}:${glassfish_http_port}/uitid/rest/savedSearch/batch/ASAP'",
+    ensure   => $ensure_send_uitalerts,
+    require  => 'App[sapi]',
+    user     => 'root',
+    hour     => '*',
+    minute   => '12',
+    weekday  => '*',
+    monthday => '*',
+    month    => '*'
+  }
+
+  cron { 'Send UiTalerts DAILY':
+    command  => "/usr/bin/curl 'http://${search_hostname}:${glassfish_http_port}/uitid/rest/savedSearch/batch/DAILY'",
+    ensure   => $ensure_send_uitalerts,
+    require  => 'App[sapi]',
+    user     => 'root',
+    hour     => '7',
+    minute   => '24',
+    weekday  => '*',
+    monthday => '*',
+    month    => '*'
+  }
+
+  cron { 'Send UiTalerts WEEKLY':
+    command  => "/usr/bin/curl 'http://${search_hostname}:${glassfish_http_port}/uitid/rest/savedSearch/batch/WEEKLY'",
+    ensure   => $ensure_send_uitalerts,
+    require  => 'App[sapi]',
+    user     => 'root',
+    hour     => '7',
+    minute   => '36',
+    weekday  => '1',
+    monthday => '*',
+    month    => '*'
+  }
+
+  cron { 'Clear UiTalerts maillog':
+    command  => "/usr/bin/curl 'http://${search_hostname}:${glassfish_http_port}/uitid/rest/maillog/clearold'",
+    ensure   => $ensure_send_uitalerts,
+    require  => 'App[sapi]',
+    user     => 'root',
+    hour     => '3',
+    minute   => '10',
+    weekday  => '*',
+    monthday => '*',
+    month    => '*'
   }
 }
