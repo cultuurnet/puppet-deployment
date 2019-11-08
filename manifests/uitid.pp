@@ -269,4 +269,26 @@ class deployment::uitid (
     monthday => '*',
     month    => '*'
   }
+
+  cron { 'Clear UiTID application caches':
+    command  => "/usr/bin/curl 'http://localhost:${application_http_port}/uitid/rest/bootstrap/clearcaches'",
+    require  => 'App[uitid-app]',
+    user     => 'root',
+    hour     => [ '4', '16'],
+    minute   => '20',
+    weekday  => '*',
+    monthday => '*',
+    month    => '*'
+  }
+
+  cron { 'Clear UiTID JPA cache':
+    command  => "/usr/bin/curl 'http://localhost:${application_http_port}/uitid/rest/bootstrap/clearJpaCache'",
+    require  => 'App[uitid-app]',
+    user     => 'root',
+    hour     => [ '4', '16'],
+    minute   => '20',
+    weekday  => '*',
+    monthday => '*',
+    month    => '*'
+  }
 }
