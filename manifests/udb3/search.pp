@@ -146,11 +146,12 @@ class deployment::udb3::search (
   }
 
   cron { 'reindex_permanent':
-    command    => '/var/www/udb-search/bin/app.php udb3-core:reindex-permanent',
-    require    => 'Package[udb3-search]',
-    user       => 'root',
-    hour       => $reindex_permanent_hour,
-    minute     => $reindex_permanent_minute
+    command     => '/var/www/udb-search/bin/app.php udb3-core:reindex-permanent',
+    environment => [ 'MAILTO=infra@publiq.be' ],
+    require     => 'Package[udb3-search]',
+    user        => 'root',
+    hour        => $reindex_permanent_hour,
+    minute      => $reindex_permanent_minute
   }
 
   profiles::deployment::versions { $title:
