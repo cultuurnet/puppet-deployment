@@ -3,6 +3,8 @@ class deployment::balie (
   $angular_app_config_source,
   $swagger_ui_config_source,
   $swagger_ui_deploy_config_source,
+  $silex_package_version = 'latest',
+  $angular_package_version = 'latest',
   $angular_app_deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
   $noop_deploy = false,
   $update_facts = false,
@@ -10,13 +12,13 @@ class deployment::balie (
 ) {
 
   package { 'balie-silex':
-    ensure => 'latest',
+    ensure => $silex_package_version,
     notify => 'Class[Apache::Service]',
     noop   => $noop_deploy
   }
 
   package { 'balie-angular-app':
-    ensure  => 'latest',
+    ensure  => $angular_package_version,
     require => 'Package[balie-silex]',
     noop    => $noop_deploy
   }
