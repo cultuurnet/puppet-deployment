@@ -14,7 +14,7 @@ class deployment::udb3::apidoc (
     noop    => $noop_deploy
   }
 
-  deployment::versions { $title:
+  profiles::deployment::versions { $title:
     project      => $project_prefix,
     packages     => [ 'udb3-swagger', 'udb3-schema'],
     noop_deploy  => $noop_deploy,

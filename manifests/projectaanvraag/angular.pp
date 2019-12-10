@@ -39,7 +39,7 @@ class deployment::projectaanvraag::angular (
     noop        => $noop_deploy
   }
 
-  deployment::versions { $title:
+  profiles::deployment::versions { $title:
     project      => 'projectaanvraag',
     packages     => 'projectaanvraag-angular-app',
     noop_deploy  => $noop_deploy,

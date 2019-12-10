@@ -54,7 +54,7 @@ class deployment::udb3::jwtprovider (
     noop    => $noop_deploy
   }
 
-  deployment::versions { $title:
+  profiles::deployment::versions { $title:
     project      => $project_prefix,
     packages     => 'udb3-jwt',
     noop_deploy  => $noop_deploy,

@@ -160,7 +160,7 @@ class deployment::udb3::iis (
     noop        => $noop_deploy
   }
 
-  deployment::versions { $title:
+  profiles::deployment::versions { $title:
     project      => $project_prefix,
     packages     => [ 'udb3-iis-silex', 'udb3-iis-importer'],
     noop_deploy  => $noop_deploy,

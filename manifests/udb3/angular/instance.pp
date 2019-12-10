@@ -37,7 +37,7 @@ define deployment::udb3::angular::instance (
     noop        => $noop_deploy
   }
 
-  deployment::versions { $title:
+  profiles::deployment::versions { $title:
     project      => $project_prefix,
     packages     => [ $app_package_name, $lib_package_name],
     noop_deploy  => $noop_deploy,

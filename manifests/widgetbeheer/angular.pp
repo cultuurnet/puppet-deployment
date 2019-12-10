@@ -70,7 +70,7 @@ class deployment::widgetbeheer::angular (
     noop        => $noop_deploy
   }
 
-  deployment::versions { $title:
+  profiles::deployment::versions { $title:
     project      => 'widgetbeheer',
     packages     => 'widgetbeheer-angular-app',
     noop_deploy  => $noop_deploy,

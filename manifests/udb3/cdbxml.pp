@@ -71,7 +71,7 @@ class deployment::udb3::cdbxml (
     noop        => $noop_deploy
   }
 
-  deployment::versions { $title:
+  profiles::deployment::versions { $title:
     project      => $project_prefix,
     packages     => 'udb3-cdbxml',
     noop_deploy  => $noop_deploy,

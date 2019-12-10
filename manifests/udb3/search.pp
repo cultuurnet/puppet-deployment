@@ -153,7 +153,7 @@ class deployment::udb3::search (
     minute     => $reindex_permanent_minute
   }
 
-  deployment::versions { $title:
+  profiles::deployment::versions { $title:
     project      => $project_prefix,
     packages     => [ 'udb3-search', 'udb3-geojson-data'],
     noop_deploy  => $noop_deploy,

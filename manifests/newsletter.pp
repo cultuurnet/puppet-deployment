@@ -21,7 +21,7 @@ class deployment::newsletter (
     noop    => $noop_deploy
   }
 
-  deployment::versions { $title:
+  profiles::deployment::versions { $title:
     project      => 'newsletter',
     packages     => 'newsletter-silex',
     noop_deploy  => $noop_deploy,

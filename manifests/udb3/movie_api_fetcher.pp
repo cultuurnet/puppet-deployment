@@ -117,7 +117,7 @@ class deployment::udb3::movie_api_fetcher (
     noop        => $noop_deploy
   }
 
-  deployment::versions { $title:
+  profiles::deployment::versions { $title:
     project      => $project_prefix,
     packages     => [ 'udb3-movie-api-fetcher'],
     noop_deploy  => $noop_deploy,

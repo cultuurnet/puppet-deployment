@@ -160,7 +160,7 @@ class deployment::udb3::silex (
     minute  => $event_conclude_minute
   }
 
-  deployment::versions { $title:
+  profiles::deployment::versions { $title:
     project      => $project_prefix,
     packages     => [ 'udb3-silex', 'udb3-php'],
     noop_deploy  => $noop_deploy,

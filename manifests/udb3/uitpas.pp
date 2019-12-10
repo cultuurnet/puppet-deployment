@@ -72,7 +72,7 @@ class deployment::udb3::uitpas (
     noop          => $noop_deploy
   }
 
-  deployment::versions { $title:
+  profiles::deployment::versions { $title:
     project      => $project_prefix,
     packages     => 'udb3-uitpas',
     noop_deploy  => $noop_deploy,
