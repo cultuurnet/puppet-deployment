@@ -74,7 +74,6 @@ class deployment::udb3::cdbxml (
   profiles::deployment::versions { $title:
     project      => $project_prefix,
     packages     => 'udb3-cdbxml',
-    noop_deploy  => $noop_deploy,
     puppetdb_url => $puppetdb_url
   }
 

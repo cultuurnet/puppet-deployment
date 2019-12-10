@@ -163,7 +163,6 @@ class deployment::udb3::iis (
   profiles::deployment::versions { $title:
     project      => $project_prefix,
     packages     => [ 'udb3-iis-silex', 'udb3-iis-importer'],
-    noop_deploy  => $noop_deploy,
     puppetdb_url => $puppetdb_url
   }
 

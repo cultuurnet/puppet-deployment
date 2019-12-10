@@ -88,7 +88,6 @@ class deployment::projectaanvraag::silex (
   profiles::deployment::versions { $title:
     project      => 'projectaanvraag',
     packages     => 'projectaanvraag-silex',
-    noop_deploy  => $noop_deploy,
     puppetdb_url => $puppetdb_url
   }
 

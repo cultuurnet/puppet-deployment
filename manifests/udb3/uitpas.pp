@@ -75,7 +75,6 @@ class deployment::udb3::uitpas (
   profiles::deployment::versions { $title:
     project      => $project_prefix,
     packages     => 'udb3-uitpas',
-    noop_deploy  => $noop_deploy,
     puppetdb_url => $puppetdb_url
   }
 

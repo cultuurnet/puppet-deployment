@@ -157,7 +157,6 @@ class deployment::udb3::search (
   profiles::deployment::versions { $title:
     project      => $project_prefix,
     packages     => [ 'udb3-search', 'udb3-geojson-data'],
-    noop_deploy  => $noop_deploy,
     puppetdb_url => $puppetdb_url
   }
 

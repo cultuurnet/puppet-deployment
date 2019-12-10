@@ -57,7 +57,6 @@ class deployment::udb3::jwtprovider (
   profiles::deployment::versions { $title:
     project      => $project_prefix,
     packages     => 'udb3-jwt',
-    noop_deploy  => $noop_deploy,
     puppetdb_url => $puppetdb_url
   }
 

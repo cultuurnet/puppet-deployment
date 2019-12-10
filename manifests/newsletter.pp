@@ -24,7 +24,6 @@ class deployment::newsletter (
   profiles::deployment::versions { $title:
     project      => 'newsletter',
     packages     => 'newsletter-silex',
-    noop_deploy  => $noop_deploy,
     puppetdb_url => $puppetdb_url
   }
 

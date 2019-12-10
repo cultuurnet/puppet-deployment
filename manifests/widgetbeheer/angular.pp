@@ -73,7 +73,6 @@ class deployment::widgetbeheer::angular (
   profiles::deployment::versions { $title:
     project      => 'widgetbeheer',
     packages     => 'widgetbeheer-angular-app',
-    noop_deploy  => $noop_deploy,
     puppetdb_url => $puppetdb_url
   }
 }
