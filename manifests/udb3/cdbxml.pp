@@ -5,8 +5,7 @@ class deployment::udb3::cdbxml (
   $db_name,
   $project_prefix = 'udb3',
   $noop_deploy = false,
-  $update_facts = false,
-  $puppetdb_url = ''
+  $puppetdb_url = undef
 ) {
 
   package { 'udb3-cdbxml':
@@ -76,7 +75,6 @@ class deployment::udb3::cdbxml (
     project      => $project_prefix,
     packages     => 'udb3-cdbxml',
     noop_deploy  => $noop_deploy,
-    update_facts => $update_facts,
     puppetdb_url => $puppetdb_url
   }
 

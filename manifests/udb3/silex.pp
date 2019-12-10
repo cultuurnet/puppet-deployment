@@ -11,8 +11,7 @@ class deployment::udb3::silex (
   $event_conclude_hour = '0',
   $event_conclude_minute = '0',
   $noop_deploy = false,
-  $update_facts = false,
-  $puppetdb_url = ''
+  $puppetdb_url = undef
 ) {
 
   package { 'udb3-silex':
@@ -165,7 +164,6 @@ class deployment::udb3::silex (
     project      => $project_prefix,
     packages     => [ 'udb3-silex', 'udb3-php'],
     noop_deploy  => $noop_deploy,
-    update_facts => $update_facts,
     puppetdb_url => $puppetdb_url
   }
 

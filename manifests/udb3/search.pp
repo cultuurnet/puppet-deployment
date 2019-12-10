@@ -13,8 +13,7 @@ class deployment::udb3::search (
   $reindex_permanent_minute = '0',
   $region_mapping_source    = 'puppet:///modules/deployment/search/mapping_region.json',
   $noop_deploy              = false,
-  $update_facts             = false,
-  $puppetdb_url             = ''
+  $puppetdb_url             = undef
 ) {
 
   File {
@@ -158,7 +157,6 @@ class deployment::udb3::search (
     project      => $project_prefix,
     packages     => [ 'udb3-search', 'udb3-geojson-data'],
     noop_deploy  => $noop_deploy,
-    update_facts => $update_facts,
     puppetdb_url => $puppetdb_url
   }
 

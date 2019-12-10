@@ -4,8 +4,7 @@ class deployment::museumpas (
   $db_name,
   $robots_source = undef,
   $noop_deploy = false,
-  $update_facts = false,
-  $puppetdb_url = ''
+  $puppetdb_url = undef
 ) {
 
   $basedir = '/var/www/museumpas'
@@ -171,7 +170,7 @@ class deployment::museumpas (
     noop        => $noop_deploy
   }
 
-  if $update_facts {
+  if $puppetdb_url {
     exec { 'update_facts museumpas':
       command     => "/usr/local/bin/update_facts -p ${puppetdb_url}",
       subscribe   => 'Package[museumpas-website]',

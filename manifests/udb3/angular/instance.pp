@@ -5,8 +5,7 @@ define deployment::udb3::angular::instance (
   $app_rootdir,
   $project_prefix = $title,
   $noop_deploy = false,
-  $update_facts = false,
-  $puppetdb_url = ''
+  $puppetdb_url = undef
 ) {
 
   package { $app_package_name:
@@ -42,7 +41,6 @@ define deployment::udb3::angular::instance (
     project      => $project_prefix,
     packages     => [ $app_package_name, $lib_package_name],
     noop_deploy  => $noop_deploy,
-    update_facts => $update_facts,
     puppetdb_url => $puppetdb_url
   }
 }

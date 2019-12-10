@@ -3,8 +3,7 @@ class deployment::widgetbeheer::angular (
   $htaccess_source,
   $deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
   $noop_deploy = false,
-  $update_facts = false,
-  $puppetdb_url = ''
+  $puppetdb_url = undef
 ) {
 
   contain deployment
@@ -75,7 +74,6 @@ class deployment::widgetbeheer::angular (
     project      => 'widgetbeheer',
     packages     => 'widgetbeheer-angular-app',
     noop_deploy  => $noop_deploy,
-    update_facts => $update_facts,
     puppetdb_url => $puppetdb_url
   }
 }

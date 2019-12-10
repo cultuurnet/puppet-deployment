@@ -7,8 +7,7 @@ class deployment::balie (
   $angular_package_version = 'latest',
   $angular_app_deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
   $noop_deploy = false,
-  $update_facts = false,
-  $puppetdb_url = ''
+  $puppetdb_url = undef
 ) {
 
   package { 'balie-silex':
@@ -107,7 +106,7 @@ class deployment::balie (
     noop        => $noop_deploy
   }
 
-  if $update_facts {
+  if $puppetdb_url {
     exec { 'update_facts balie':
       command     => "/usr/local/bin/update_facts -p ${puppetdb_url}",
       subscribe   => 'Package[balie]',

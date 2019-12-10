@@ -1,8 +1,7 @@
 class deployment::newsletter (
   $config_source,
   $noop_deploy = false,
-  $update_facts = false,
-  $puppetdb_url = ''
+  $puppetdb_url = undef
 ) {
 
   package { 'newsletter-silex':
@@ -26,7 +25,6 @@ class deployment::newsletter (
     project      => 'newsletter',
     packages     => 'newsletter-silex',
     noop_deploy  => $noop_deploy,
-    update_facts => $update_facts,
     puppetdb_url => $puppetdb_url
   }
 

@@ -4,8 +4,7 @@ class deployment::udb3::jwtprovider (
   $pubkey_source,
   $project_prefix = 'udb3',
   $noop_deploy = false,
-  $update_facts = false,
-  $puppetdb_url = ''
+  $puppetdb_url = undef
 ) {
 
   package { 'udb3-jwt':
@@ -59,7 +58,6 @@ class deployment::udb3::jwtprovider (
     project      => $project_prefix,
     packages     => 'udb3-jwt',
     noop_deploy  => $noop_deploy,
-    update_facts => $update_facts,
     puppetdb_url => $puppetdb_url
   }
 

@@ -5,8 +5,7 @@ class deployment::udb3::uitpas (
   $externalid_organizer_mapping_source,
   $project_prefix = 'udb3',
   $noop_deploy = false,
-  $update_facts = false,
-  $puppetdb_url = ''
+  $puppetdb_url = undef
 ) {
 
   package { 'udb3-uitpas':
@@ -77,7 +76,6 @@ class deployment::udb3::uitpas (
     project      => $project_prefix,
     packages     => 'udb3-uitpas',
     noop_deploy  => $noop_deploy,
-    update_facts => $update_facts,
     puppetdb_url => $puppetdb_url
   }
 

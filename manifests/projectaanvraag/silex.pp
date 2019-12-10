@@ -4,8 +4,7 @@ class deployment::projectaanvraag::silex (
   $integration_types_source,
   $db_name,
   $noop_deploy = false,
-  $update_facts = false,
-  $puppetdb_url = ''
+  $puppetdb_url = undef
 ) {
 
   contain deployment
@@ -90,7 +89,6 @@ class deployment::projectaanvraag::silex (
     project      => 'projectaanvraag',
     packages     => 'projectaanvraag-silex',
     noop_deploy  => $noop_deploy,
-    update_facts => $update_facts,
     puppetdb_url => $puppetdb_url
   }
 

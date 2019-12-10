@@ -6,8 +6,7 @@ class deployment::udb3::iis (
   $db_name,
   $project_prefix = 'udb3',
   $noop_deploy = false,
-  $update_facts = false,
-  $puppetdb_url = ''
+  $puppetdb_url = undef
 ) {
 
   package { 'udb3-iis-silex':
@@ -165,7 +164,6 @@ class deployment::udb3::iis (
     project      => $project_prefix,
     packages     => [ 'udb3-iis-silex', 'udb3-iis-importer'],
     noop_deploy  => $noop_deploy,
-    update_facts => $update_facts,
     puppetdb_url => $puppetdb_url
   }
 

@@ -2,8 +2,7 @@ class deployment::omd::angular (
   $config_source,
   $deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
   $noop_deploy = false,
-  $update_facts = false,
-  $puppetdb_url = ''
+  $puppetdb_url = undef
 ) {
 
   contain deployment
@@ -40,7 +39,7 @@ class deployment::omd::angular (
     noop        => $noop_deploy
   }
 
-  if $update_facts {
+  if $puppetdb_url {
     exec { "update_facts ${title}":
       command     => "/usr/local/bin/update_facts -p ${puppetdb_url}",
       subscribe   => 'Package[omd-angular-app]',

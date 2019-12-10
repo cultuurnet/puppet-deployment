@@ -2,8 +2,7 @@ class deployment::projectaanvraag::angular (
   $config_source,
   $deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
   $noop_deploy = false,
-  $update_facts = false,
-  $puppetdb_url = ''
+  $puppetdb_url = undef
 ) {
 
   contain deployment
@@ -44,7 +43,6 @@ class deployment::projectaanvraag::angular (
     project      => 'projectaanvraag',
     packages     => 'projectaanvraag-angular-app',
     noop_deploy  => $noop_deploy,
-    update_facts => $update_facts,
     puppetdb_url => $puppetdb_url
   }
 }

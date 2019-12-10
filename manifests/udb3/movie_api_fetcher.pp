@@ -8,8 +8,7 @@ class deployment::udb3::movie_api_fetcher (
   $api_fetcher_hour          = '0',
   $api_fetcher_minute        = '0',
   $noop_deploy               = false,
-  $update_facts              = false,
-  $puppetdb_url              = ''
+  $puppetdb_url              = undef
 ) {
 
   package { 'udb3-movie-api-fetcher':
@@ -122,7 +121,6 @@ class deployment::udb3::movie_api_fetcher (
     project      => $project_prefix,
     packages     => [ 'udb3-movie-api-fetcher'],
     noop_deploy  => $noop_deploy,
-    update_facts => $update_facts,
     puppetdb_url => $puppetdb_url
   }
 

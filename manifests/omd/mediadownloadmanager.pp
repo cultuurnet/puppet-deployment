@@ -1,8 +1,7 @@
 class deployment::omd::mediadownloadmanager (
   $config_source,
   $noop_deploy = false,
-  $update_facts = false,
-  $puppetdb_url = ''
+  $puppetdb_url = undef
 ) {
 
   package { 'omd-media-download-manager':
@@ -49,7 +48,7 @@ class deployment::omd::mediadownloadmanager (
     noop          => $noop_deploy
   }
 
-  if $update_facts {
+  if $puppetdb_url {
     exec { 'update_facts omd media download manager':
       command     => "/usr/local/bin/update_facts -p ${puppetdb_url}",
       subscribe   => 'Package[omd-media-download-manager]',

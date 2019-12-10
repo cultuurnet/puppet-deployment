@@ -5,8 +5,7 @@ class deployment::bill (
   $robots_source = undef,
   $htaccess_source = undef,
   $noop_deploy = false,
-  $update_facts = false,
-  $puppetdb_url = ''
+  $puppetdb_url = undef
 ) {
 
   $basedir = '/var/www/bill'
@@ -96,7 +95,7 @@ class deployment::bill (
     noop        => $noop_deploy
   }
 
-  if $update_facts {
+  if $puppetdb_url {
     exec { 'update_facts bill':
       command     => "/usr/local/bin/update_facts -p ${puppetdb_url}",
       subscribe   => Package['bill-website'],
