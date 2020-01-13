@@ -159,6 +159,7 @@ class deployment::uitid (
     source  => $stackdriver_servicecredentials_source,
     require => Glassfish::Create_domain[$payara_domain],
     before  => App['uitid-app']
+  }
 
   jdbcconnectionpool { 'mysql_uitid_j2eePool':
     ensure              => 'present',
