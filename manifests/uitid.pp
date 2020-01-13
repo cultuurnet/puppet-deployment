@@ -7,15 +7,20 @@ class deployment::uitid (
   $mysql_host,
   $mysql_port,
   $mysql_database,
-  $package_version       = 'latest',
-  $service_name          = $::deployment::uitid::payara_domain,
-  $payara_portbase       = '14800',
-  $payara_start_heap     = undef,
-  $payara_max_heap       = undef,
-  $timezone              = 'UTC',
-  $settings              = {},
-  $payara_jmx            = true,
-  $ensure_send_uitalerts = 'absent'
+  $package_version                       = 'latest',
+  $service_name                          = $::deployment::uitid::payara_domain,
+  $payara_portbase                       = '14800',
+  $payara_start_heap                     = undef,
+  $payara_max_heap                       = undef,
+  $timezone                              = 'UTC',
+  $settings                              = {},
+  $payara_jmx                            = true,
+  $ensure_send_uitalerts                 = 'absent',
+  $uitid_auth0_sync                      = undef,
+  $uitid_auth0_client_id                 = undef,
+  $uitid_auth0_client_secret             = undef,
+  $uitid_auth0_domain                    = undef,
+  $stackdriver_servicecredentials_source = undef
 ) {
 
   # TODO: apt repository
@@ -127,6 +132,33 @@ class deployment::uitid (
   systemproperty { 'uitid_baseurl':
     value => $base_url
   }
+
+  systemproperty { 'uitid_auth0_sync':
+    value => bool2str($uitid_auth0_sync)
+  }
+
+  systemproperty { 'UITID_AUTH0_CLIENT_ID':
+    value => $uitid_auth0_client_id
+  }
+
+  systemproperty { 'UITID_AUTH0_CLIENT_SECRET':
+    value => $uitid_auth0_client_secret
+  }
+
+  systemproperty { 'UITID_AUTH0_DOMAIN':
+    value => $uitid_auth0_domain
+  }
+
+  systemproperty { 'GOOGLE_STACKDRIVER_SERVICECREDENTIALS_JSON_PATH':
+    value => '/opt/payara/glassfish/domains/uitid/config/application_default_credentials.json'
+  }
+
+  file { 'stackdriver_servicecredentials':
+    ensure  => 'file',
+    path    => '/opt/payara/glassfish/domains/uitid/config/application_default_credentials.json',
+    source  => $stackdriver_servicecredentials_source,
+    require => Glassfish::Create_domain[$payara_domain],
+    before  => App['uitid-app']
 
   jdbcconnectionpool { 'mysql_uitid_j2eePool':
     ensure              => 'present',
