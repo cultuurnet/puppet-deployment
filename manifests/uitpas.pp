@@ -6,14 +6,19 @@ class deployment::uitpas (
   $mysql_host,
   $mysql_port,
   $mysql_database,
-  $package_version   = 'latest',
-  $service_name      = $::deployment::uitpas::payara_domain,
-  $payara_portbase   = '24800',
-  $payara_start_heap = undef,
-  $payara_max_heap   = undef,
-  $timezone          = 'UTC',
-  $settings          = {},
-  $payara_jmx        = true
+  $package_version         = 'latest',
+  $service_name            = $::deployment::uitpas::payara_domain,
+  $payara_portbase         = '24800',
+  $payara_start_heap       = undef,
+  $payara_max_heap         = undef,
+  $timezone                = 'UTC',
+  $settings                = {},
+  $payara_jmx              = true,
+  $auth0_domain            = undef,
+  $ksb_auth0_clientid      = undef,
+  $ksb_auth0_secret        = undef,
+  $sysadmin_auth0_clientid = undef,
+  $sysadmin_auth0_secret   = undef
 ) {
 
   # TODO: apt repository
@@ -132,6 +137,26 @@ class deployment::uitpas (
 
   systemproperty { 'uitpas_cfauth_secret':
     value => 'cd52d819e50c29a41cd82a61412c7b1c'
+  }
+
+  systemproperty { 'UITPAS_AUTH0_DOMAIN':
+    value => $auth0_domain
+  }
+
+  systemproperty { 'UITPAS_KSB_AUTH0_CLIENTID':
+    value => $ksb_auth0_clientid
+  }
+
+  systemproperty { 'UITPAS_KSB_AUTH0_SECRET':
+    value => $ksb_auth0_secret
+  }
+
+  systemproperty { 'UITPAS_SYSADMIN_AUTH0_CLIENTID':
+    value => $sysadmin_auth0_clientid
+  }
+
+  systemproperty { 'UITPAS_SYSADMIN_AUTH0_SECRET':
+    value => $sysadmin_auth0_secret
   }
 
   jdbcconnectionpool { 'mysql_uitpas_j2eePool':
