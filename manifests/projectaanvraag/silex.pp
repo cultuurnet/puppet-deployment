@@ -3,14 +3,15 @@ class deployment::projectaanvraag::silex (
   $user_roles_source,
   $integration_types_source,
   $db_name,
-  $noop_deploy = false,
-  $puppetdb_url = undef
+  $package_version = 'latest',
+  $noop_deploy     = false,
+  $puppetdb_url    = undef
 ) {
 
   contain deployment
 
   package { 'projectaanvraag-silex':
-    ensure => 'latest',
+    ensure => $package_version,
     notify => [ Class['apache::service'], Class['supervisord::service'] ],
     noop   => $noop_deploy
   }

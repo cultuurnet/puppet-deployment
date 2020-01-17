@@ -1,14 +1,15 @@
 class deployment::projectaanvraag::angular (
   $config_source,
+  $package_version      = 'latest',
   $deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
-  $noop_deploy = false,
-  $puppetdb_url = undef
+  $noop_deploy          = false,
+  $puppetdb_url         = undef
 ) {
 
   contain deployment
 
   package { 'projectaanvraag-angular-app':
-    ensure => 'latest',
+    ensure => $package_version,
     noop   => $noop_deploy
   }
 
