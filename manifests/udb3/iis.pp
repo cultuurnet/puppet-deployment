@@ -144,7 +144,7 @@ class deployment::udb3::iis (
     command   => 'bin/app.php install',
     cwd       => '/var/www/udb-iis-silex',
     path      => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-iis-silex'],
-    onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = \"${db_name}\" and table_name not like \"doctrine_migration_versions\";')",
+    onlyif    => "test 0 -eq $(mysql --defaults-group-suffix=_iis -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = \"${db_name}\" and table_name not like \"doctrine_migration_versions\";')",
     subscribe => [ 'Package[udb3-iis-silex]', 'File[udb3-iis-silex-config]'],
     noop      => $noop_deploy
   }
