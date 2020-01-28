@@ -63,6 +63,24 @@ class deployment::udb3 (
     require => Apt::Source['cultuurnet-cdbxml']
   }
 
+  @apt::source { 'cultuurnet-jwtprovider':
+    location => "http://apt.uitdatabank.be/jwtprovider-${environment}",
+    release  => 'trusty',
+    repos    => 'main',
+    key      => {
+      'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
+      'source' => 'http://apt.uitdatabank.be/gpgkey/cultuurnet.gpg.key'
+    },
+    include  => {
+      'deb' => true,
+      'src' => false
+    }
+  }
+
+  @profiles::apt::update { 'cultuurnet-jwtprovider':
+    require => Apt::Source['cultuurnet-jwtprovider']
+  }
+
   @apt::source { 'cultuurnet-udb3-uitpas':
     location => "http://apt.uitdatabank.be/udb3-uitpas-${environment}",
     release  => 'trusty',
@@ -134,8 +152,8 @@ class deployment::udb3 (
       Profiles::Apt::Update['cultuurnet-cdbxml'] -> Class['deployment::udb3::cdbxml']
     }
     if $with_jwtprovider {
-      realize Apt::Source['cultuurnet-udb3']
-      realize Profiles::Apt::Update['cultuurnet-udb3']
+      realize Apt::Source['cultuurnet-jwtprovider']
+      realize Profiles::Apt::Update['cultuurnet-jwtprovider']
 
       contain deployment::udb3::jwtprovider
 
