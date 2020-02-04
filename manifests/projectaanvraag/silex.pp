@@ -53,6 +53,7 @@ class deployment::projectaanvraag::silex (
     command     => 'bin/console projectaanvraag:cache-clear',
     cwd         => '/var/www/projectaanvraag-api',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/projectaanvraag-api'],
+    logoutput   => true,
     refreshonly => true,
     subscribe   => [ File['projectaanvraag-silex-config'], Package['projectaanvraag-silex'] ],
     noop        => $noop_deploy
