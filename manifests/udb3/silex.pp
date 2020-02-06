@@ -6,6 +6,7 @@ class deployment::udb3::silex (
   $externalid_organizer_mapping_source,
   $db_name,
   $pubkey_source,
+  $pubkey_auth0_source,
   $project_prefix = 'udb3',
   $event_conclude_ensure = 'present',
   $event_conclude_hour = '0',
@@ -108,6 +109,16 @@ class deployment::udb3::silex (
   file { 'udb3-silex-pubkey':
     ensure  => 'file',
     path    => '/var/www/udb-silex/public.pem',
+    source  => $pubkey_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[udb3-silex]',
+    noop    => $noop_deploy
+  }
+
+  file { 'udb3-silex-pubkey-auth0':
+    ensure  => 'file',
+    path    => '/var/www/udb-silex/public-auth0.pem',
     source  => $pubkey_source,
     owner   => 'www-data',
     group   => 'www-data',
