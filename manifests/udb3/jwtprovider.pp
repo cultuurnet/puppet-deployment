@@ -7,6 +7,8 @@ class deployment::udb3::jwtprovider (
   $puppetdb_url = undef
 ) {
 
+  $basedir = '/var/www/udb-jwt-provider'
+
   package { 'udb3-jwt':
     ensure => 'latest',
     notify => 'Class[Apache::Service]',
@@ -15,7 +17,7 @@ class deployment::udb3::jwtprovider (
 
   file { 'udb3-jwtprovider-config':
     ensure  => 'file',
-    path    => '/var/www/udb-jwt-provider/config.yml',
+    path    => "${basedir}/config.yml",
     source  => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
@@ -26,7 +28,7 @@ class deployment::udb3::jwtprovider (
 
   file { 'udb3-jwt-log':
     ensure  => 'directory',
-    path    => '/var/www/udb-jwt-provider/log',
+    path    => "${basedir}/log",
     owner   => 'www-data',
     group   => 'www-data',
     recurse => true,
@@ -36,7 +38,7 @@ class deployment::udb3::jwtprovider (
 
   file { 'udb3-jwtprovider-privkey':
     ensure  => 'file',
-    path    => '/var/www/udb-jwt-provider/private.pem',
+    path    => "${basedir}/private.pem",
     source  => $privkey_source,
     owner   => 'www-data',
     group   => 'www-data',
@@ -46,7 +48,7 @@ class deployment::udb3::jwtprovider (
 
   file { 'udb3-jwtprovider-pubkey':
     ensure  => 'file',
-    path    => '/var/www/udb-jwt-provider/public.pem',
+    path    => "${basedir}/public.pem",
     source  => $pubkey_source,
     owner   => 'www-data',
     group   => 'www-data',
