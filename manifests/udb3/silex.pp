@@ -119,7 +119,7 @@ class deployment::udb3::silex (
   file { 'udb3-silex-pubkey-auth0':
     ensure  => 'file',
     path    => '/var/www/udb-silex/public-auth0.pem',
-    source  => $pubkey_source,
+    source  => $pubkey_auth0_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-silex]',
