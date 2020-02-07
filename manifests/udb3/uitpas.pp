@@ -1,6 +1,7 @@
 class deployment::udb3::uitpas (
   $config_source,
   $pubkey_source,
+  $pubkey_auth0_source,
   $externalid_place_mapping_source,
   $externalid_organizer_mapping_source,
   $project_prefix = 'udb3',
@@ -39,6 +40,16 @@ class deployment::udb3::uitpas (
     ensure  => 'file',
     path    => '/var/www/udb-uitpas/public.pem',
     source  => $pubkey_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[udb3-uitpas]',
+    noop    => $noop_deploy
+  }
+
+  file { 'udb3-uitpas-pubkey-auth0':
+    ensure  => 'file',
+    path    => '/var/www/udb-uitpas/public-auth0.pem',
+    source  => $pubkey_auth0_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-uitpas]',
