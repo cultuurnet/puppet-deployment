@@ -29,7 +29,10 @@ class deployment::search_api (
   $glassfish_jmx        = true,
   $glassfish_jmx_port   = '9001',
   $manage_search_admins = false,
-  $search_admins_uid    = []
+  $search_admins_uid    = [],
+  $cfauth_base_url      = undef,
+  $cfauth_key           = undef,
+  $cfauth_secret        = undef
 ) {
 
   $passwordfile = "/home/${user}/asadmin.pass"
@@ -211,23 +214,35 @@ class deployment::search_api (
   }
 
   systemproperty { 'search_solr_path':
-    value        => "${solr_url}/sapi/"
+    value => "${solr_url}/sapi/"
   }
 
   systemproperty { 'search_solr_path_fast':
-    value        => "${solr_url}/sapifast/"
+    value => "${solr_url}/sapifast/"
   }
 
   systemproperty { 'search_mysql_cachesize':
-    value        => $cache_size
+    value => $cache_size
   }
 
   systemproperty { 'search_fastindexonly':
-    value        => "${fast_index_only}"
+    value => "${fast_index_only}"
   }
 
   systemproperty { 'search_taxonomy_url':
-    value        => "${taxonomy_url}"
+    value => "${taxonomy_url}"
+  }
+
+  systemproperty { 'search_cfauth_base':
+    value => "${cfauth_base_url}"
+  }
+
+  systemproperty { 'search_cfauth_key':
+    value => "${cfauth_key}"
+  }
+
+  systemproperty { 'search_cfauth_secret':
+    value => "${cfauth_secret}"
   }
 
   package { 'sapi':
