@@ -20,7 +20,8 @@ class deployment::uitid (
   $auth0_client_id                       = undef,
   $auth0_client_secret                   = undef,
   $auth0_domain                          = undef,
-  $stackdriver_servicecredentials_source = undef
+  $stackdriver_servicecredentials_source = undef,
+  $uitalert_use_fast_search              = false
 ) {
 
   # TODO: apt repository
@@ -151,6 +152,10 @@ class deployment::uitid (
 
   systemproperty { 'GOOGLE_STACKDRIVER_SERVICECREDENTIALS_JSON_PATH':
     value => '/opt/payara/glassfish/domains/uitid/config/application_default_credentials.json'
+  }
+
+  systemproperty { 'be.culturefeed.ejb.UitAlertBean.USE_FAST_SEARCH':
+    value => $uitalert_use_fast_search
   }
 
   file { 'stackdriver_servicecredentials':
