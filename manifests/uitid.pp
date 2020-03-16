@@ -45,7 +45,8 @@ class deployment::uitid (
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $payara_portbase,
-    require      => Glassfish::Create_domain[$payara_domain]
+    require      => Glassfish::Create_domain[$payara_domain],
+    notify       => Exec["restart_service_${service_name}"]
   }
 
   glassfish::create_domain { $payara_domain:
@@ -155,7 +156,7 @@ class deployment::uitid (
   }
 
   systemproperty { 'be.culturefeed.ejb.UitAlertBean.USE_FAST_SEARCH':
-    value => $uitalert_use_fast_search
+    value => bool2str($uitalert_use_fast_search)
   }
 
   file { 'stackdriver_servicecredentials':
