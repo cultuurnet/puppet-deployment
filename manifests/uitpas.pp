@@ -7,6 +7,7 @@ class deployment::uitpas (
   $mysql_port,
   $mysql_database,
   $package_version         = 'latest',
+  $db_mgmt_package_version = 'latest',
   $service_name            = $::deployment::uitpas::payara_domain,
   $payara_portbase         = '24800',
   $payara_start_heap       = undef,
@@ -29,6 +30,9 @@ class deployment::uitpas (
   $payara_default_max_heap = '512m'
 
   contain profiles::glassfish
+
+  realize Package['liquibase']
+  realize Package['mysql-connector-java']
 
   Jvmoption {
     ensure       => 'present',
@@ -189,17 +193,24 @@ class deployment::uitpas (
     connectionpool => 'mysql_uitpas_j2eePool'
   }
 
-    package { 'uitpas-app':
+  package { 'uitpas-db-mgmt':
+    ensure => $db_mgmt_package_version,
+    notify => Exec['uitpas_database_management']
+  }
+
+  package { 'uitpas-app':
     ensure => $package_version,
     notify => App['uitpas-app']
   }
 
-  exec { 'uitpas-app_schema_install':
-    command     => "mysql --defaults-extra-file=/root/.my.cnf ${mysql_database} < /opt/uitpas-app/createtables.sql",
+  exec { 'uitpas_database_management':
+    command     => "java -jar /opt/liquibase/liquibase.jar --driver=com.mysql.jdbc.Driver --classpath=/opt/uitpas-db-mgmt/uitpas-database-management.jar:/opt/mysql-connector-java/mysql-connector-java.jar --changeLogFile=migrations.xml --url='jdbc:mysql://${mysql_host}:${mysql_port}/${mysql_database}' --username=${mysql_user} --password=${mysql_password} update",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin' ],
-    onlyif      => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = \"${mysql_database}\";')",
     refreshonly => true,
-    subscribe   => Package['uitpas-app']
+    logoutput   => true,
+    require     => [ Package['liquibase'], Package['mysql-connector-java']],
+    subscribe   => Package['uitpas-db-mgmt'],
+    before      => App['uitpas-app']
   }
 
   app { 'uitpas-app':
@@ -210,7 +221,7 @@ class deployment::uitpas (
     contextroot   => 'uitid',
     precompilejsp => false,
     source        => '/opt/uitpas-app/uitpas-app.war',
-    require       => [ Jdbcresource['jdbc/cultuurnet_uitpas'], Exec['uitpas-app_schema_install'] ]
+    require       => Jdbcresource['jdbc/cultuurnet_uitpas']
   }
 
   exec { "bootstrap_${service_name}":
