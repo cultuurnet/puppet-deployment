@@ -6,14 +6,36 @@ class deployment::groepspas (
   $puppetdb_url = undef
 ) {
 
+  apt::source { 'cultuurnet-groepspas':
+    location => "http://apt.uitdatabank.be/groepspas-${environment}",
+    release  => 'trusty',
+    repos    => 'main',
+    key      => {
+      'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
+      'source' => 'http://apt.uitdatabank.be/gpgkey/cultuurnet.gpg.key'
+    },
+    include  => {
+      'deb' => true,
+      'src' => false
+    },
+    noop     => $noop_deploy
+  }
+
+  profiles::apt::update { 'cultuurnet-groepspas':
+    require  => Apt::Source['cultuurnet-groepspas'],
+    noop     => $noop_deploy
+  }
+
   package { 'groepspas-silex':
-    ensure => 'latest',
-    notify => 'Class[Apache::Service]',
-    noop   => $noop_deploy
+    ensure  => 'latest',
+    notify  => 'Class[Apache::Service]',
+    require => Profiles::Apt::Update['cultuurnet-groepspas'],
+    noop    => $noop_deploy
   }
 
   package { 'groepspas-angular-app':
     ensure  => 'latest',
+    require => Profiles::Apt::Update['cultuurnet-groepspas'],
     noop    => $noop_deploy
   }
 
