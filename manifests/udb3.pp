@@ -1,6 +1,7 @@
 class deployment::udb3 (
   $with_silex             = true,
   $with_angular           = true,
+  $with_vue               = false,
   $with_cdbxml            = true,
   $with_jwtprovider       = true,
   $with_apidoc            = true,
