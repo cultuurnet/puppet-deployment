@@ -1,7 +1,7 @@
 class deployment::udb3 (
   $with_silex             = true,
   $with_angular           = true,
-  $with_vue               = false,
+  $with_frontend          = false,
   $with_cdbxml            = true,
   $with_jwtprovider       = true,
   $with_apidoc            = true,
@@ -143,6 +143,14 @@ class deployment::udb3 (
       Profiles::Apt::Update['cultuurnet-tools'] -> Class['deployment::udb3::angular']
       Profiles::Apt::Update['cultuurnet-udb3'] -> Class['deployment::udb3::angular']
       Profiles::Apt::Update['cultuurnet-udb-nl'] -> Class['deployment::udb3::angular']
+    }
+    if $with_frontend {
+      realize Apt::Source['cultuurnet-udb3']
+      realize Profiles::Apt::Update['cultuurnet-udb3']
+
+      contain deployment::udb3::frontend
+
+      Profiles::Apt::Update['cultuurnet-udb3'] -> Class['deployment::udb3::frontend']
     }
     if $with_cdbxml {
       realize Apt::Source['cultuurnet-cdbxml']

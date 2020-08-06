@@ -1,4 +1,4 @@
-class deployment::udb3::vue (
+class deployment::udb3::frontend (
   String           $config_source,
   String           $package_version     = 'latest',
   Optional[String] $env_defaults_source = undef,
