@@ -51,6 +51,7 @@ class deployment::omd::drupal (
     command     => "drush -r /var/www/omd-drupal sql-query --file=${db_source}",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     onlyif      => 'test 0 -eq $(drush -r /var/www/omd-drupal sql-query "show tables" | sed -e "/^$/d" | wc -l)',
+    environment => [ 'HOME=/'],
     refreshonly => true,
     subscribe   => [ 'Package[omd-drupal]', 'Package[omd-db-data]', 'File[omd-drupal-settings]'],
     noop        => $noop_deploy
@@ -59,6 +60,7 @@ class deployment::omd::drupal (
   exec { 'drush updatedb':
     command     => "drush -r /var/www/omd-drupal updatedb -y",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    environment => [ 'HOME=/'],
     refreshonly => true,
     subscribe   => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]'],
     require     => 'Exec[omd-db-install]',
@@ -68,6 +70,7 @@ class deployment::omd::drupal (
   exec { 'drush config-split-import':
     command     => "drush -r /var/www/omd-drupal config-split-import -y",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    environment => [ 'HOME=/'],
     refreshonly => true,
     subscribe   => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]'],
     require     => [ 'Package[omd-fs-data]', 'Exec[omd-db-install]', 'Exec[drush updatedb]'],
@@ -77,6 +80,7 @@ class deployment::omd::drupal (
   exec { 'drush cache-rebuild':
     command     => "drush -r /var/www/omd-drupal cache-rebuild",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
+    environment => [ 'HOME=/'],
     refreshonly => true,
     subscribe   => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]', 'Package[omd-fs-data]'],
     require     => 'Exec[drush config-split-import]',
