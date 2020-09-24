@@ -1,22 +1,24 @@
 class deployment::udb3::frontend (
-  String           $config_source,
-  String           $package_version     = 'latest',
-  Optional[String] $env_defaults_source = undef,
-  Boolean          $service_manage      = true,
-  String           $service_ensure      = 'running',
-  Boolean          $service_enable      = true,
-  String           $project_prefix      = 'udb3',
-  Boolean          $noop_deploy         = false,
-  Optional[String] $puppetdb_url        = undef
+  String                                  $config_source,
+  String                                  $package_version     = 'latest',
+  Optional[String]                        $env_defaults_source = undef,
+  Boolean                                 $service_manage      = true,
+  String                                  $service_ensure      = 'running',
+  Boolean                                 $service_enable      = true,
+  String                                  $project_prefix      = 'udb3',
+  Variant[Boolean, Enum['true', 'false']] $noop_deploy         = false,
+  Optional[String]                        $puppetdb_url        = undef
 ) {
 
   $basedir = '/var/www/udb-frontend'
   $package_name = 'udb3-frontend'
   $service_name = 'udb3-frontend'
 
+  $noop = any2bool($noop_deploy)
+
   package { $package_name:
     ensure => $package_version,
-    noop   => $noop_deploy
+    noop   => $noop
   }
 
   file { "${package_name}-config":
@@ -26,7 +28,7 @@ class deployment::udb3::frontend (
     owner   => 'www-data',
     group   => 'www-data',
     require => Package[$package_name],
-    noop    => $noop_deploy
+    noop    => $noop
   }
 
   if $service_manage {
