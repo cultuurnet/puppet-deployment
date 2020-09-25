@@ -1,6 +1,7 @@
 class deployment::omd::angular (
   $config_source,
   $deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
+  $project_prefix = 'omd',
   $noop_deploy = false,
   $puppetdb_url = undef
 ) {
@@ -39,13 +40,10 @@ class deployment::omd::angular (
     noop        => $noop_deploy
   }
 
-  if $puppetdb_url {
-    exec { "update_facts ${title}":
-      command     => "/usr/local/bin/update_facts -p ${puppetdb_url}",
-      subscribe   => 'Package[omd-angular-app]',
-      refreshonly => true,
-      noop        => $noop_deploy
-    }
+  profiles::deployment::versions { $title:
+    project      => $project_prefix,
+    packages     => [ 'omd-angular-app'],
+    puppetdb_url => $puppetdb_url
   }
 
   Class['php'] -> Class['deployment::omd::angular']

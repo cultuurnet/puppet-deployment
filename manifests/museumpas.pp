@@ -3,6 +3,7 @@ class deployment::museumpas (
   $maintenance_source,
   $db_name,
   $robots_source = undef,
+  $project_prefix = 'museumpas',
   $noop_deploy = false,
   $puppetdb_url = undef
 ) {
@@ -170,13 +171,10 @@ class deployment::museumpas (
     noop        => $noop_deploy
   }
 
-  if $puppetdb_url {
-    exec { 'update_facts museumpas':
-      command     => "/usr/local/bin/update_facts -p ${puppetdb_url}",
-      subscribe   => 'Package[museumpas-website]',
-      refreshonly => true,
-      noop        => $noop_deploy
-    }
+  profiles::deployment::versions { $title:
+    project      => $project_prefix,
+    packages     => [ 'museumpas-website'],
+    puppetdb_url => $puppetdb_url
   }
 
   Class['php'] -> Class['deployment::museumpas']

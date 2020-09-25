@@ -6,6 +6,7 @@ class deployment::balie (
   $silex_package_version = 'latest',
   $angular_package_version = 'latest',
   $angular_app_deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
+  $project_prefix = 'balie',
   $noop_deploy = false,
   $puppetdb_url = undef
 ) {
@@ -121,13 +122,10 @@ class deployment::balie (
     noop        => $noop_deploy
   }
 
-  if $puppetdb_url {
-    exec { 'update_facts balie':
-      command     => "/usr/local/bin/update_facts -p ${puppetdb_url}",
-      subscribe   => [ Package['balie-angular-app'], Package['balie-silex'], Package['balie-swagger-ui']],
-      refreshonly => true,
-      noop        => $noop_deploy
-    }
+  profiles::deployment::versions { $title:
+    project      => $project_prefix,
+    packages     => [ 'balie-angular-app', 'balie-silex', 'balie-swagger-ui'],
+    puppetdb_url => $puppetdb_url
   }
 
   Class['php'] -> Class['deployment::balie']

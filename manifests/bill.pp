@@ -4,6 +4,7 @@ class deployment::bill (
   $license_source,
   $robots_source = undef,
   $htaccess_source = undef,
+  $project_prefix = 'bill',
   $noop_deploy = false,
   $puppetdb_url = undef
 ) {
@@ -95,13 +96,10 @@ class deployment::bill (
     noop        => $noop_deploy
   }
 
-  if $puppetdb_url {
-    exec { 'update_facts bill':
-      command     => "/usr/local/bin/update_facts -p ${puppetdb_url}",
-      subscribe   => Package['bill-website'],
-      refreshonly => true,
-      noop        => $noop_deploy
-    }
+  profiles::deployment::versions { $title:
+    project      => $project_prefix,
+    packages     => [ 'bill-website'],
+    puppetdb_url => $puppetdb_url
   }
 
   Class['php'] -> Class['deployment::bill']

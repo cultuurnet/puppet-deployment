@@ -3,6 +3,7 @@ class deployment::omd::drupal (
   $db_source,
   $fs_source,
   $pubkey_source,
+  $project_prefix = 'omd',
   $noop_deploy = false,
   $puppetdb_url = undef
 ) {
@@ -97,13 +98,10 @@ class deployment::omd::drupal (
     noop    => $noop_deploy
   }
 
-  if $puppetdb_url {
-    exec { "update_facts ${title}":
-      command     => "/usr/local/bin/update_facts -p ${puppetdb_url}",
-      subscribe   => 'Package[omd-drupal]',
-      refreshonly => true,
-      noop        => $noop_deploy
-    }
+  profiles::deployment::versions { $title:
+    project      => $project_prefix,
+    packages     => [ 'omd-drupal'],
+    puppetdb_url => $puppetdb_url
   }
 
   Class['php'] -> Class['deployment::omd::drupal']
