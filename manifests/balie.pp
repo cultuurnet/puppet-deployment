@@ -49,12 +49,6 @@ class deployment::balie (
     noop    => $noop_deploy
   }
 
-  package { 'balie':
-    ensure  => 'latest',
-    require => [ 'Package[balie-silex]', 'Package[balie-angular-app]', 'Package[balie-swagger-ui]', Profiles::Apt::Update['cultuurnet-balie'] ],
-    noop    => $noop_deploy
-  }
-
   file { 'balie-silex-log':
     path    => '/var/www/balie/log',
     owner   => 'www-data',
@@ -130,7 +124,7 @@ class deployment::balie (
   if $puppetdb_url {
     exec { 'update_facts balie':
       command     => "/usr/local/bin/update_facts -p ${puppetdb_url}",
-      subscribe   => 'Package[balie]',
+      subscribe   => [ Package['balie-angular-app'], Package['balie-silex'], Package['balie-swagger-ui']],
       refreshonly => true,
       noop        => $noop_deploy
     }
