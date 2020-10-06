@@ -390,4 +390,10 @@ class deployment::search_api (
     hour    => '*',
     minute  => '15'
   }
+
+  cron { 'cleanup_sapi_logs':
+    command => "find /tmp -type f -name \"sapilog-*\" -mtime +30 -exec rm {} \\;",
+    hour    => '*',
+    minute  => '15'
+  }
 }
