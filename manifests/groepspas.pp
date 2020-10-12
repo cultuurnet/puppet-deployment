@@ -2,7 +2,7 @@ class deployment::groepspas (
   $silex_config_source,
   $angular_app_config_source,
   $angular_app_deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
-  $project_prefix = 'groepspas'
+  $project_prefix = 'groepspas',
   $noop_deploy = false,
   $puppetdb_url = undef
 ) {
