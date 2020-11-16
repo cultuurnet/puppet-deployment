@@ -108,7 +108,7 @@ class deployment::museumpas (
   }
 
   exec { 'clear museumpas cache':
-    command     => 'php artisan cache:clear',
+    command     => 'php artisan optimize:clear',
     cwd         => $basedir,
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     user        => 'www-data',
@@ -133,19 +133,6 @@ class deployment::museumpas (
     noop        => $noop_deploy
   }
 
-  exec { 'clear museumpas views cache':
-    command     => 'php artisan view:clear',
-    cwd         => $basedir,
-    path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
-    user        => 'www-data',
-    environment => [ 'HOME=/'],
-    logoutput   => true,
-    subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
-    refreshonly => true,
-    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'], Exec['clear museumpas model cache'] ],
-    noop        => $noop_deploy
-  }
-
   exec { 'create storage link':
     command     => 'php artisan storage:link',
     cwd         => $basedir,
@@ -167,7 +154,7 @@ class deployment::museumpas (
     logoutput   => true,
     subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
     refreshonly => true,
-    require     => [ File['museumpas-website-config'], Exec['create storage link'], Exec['clear museumpas views cache'] ],
+    require     => [ File['museumpas-website-config'], Exec['create storage link'], Exec['clear museumpas model cache'] ],
     noop        => $noop_deploy
   }
 
