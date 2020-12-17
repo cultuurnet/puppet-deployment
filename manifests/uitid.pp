@@ -37,6 +37,15 @@ class deployment::uitid (
     ensure       => 'present',
     user         => $user,
     passwordfile => $passwordfile,
+    portbase     => $payara_portbase,
+    require      => Glassfish::Create_domain[$payara_domain]
+  }
+
+  Set {
+    ensure       => 'present',
+    user         => $user,
+    passwordfile => $passwordfile,
+    portbase     => $payara_portbase,
     require      => Glassfish::Create_domain[$payara_domain]
   }
 
@@ -100,35 +109,32 @@ class deployment::uitid (
   }
 
   jvmoption { "Domain ${payara_domain} timezone":
-    portbase => $payara_portbase,
-    option   => "-Duser.timezone=${timezone}",
+    option   => "-Duser.timezone=${timezone}"
   }
 
   if $payara_jmx {
     jvmoption { "Domain ${payara_domain} jvmoption -Dcom.sun.management.jmxremote":
-      option   => '-Dcom.sun.management.jmxremote',
-      portbase => $payara_portbase
+      option   => '-Dcom.sun.management.jmxremote'
     }
     jvmoption { "Domain ${payara_domain} jvmoption -Dcom.sun.management.jmxremote.port=9002":
-      option   => '-Dcom.sun.management.jmxremote.port=9002',
-      portbase => $payara_portbase
+      option   => '-Dcom.sun.management.jmxremote.port=9002'
     }
     jvmoption { "Domain ${payara_domain} jvmoption -Dcom.sun.management.jmxremote.local.only=false":
-      option   => '-Dcom.sun.management.jmxremote.local.only=false',
-      portbase => $payara_portbase
+      option   => '-Dcom.sun.management.jmxremote.local.only=false'
     }
     jvmoption { "Domain ${payara_domain} jvmoption -Dcom.sun.management.jmxremote.authenticate=false":
-      option   => '-Dcom.sun.management.jmxremote.authenticate=false',
-      portbase => $payara_portbase
+      option   => '-Dcom.sun.management.jmxremote.authenticate=false'
     }
     jvmoption { "Domain ${payara_domain} jvmoption -Dcom.sun.management.jmxremote.ssl=false":
-      option   => '-Dcom.sun.management.jmxremote.ssl=false',
-      portbase => $payara_portbase
+      option   => '-Dcom.sun.management.jmxremote.ssl=false'
     }
     jvmoption { "Domain ${payara_domain} jvmoption -Djava.rmi.server.hostname=127.0.0.1":
-      option   => '-Djava.rmi.server.hostname=127.0.0.1',
-      portbase => $payara_portbase
+      option   => '-Djava.rmi.server.hostname=127.0.0.1'
     }
+  }
+
+  set { 'server.network-config.protocols.protocol.http-listener-1.http.scheme-mapping':
+    value => 'X-Forwarded-Proto'
   }
 
   systemproperty { 'uitid_baseurl':
