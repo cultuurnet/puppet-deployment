@@ -46,6 +46,24 @@ class deployment::search_api (
     default => 'absent'
   }
 
+  apt::source { 'cultuurnet-sapi':
+    location => "https://sapi:phahk3Wai5lo@apt-private.uitdatabank.be/sapi-${environment}",
+    release  => $facts['lsbdistcodename'],
+    repos    => 'main',
+    key      => {
+      'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
+      'source' => 'http://apt.uitdatabank.be/gpgkey/cultuurnet.gpg.key'
+    },
+    include  => {
+      'deb' => true,
+      'src' => false
+    }
+  }
+
+  profiles::apt::update { 'cultuurnet-sapi':
+    require => Apt::Source['cultuurnet-sapi']
+  }
+
   class { 'profiles::glassfish':
     flavor => $glassfish_flavor
   }
@@ -246,8 +264,9 @@ class deployment::search_api (
   }
 
   package { 'sapi':
-    ensure => 'latest',
-    notify => App['sapi']
+    ensure  => 'latest',
+    require => Profiles::Apt::Update['cultuurnet-sapi']
+    notify  => App['sapi']
   }
 
   app { 'sapi':
