@@ -265,7 +265,7 @@ class deployment::search_api (
 
   package { 'sapi':
     ensure  => 'latest',
-    require => Profiles::Apt::Update['cultuurnet-sapi']
+    require => Profiles::Apt::Update['cultuurnet-sapi'],
     notify  => App['sapi']
   }
 
