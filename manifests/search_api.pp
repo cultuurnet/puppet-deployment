@@ -46,6 +46,8 @@ class deployment::search_api (
     default => 'absent'
   }
 
+  include ::profiles::apt::keys
+
   apt::source { 'cultuurnet-sapi':
     location => "https://sapi:phahk3Wai5lo@apt-private.uitdatabank.be/sapi-${environment}",
     release  => $facts['lsbdistcodename'],
@@ -57,7 +59,8 @@ class deployment::search_api (
     include  => {
       'deb' => true,
       'src' => false
-    }
+    },
+    require  => Class['profiles::apt::keys']
   }
 
   profiles::apt::update { 'cultuurnet-sapi':
