@@ -206,23 +206,24 @@ class deployment::search_api (
   }
 
   jdbcconnectionpool { 'mysql_searchdb_j2eePool':
-    ensure              => 'present',
-    user                => $user,
-    passwordfile        => $passwordfile,
-    portbase            => $glassfish_portbase,
-    resourcetype        => 'javax.sql.DataSource',
-    dsclassname         => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
-    properties          => {
-      'serverName'        => $mysql_host,
-      'portNumber'        => $mysql_port,
-      'databaseName'      => $mysql_database,
-      'User'              => $mysql_user,
-      'Password'          => $mysql_password,
-      'URL'               => "jdbc:mysql://${mysql_host}:${mysql_port}/${mysql_database}",
-      'driverClass'       => 'com.mysql.jdbc.Driver',
-      'useUnicode'        => true
+    ensure       => 'present',
+    user         => $user,
+    passwordfile => $passwordfile,
+    portbase     => $glassfish_portbase,
+    resourcetype => 'javax.sql.DataSource',
+    dsclassname  => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
+    properties   => {
+      'serverName'   => $mysql_host,
+      'portNumber'   => $mysql_port,
+      'databaseName' => $mysql_database,
+      'User'         => $mysql_user,
+      'Password'     => $mysql_password,
+      'URL'          => "jdbc:mysql://${mysql_host}:${mysql_port}/${mysql_database}",
+      'driverClass'  => 'com.mysql.jdbc.Driver',
+      'useUnicode'   => true,
+      'useSSL'       => false
     },
-    require             => [ Class['glassfish'], Glassfish::Create_domain[$glassfish_domain]]
+    require      => [ Class['glassfish'], Glassfish::Create_domain[$glassfish_domain]]
   }
 
   jdbcresource { 'jdbc/search':
