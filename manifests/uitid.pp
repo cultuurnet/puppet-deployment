@@ -16,7 +16,7 @@ class deployment::uitid (
   $settings                              = {},
   $payara_jmx                            = true,
   $ensure_send_uitalerts                 = 'absent',
-  $auth0_sync                            = undef,
+  $auth0_userdata_sync                   = undef,
   $auth0_client_id                       = undef,
   $auth0_client_secret                   = undef,
   $auth0_domain                          = undef,
@@ -142,7 +142,7 @@ class deployment::uitid (
   }
 
   systemproperty { 'uitid_auth0_sync':
-    value => bool2str($auth0_sync)
+    value => bool2str($auth0_userdata_sync)
   }
 
   systemproperty { 'UITID_AUTH0_CLIENT_ID':
