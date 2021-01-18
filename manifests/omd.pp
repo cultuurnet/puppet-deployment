@@ -3,6 +3,22 @@ class deployment::omd (
   $with_drupal                 = true,
   $with_media_download_manager = true
 ){
+
+  include ::profiles::apt::keys
+
+  apt::source { 'cultuurnet-omd':
+    location => "http://apt.uitdatabank.be/omd-${environment}",
+    release  => $facts['lsbdistcodename'],
+    repos    => 'main',
+    require  => Class['profiles::apt::keys'],
+    include  => {
+      'deb' => true,
+      'src' => false
+    }
+  }
+
+  profiles::apt::update { 'cultuurnet-omd': }
+
   unless $facts['noop_deploy'] == 'true' {
     if $with_angular {
       contain deployment::omd::angular
