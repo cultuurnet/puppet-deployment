@@ -74,7 +74,7 @@ class deployment::omd::drupal (
   }
 
   exec { 'drush config-split-import':
-    command     => "drush -r /var/www/omd-drupal config-split-import -y",
+    command     => "drush -r /var/www/omd-drupal config-split:import -y",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     environment => [ 'HOME=/'],
     refreshonly => true,
