@@ -10,6 +10,10 @@ class deployment::omd::drupal (
 
   contain deployment
 
+  realize Profiles::Apt::Update['cultuurnet-tools']
+
+  realize Package['drush']
+
   package { 'omd-drupal':
     ensure => 'latest',
     notify => 'Class[Apache::Service]',
@@ -54,7 +58,8 @@ class deployment::omd::drupal (
     onlyif      => 'test 0 -eq $(drush -r /var/www/omd-drupal sql-query "show tables" | sed -e "/^$/d" | wc -l)',
     environment => [ 'HOME=/'],
     refreshonly => true,
-    subscribe   => [ 'Package[omd-drupal]', 'Package[omd-db-data]', 'File[omd-drupal-settings]'],
+    require     => Package['drush'],
+    subscribe   => [ Package['drush'], 'Package[omd-drupal]', 'Package[omd-db-data]', 'File[omd-drupal-settings]'],
     noop        => $noop_deploy
   }
 
@@ -64,7 +69,7 @@ class deployment::omd::drupal (
     environment => [ 'HOME=/'],
     refreshonly => true,
     subscribe   => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]'],
-    require     => 'Exec[omd-db-install]',
+    require     => [ Package['drush'], 'Exec[omd-db-install]'],
     noop        => $noop_deploy
   }
 
@@ -74,7 +79,7 @@ class deployment::omd::drupal (
     environment => [ 'HOME=/'],
     refreshonly => true,
     subscribe   => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]'],
-    require     => [ 'Package[omd-fs-data]', 'Exec[omd-db-install]', 'Exec[drush updatedb]'],
+    require     => [ Package['drush'], 'Package[omd-fs-data]', 'Exec[omd-db-install]', 'Exec[drush updatedb]'],
     noop        => $noop_deploy
   }
 
@@ -84,7 +89,7 @@ class deployment::omd::drupal (
     environment => [ 'HOME=/'],
     refreshonly => true,
     subscribe   => [ 'Package[omd-drupal]', 'File[omd-drupal-settings]', 'Package[omd-fs-data]'],
-    require     => 'Exec[drush config-split-import]',
+    require     => [ Package['drush'], 'Exec[drush config-split-import]'],
     noop        => $noop_deploy
   }
 
