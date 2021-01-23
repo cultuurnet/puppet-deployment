@@ -2,26 +2,29 @@ class deployment::museumpas (
   $config_source,
   $maintenance_source,
   $db_name,
-  $robots_source = undef,
-  $project_prefix = 'museumpas',
-  $noop_deploy = false,
-  $puppetdb_url = undef
+  $website_version    = 'latest',
+  $database_version   = 'latest',
+  $files_version      = 'latest',
+  $robots_source      = undef,
+  $project_prefix     = 'museumpas',
+  $noop_deploy        = false,
+  $puppetdb_url       = undef
 ) {
 
   $basedir = '/var/www/museumpas'
 
   package { 'museumpas-website':
-    ensure => 'latest',
+    ensure => $website_version,
     noop   => $noop_deploy
   }
 
   package { 'museumpas-database':
-    ensure => 'latest',
+    ensure => $database_version,
     noop   => $noop_deploy
   }
 
   package { 'museumpas-files':
-    ensure => 'latest',
+    ensure => $files_version,
     noop   => $noop_deploy
   }
 
