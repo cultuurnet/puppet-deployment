@@ -7,7 +7,7 @@ class deployment::udb3::search (
   $search_package_version   = 'latest',
   $geojson_package_version  = 'latest',
   $migrate_data             = true,
-  $project_prefix           = 'udb3',
+  $project_prefix           = 'udb',
   $migrate_timeout          = '300',
   $reindex_permanent_hour   = '0',
   $reindex_permanent_minute = '0',

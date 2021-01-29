@@ -2,7 +2,7 @@ class deployment::udb3::jwt (
   $config_source,
   $privkey_source,
   $pubkey_source,
-  $project_prefix = 'udb3',
+  $project_prefix = 'udb',
   $noop_deploy = false,
   $puppetdb_url = undef
 ) {

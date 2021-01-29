@@ -1,5 +1,5 @@
 class deployment::udb3::apidoc (
-  $project_prefix = 'udb3',
+  $project_prefix = 'udb',
   $noop_deploy    = false,
   $puppetdb_url   = undef
 ) {

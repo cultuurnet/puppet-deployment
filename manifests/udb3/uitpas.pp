@@ -4,9 +4,9 @@ class deployment::udb3::uitpas (
   $pubkey_auth0_source,
   $externalid_place_mapping_source,
   $externalid_organizer_mapping_source,
-  $project_prefix = 'udb3',
-  $noop_deploy = false,
-  $puppetdb_url = undef
+  $project_prefix = 'udb',
+  $noop_deploy    = false,
+  $puppetdb_url   = undef
 ) {
 
   package { 'udb3-uitpas':
