@@ -19,12 +19,18 @@ class deployment::omd (
 
   profiles::apt::update { 'cultuurnet-omd': }
 
+  realize Profiles::Apt::Update['cultuurnet-tools']
+
+  realize Package['drush']
+
   unless $facts['noop_deploy'] == 'true' {
     if $with_angular {
       contain deployment::omd::angular
     }
     if $with_drupal {
       contain deployment::omd::drupal
+
+      Package['drush'] -> Class['deployment::omd::drupal']
     }
     if $with_media_download_manager {
       contain deployment::omd::mediadownloadmanager

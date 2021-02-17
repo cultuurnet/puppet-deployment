@@ -10,10 +10,6 @@ class deployment::omd::drupal (
 
   contain deployment
 
-  realize Profiles::Apt::Update['cultuurnet-tools']
-
-  realize Package['drush']
-
   package { 'omd-drupal':
     ensure => 'latest',
     notify => 'Class[Apache::Service]',
