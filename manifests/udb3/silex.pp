@@ -21,11 +21,6 @@ class deployment::udb3::silex (
     noop   => $noop_deploy
   }
 
-  package { 'udb3-php':
-    ensure => 'latest',
-    noop   => $noop_deploy
-  }
-
   file { 'udb3-silex-log':
     ensure  => 'directory',
     path    => '/var/www/udb-silex/log',
@@ -173,7 +168,7 @@ class deployment::udb3::silex (
 
   profiles::deployment::versions { $title:
     project      => $project_prefix,
-    packages     => [ 'udb3-silex', 'udb3-php'],
+    packages     => 'udb3-silex',
     puppetdb_url => $puppetdb_url
   }
 
