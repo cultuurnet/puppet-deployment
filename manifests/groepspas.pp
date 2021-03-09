@@ -1,5 +1,4 @@
 class deployment::groepspas (
-  $silex_config_source,
   $angular_app_config_source,
   $angular_app_deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
   $project_prefix = 'groepspas',
@@ -27,33 +26,9 @@ class deployment::groepspas (
     noop     => $noop_deploy
   }
 
-  package { 'groepspas-silex':
-    ensure  => 'latest',
-    notify  => 'Class[Apache::Service]',
-    require => Profiles::Apt::Update['cultuurnet-groepspas'],
-    noop    => $noop_deploy
-  }
-
   package { 'groepspas-angular-app':
     ensure  => 'latest',
     require => Profiles::Apt::Update['cultuurnet-groepspas'],
-    noop    => $noop_deploy
-  }
-
-  package { 'groepspas':
-    ensure  => 'latest',
-    require => [ 'Package[groepspas-silex]', 'Package[groepspas-angular-app]'],
-    noop    => $noop_deploy
-  }
-
-  file { 'groepspas-silex-config':
-    ensure  => 'file',
-    path    => '/var/www/groepspas-api/config.yml',
-    source  => $silex_config_source,
-    owner   => 'www-data',
-    group   => 'www-data',
-    require => 'Package[groepspas-silex]',
-    notify  => 'Class[Apache::Service]',
     noop    => $noop_deploy
   }
 
@@ -85,9 +60,7 @@ class deployment::groepspas (
 
   profiles::deployment::versions { $title:
     project      => $project_prefix,
-    packages     => [ 'groepspas'],
+    packages     => 'groepspas-angular-app',
     puppetdb_url => $puppetdb_url
   }
-
-  Class['php'] -> Class['deployment::groepspas']
 }
