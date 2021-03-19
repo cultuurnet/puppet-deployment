@@ -6,7 +6,6 @@ class deployment::udb3 (
   $with_cdbxml            = true,
   $with_jwtprovider       = true,
   $with_apidoc            = true,
-  $with_uitpas            = true,
   $with_search            = true,
   $with_iis               = true,
   $with_movie_api_fetcher = true
@@ -81,24 +80,6 @@ class deployment::udb3 (
 
   @profiles::apt::update { 'cultuurnet-jwtprovider':
     require => Apt::Source['cultuurnet-jwtprovider']
-  }
-
-  @apt::source { 'cultuurnet-udb3-uitpas':
-    location => "http://apt.uitdatabank.be/udb3-uitpas-${environment}",
-    release  => 'trusty',
-    repos    => 'main',
-    key      => {
-      'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
-      'source' => 'http://apt.uitdatabank.be/gpgkey/cultuurnet.gpg.key'
-    },
-    include  => {
-      'deb' => true,
-      'src' => false
-    }
-  }
-
-  @profiles::apt::update { 'cultuurnet-udb3-uitpas':
-    require => Apt::Source['cultuurnet-udb3-uitpas']
   }
 
   @apt::source { 'cultuurnet-iis':
@@ -184,14 +165,6 @@ class deployment::udb3 (
       contain deployment::udb3::apidoc
 
       Profiles::Apt::Update['cultuurnet-udb3'] -> Class['deployment::udb3::apidoc']
-    }
-    if $with_uitpas {
-      realize Apt::Source['cultuurnet-udb3-uitpas']
-      realize Profiles::Apt::Update['cultuurnet-udb3-uitpas']
-
-      contain deployment::udb3::uitpas
-
-      Profiles::Apt::Update['cultuurnet-udb3-uitpas'] -> Class['deployment::udb3::uitpas']
     }
     if $with_search {
       @apt::source { 'cultuurnet-search':
