@@ -12,7 +12,7 @@ class deployment::udb3 (
 ){
   @apt::source { 'cultuurnet-udb3':
     location => "http://apt.uitdatabank.be/udb3-${environment}",
-    release  => 'trusty',
+    release  => $facts['lsbdistcodename'],
     repos    => 'main',
     key      => {
       'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
@@ -30,7 +30,7 @@ class deployment::udb3 (
 
   @apt::source { 'cultuurnet-udb-nl':
     location => "http://apt.uitdatabank.be/udb-nl-${environment}",
-    release  => 'trusty',
+    release  => $facts['lsbdistcodename'],
     repos    => 'main',
     key      => {
       'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
@@ -48,7 +48,7 @@ class deployment::udb3 (
 
   @apt::source { 'cultuurnet-cdbxml':
     location => "http://apt.uitdatabank.be/cdbxml-${environment}",
-    release  => 'trusty',
+    release  => $facts['lsbdistcodename'],
     repos    => 'main',
     key      => {
       'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
@@ -66,7 +66,7 @@ class deployment::udb3 (
 
   @apt::source { 'cultuurnet-jwtprovider':
     location => "http://apt.uitdatabank.be/jwtprovider-${environment}",
-    release  => 'trusty',
+    release  => $facts['lsbdistcodename'],
     repos    => 'main',
     key      => {
       'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
@@ -84,7 +84,7 @@ class deployment::udb3 (
 
   @apt::source { 'cultuurnet-iis':
     location => "http://apt.uitdatabank.be/iis-${environment}",
-    release  => 'trusty',
+    release  => $facts['lsbdistcodename'],
     repos    => 'main',
     key      => {
       'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
@@ -169,7 +169,7 @@ class deployment::udb3 (
     if $with_search {
       @apt::source { 'cultuurnet-search':
         location => "http://apt.uitdatabank.be/search-${environment}",
-        release  => 'trusty',
+        release  => $facts['lsbdistcodename'],
         repos    => 'main',
         key      => {
           'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
