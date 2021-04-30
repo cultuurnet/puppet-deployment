@@ -1,6 +1,8 @@
 class deployment::search_api (
   $user,
   $glassfish_domain,
+  $apt_user,
+  $apt_password,
   $mysql_user,
   $mysql_password,
   $mysql_host,
@@ -49,7 +51,7 @@ class deployment::search_api (
   include ::profiles::apt::keys
 
   apt::source { 'cultuurnet-sapi':
-    location => "https://sapi:phahk3Wai5lo@apt-private.uitdatabank.be/sapi-${environment}",
+    location => "https://${apt_user}:${apt_password}@apt-private.uitdatabank.be/sapi-${environment}",
     release  => $facts['lsbdistcodename'],
     repos    => 'main',
     key      => {
