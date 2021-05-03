@@ -6,7 +6,7 @@ APPDIR = File.expand_path(ARGV[0])
 
 def merge_config
   angular_app_package = `dpkg -S #{APPDIR}/index.html`.split(":")[0]
-  original_scripts_name = `dpkg -L #{angular_app_package}`.split("\n").grep(/scripts\/scripts\..*\.js/)[0]
+  original_scripts_name = `dpkg -L #{angular_app_package}`.split("\n").grep(/scripts\/scripts\..*\.js$/)[0]
 
   config_hashed_keys = AngularConfig::Config.load("#{APPDIR}/config.json").hash_keys
   scripts = AngularConfig::Source.load(original_scripts_name)
