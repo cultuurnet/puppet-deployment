@@ -68,12 +68,22 @@ class deployment::projectaanvraag::silex (
     noop      => $noop_deploy
   }
 
+  exec { 'silex-clear-all-metadata-cache':
+    command     => 'bin/console orm:clear-cache:metadata',
+    cwd         => '/var/www/projectaanvraag-api',
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/projectaanvraag-api'],
+    subscribe   => Package['projectaanvraag-silex'],
+    require     => Exec['silex-db-install'],
+    refreshonly => true,
+    noop        => $noop_deploy
+  }
+
   exec { 'silex-db-migrate':
     command     => 'bin/console orm:schema-tool:update --force',
     cwd         => '/var/www/projectaanvraag-api',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/projectaanvraag-api'],
     subscribe   => Package['projectaanvraag-silex'],
-    require     => Exec['silex-db-install'],
+    require     => Exec['silex-clear-all-metadata-cache'],
     refreshonly => true,
     noop        => $noop_deploy
   }
