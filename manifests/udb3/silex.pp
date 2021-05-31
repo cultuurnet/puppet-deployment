@@ -4,6 +4,9 @@ class deployment::udb3::silex (
   $permissions_source,
   $externalid_place_mapping_source,
   $externalid_organizer_mapping_source,
+  $term_mapping_facilities_source,
+  $term_mapping_themes_source,
+  $term_mapping_types_source,
   $db_name,
   $pubkey_source,
   $pubkey_auth0_source,
@@ -128,6 +131,16 @@ class deployment::udb3::silex (
     require                  => 'Package[udb3-silex]',
     notify                   => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
     noop_deploy              => $noop_deploy
+  }
+
+  deployment::udb3::terms { 'udb3-silex':
+    directory                 => '/var/www/udb-silex',
+    facilities_mapping_source => $term_mapping_facilities_source,
+    themes_mapping_source     => $term_mapping_themes_source,
+    types_mapping_source      => $term_mapping_types_source,
+    require                   => Package['udb3-silex'],
+    notify                    => [ Class['apache::service'], Class['supervisord::service']],
+    noop_deploy               => $noop_deploy
   }
 
   logrotate::rule { 'udb3-silex':
