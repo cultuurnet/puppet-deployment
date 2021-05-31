@@ -50,15 +50,6 @@ class deployment::udb3::search (
     noop    => $noop_deploy
   }
 
-  file { 'udb3-search-facet-mapping-facilities':
-    ensure  => 'file',
-    path    => '/var/www/udb-search/facet_mapping_facilities.yml',
-    source  => $facet_mapping_facilities_source,
-    require => 'Package[udb3-search]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
-    noop    => $noop_deploy
-  }
-
   # When running in noop_deploy the source of this file will not exist, and
   # applying the resource, even with noop => true will cause an error
   file { 'udb3-search-facet-mapping-regions':
@@ -81,22 +72,17 @@ class deployment::udb3::search (
     noop    => $noop_deploy
   }
 
-  file { 'udb3-search-facet-mapping-themes':
-    ensure  => 'file',
-    path    => '/var/www/udb-search/facet_mapping_themes.yml',
-    source  => $facet_mapping_themes_source,
-    require => 'Package[udb3-search]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
-    noop    => $noop_deploy
-  }
-
-  file { 'udb3-search-facet-mapping-types':
-    ensure  => 'file',
-    path    => '/var/www/udb-search/facet_mapping_types.yml',
-    source  => $facet_mapping_types_source,
-    require => 'Package[udb3-search]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
-    noop    => $noop_deploy
+  deployment::udb3::terms { 'udb3-search':
+    directory                 => '/var/www/udb-search',
+    facilities_mapping_source => $facet_mapping_facilities_source,
+    themes_mapping_source     => $facet_mapping_themes_source,
+    types_mapping_source      => $facet_mapping_types_source,
+    facilities_mapping_name   => 'facet_mapping_facilities.yml',
+    themes_mapping_name       => 'facet_mapping_themes.yml',
+    types_mapping_name        => 'facet_mapping_types.yml',
+    require                   => Package['udb3-search'],
+    notify                    => [ Class['apache::service'], Class['supervisord::service']],
+    noop                      => $noop_deploy
   }
 
   file { 'udb3-search-log':
