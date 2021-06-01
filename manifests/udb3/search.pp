@@ -73,16 +73,16 @@ class deployment::udb3::search (
   }
 
   deployment::udb3::terms { 'udb3-search':
-    directory                 => '/var/www/udb-search',
-    facilities_mapping_source => $facet_mapping_facilities_source,
-    themes_mapping_source     => $facet_mapping_themes_source,
-    types_mapping_source      => $facet_mapping_types_source,
-    facilities_mapping_name   => 'facet_mapping_facilities.yml',
-    themes_mapping_name       => 'facet_mapping_themes.yml',
-    types_mapping_name        => 'facet_mapping_types.yml',
-    require                   => Package['udb3-search'],
-    notify                    => [ Class['apache::service'], Class['supervisord::service']],
-    noop                      => $noop_deploy
+    directory                   => '/var/www/udb-search',
+    facilities_mapping_source   => $facet_mapping_facilities_source,
+    themes_mapping_source       => $facet_mapping_themes_source,
+    types_mapping_source        => $facet_mapping_types_source,
+    facilities_mapping_filename => 'facet_mapping_facilities.yml',
+    themes_mapping_filename     => 'facet_mapping_themes.yml',
+    types_mapping_filename      => 'facet_mapping_types.yml',
+    require                     => Package['udb3-search'],
+    notify                      => [ Class['apache::service'], Class['supervisord::service']],
+    noop                        => $noop_deploy
   }
 
   file { 'udb3-search-log':
