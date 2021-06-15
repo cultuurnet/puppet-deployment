@@ -13,7 +13,7 @@ class deployment::balie (
 
   apt::source { 'cultuurnet-balie':
     location => "http://apt.uitdatabank.be/balie-${environment}",
-    release  => 'trusty',
+    release  => $facts['lsbdistcodename'],
     repos    => 'main',
     key      => {
       'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
