@@ -11,14 +11,13 @@ class deployment::balie (
   $puppetdb_url = undef
 ) {
 
+  include ::profiles::apt::keys
+
   apt::source { 'cultuurnet-balie':
     location => "http://apt.uitdatabank.be/balie-${environment}",
     release  => $facts['lsbdistcodename'],
     repos    => 'main',
-    key      => {
-      'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
-      'source' => 'http://apt.uitdatabank.be/gpgkey/cultuurnet.gpg.key'
-    },
+    require  => Class['profiles::apt::keys'],
     include  => {
       'deb' => true,
       'src' => false

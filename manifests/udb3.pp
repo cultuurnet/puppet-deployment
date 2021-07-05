@@ -10,14 +10,13 @@ class deployment::udb3 (
   $with_iis               = true,
   $with_movie_api_fetcher = true
 ){
+  include ::profiles::apt::keys
+
   @apt::source { 'cultuurnet-udb3':
     location => "http://apt.uitdatabank.be/udb3-${environment}",
     release  => $facts['lsbdistcodename'],
     repos    => 'main',
-    key      => {
-      'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
-      'source' => 'http://apt.uitdatabank.be/gpgkey/cultuurnet.gpg.key'
-    },
+    require  => Class['profiles::apt::keys'],
     include  => {
       'deb' => true,
       'src' => false
@@ -32,10 +31,7 @@ class deployment::udb3 (
     location => "http://apt.uitdatabank.be/udb-nl-${environment}",
     release  => $facts['lsbdistcodename'],
     repos    => 'main',
-    key      => {
-      'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
-      'source' => 'http://apt.uitdatabank.be/gpgkey/cultuurnet.gpg.key'
-    },
+    require  => Class['profiles::apt::keys'],
     include  => {
       'deb' => true,
       'src' => false
@@ -50,10 +46,7 @@ class deployment::udb3 (
     location => "http://apt.uitdatabank.be/cdbxml-${environment}",
     release  => $facts['lsbdistcodename'],
     repos    => 'main',
-    key      => {
-      'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
-      'source' => 'http://apt.uitdatabank.be/gpgkey/cultuurnet.gpg.key'
-    },
+    require  => Class['profiles::apt::keys'],
     include  => {
       'deb' => true,
       'src' => false
@@ -68,10 +61,7 @@ class deployment::udb3 (
     location => "http://apt.uitdatabank.be/jwtprovider-${environment}",
     release  => $facts['lsbdistcodename'],
     repos    => 'main',
-    key      => {
-      'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
-      'source' => 'http://apt.uitdatabank.be/gpgkey/cultuurnet.gpg.key'
-    },
+    require  => Class['profiles::apt::keys'],
     include  => {
       'deb' => true,
       'src' => false
@@ -86,10 +76,7 @@ class deployment::udb3 (
     location => "http://apt.uitdatabank.be/iis-${environment}",
     release  => $facts['lsbdistcodename'],
     repos    => 'main',
-    key      => {
-      'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
-      'source' => 'http://apt.uitdatabank.be/gpgkey/cultuurnet.gpg.key'
-    },
+    require  => Class['profiles::apt::keys'],
     include  => {
       'deb' => true,
       'src' => false
@@ -171,10 +158,7 @@ class deployment::udb3 (
         location => "http://apt.uitdatabank.be/search-${environment}",
         release  => $facts['lsbdistcodename'],
         repos    => 'main',
-        key      => {
-          'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
-          'source' => 'http://apt.uitdatabank.be/gpgkey/cultuurnet.gpg.key'
-        },
+        require  => Class['profiles::apt::keys'],
         include  => {
           'deb' => true,
           'src' => false

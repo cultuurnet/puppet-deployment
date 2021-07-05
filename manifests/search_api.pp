@@ -54,15 +54,11 @@ class deployment::search_api (
     location => "https://${apt_user}:${apt_password}@apt-private.uitdatabank.be/sapi-${environment}",
     release  => $facts['lsbdistcodename'],
     repos    => 'main',
-    key      => {
-      'id'     => '2380EA3E50D3776DFC1B03359F4935C80DC9EA95',
-      'source' => 'http://apt.uitdatabank.be/gpgkey/cultuurnet.gpg.key'
-    },
+    require  => Class['profiles::apt::keys'],
     include  => {
       'deb' => true,
       'src' => false
     },
-    require  => Class['profiles::apt::keys']
   }
 
   profiles::apt::update { 'cultuurnet-sapi':
