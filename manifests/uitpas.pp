@@ -224,7 +224,7 @@ class deployment::uitpas (
   }
 
   exec { 'uitpas_database_management':
-    command     => "liquibase --driver=com.mysql.jdbc.Driver --classpath=/opt/uitpas-db-mgmt/uitpas-db-mgmt.jar:/opt/mysql-connector-java/mysql-connector-java.jar --changeLogFile=migrations.xml --url='jdbc:mysql://${mysql_host}:${mysql_port}/${mysql_database}' --username=${mysql_user} --password=${mysql_password} update",
+    command     => "liquibase --driver=com.mysql.jdbc.Driver --classpath=/opt/uitpas-db-mgmt/uitpas-db-mgmt.jar:/opt/mysql-connector-java/mysql-connector-java.jar --changeLogFile=migrations.xml --url='jdbc:mysql://${mysql_host}:${mysql_port}/${mysql_database}?useSSL=false' --username=${mysql_user} --password=${mysql_password} update",
     path        => [ '/opt/liquibase', '/usr/local/bin', '/usr/bin', '/bin' ],
     refreshonly => true,
     logoutput   => true,
