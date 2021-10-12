@@ -24,7 +24,25 @@ class deployment::uitid (
   $uitalert_use_fast_search              = false
 ) {
 
-  # TODO: apt repository
+  contain profiles::glassfish
+
+  include ::profiles::packages
+  include ::profiles::apt::keys
+
+  apt::source { 'cultuurnet-uitid':
+    location => "https://${apt_user}:${apt_password}@apt-private.uitdatabank.be/uitpas-${environment}",
+    release  => $facts['lsbdistcodename'],
+    repos    => 'main',
+    require  => Class['profiles::apt::keys'],
+    include  => {
+      'deb' => true,
+      'src' => false
+    },
+  }
+
+  profiles::apt::update { 'cultuurnet-uitid':
+    require => Apt::Source['cultuurnet-uitid']
+  }
 
   $passwordfile = "/home/${user}/asadmin.pass"
   $application_http_port = $payara_portbase + 80
@@ -38,7 +56,7 @@ class deployment::uitid (
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $payara_portbase,
-    require      => Glassfish::Create_domain[$payara_domain]
+    require      => [Glassfish::Create_asadmin_passfile["${user}_asadmin_passfile"], Glassfish::Create_domain[$payara_domain]]
   }
 
   Set {
@@ -46,7 +64,7 @@ class deployment::uitid (
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $payara_portbase,
-    require      => Glassfish::Create_domain[$payara_domain]
+    require      => [Glassfish::Create_asadmin_passfile["${user}_asadmin_passfile"], Glassfish::Create_domain[$payara_domain]]
   }
 
   Systemproperty {
@@ -54,7 +72,7 @@ class deployment::uitid (
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $payara_portbase,
-    require      => Glassfish::Create_domain[$payara_domain],
+    require      => [Glassfish::Create_asadmin_passfile["${user}_asadmin_passfile"], Glassfish::Create_domain[$payara_domain]]
     notify       => Exec["restart_service_${service_name}"]
   }
 
@@ -205,8 +223,9 @@ class deployment::uitid (
   }
 
   package { 'uitid-app':
-    ensure => $package_version,
-    notify => App['uitid-app']
+    ensure  => $package_version,
+    require => Profiles::Apt::Update['cultuurnet-uitid'],
+    notify  => App['uitid-app']
   }
 
   exec { 'uitid-app_schema_install':

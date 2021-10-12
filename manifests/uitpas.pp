@@ -1,5 +1,7 @@
 class deployment::uitpas (
   $user,
+  $apt_user,
+  $apt_password,
   $payara_domain,
   $mysql_user,
   $mysql_password,
@@ -22,14 +24,30 @@ class deployment::uitpas (
   $sysadmin_auth0_secret   = undef
 ) {
 
-  # TODO: apt repository
+  contain profiles::glassfish
+
+  include ::profiles::packages
+  include ::profiles::apt::keys
+
+  apt::source { 'cultuurnet-uitpas':
+    location => "https://${apt_user}:${apt_password}@apt-private.uitdatabank.be/uitpas-${environment}",
+    release  => $facts['lsbdistcodename'],
+    repos    => 'main',
+    require  => Class['profiles::apt::keys'],
+    include  => {
+      'deb' => true,
+      'src' => false
+    },
+  }
+
+  profiles::apt::update { 'cultuurnet-uitpas':
+    require => Apt::Source['cultuurnet-uitpas']
+  }
 
   $passwordfile = "/home/${user}/asadmin.pass"
   $application_http_port = $payara_portbase + 80
   $payara_default_start_heap = '512m'
   $payara_default_max_heap = '512m'
-
-  contain profiles::glassfish
 
   realize Package['liquibase']
   realize Package['mysql-connector-java']
@@ -194,13 +212,15 @@ class deployment::uitpas (
   }
 
   package { 'uitpas-db-mgmt':
-    ensure => $db_mgmt_package_version,
-    notify => Exec['uitpas_database_management']
+    ensure  => $db_mgmt_package_version,
+    require => Profiles::Apt::Update['cultuurnet-uitpas'],
+    notify  => Exec['uitpas_database_management']
   }
 
   package { 'uitpas-app':
-    ensure => $package_version,
-    notify => App['uitpas-app']
+    ensure  => $package_version,
+    require => Profiles::Apt::Update['cultuurnet-uitpas'],
+    notify  => App['uitpas-app']
   }
 
   exec { 'uitpas_database_management':
