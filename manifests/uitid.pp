@@ -30,7 +30,7 @@ class deployment::uitid (
   include ::profiles::apt::keys
 
   apt::source { 'cultuurnet-uitid':
-    location => "https://${apt_user}:${apt_password}@apt-private.uitdatabank.be/uitpas-${environment}",
+    location => "https://${apt_user}:${apt_password}@apt-private.uitdatabank.be/uitid-${environment}",
     release  => $facts['lsbdistcodename'],
     repos    => 'main',
     require  => Class['profiles::apt::keys'],
@@ -72,7 +72,7 @@ class deployment::uitid (
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $payara_portbase,
-    require      => [Glassfish::Create_asadmin_passfile["${user}_asadmin_passfile"], Glassfish::Create_domain[$payara_domain]]
+    require      => [Glassfish::Create_asadmin_passfile["${user}_asadmin_passfile"], Glassfish::Create_domain[$payara_domain]],
     notify       => Exec["restart_service_${service_name}"]
   }
 
