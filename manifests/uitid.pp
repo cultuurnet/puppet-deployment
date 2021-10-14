@@ -288,6 +288,17 @@ class deployment::uitid (
     subscribe   => App['uitid-app']
   }
 
+  cron { "Cleanup payara logs ${payara_domain}":
+    command  => "/usr/bin/find /opt/payara/glassfish/domains/${payara_domain}/logs -type f -name \"server.log_*\" -mtime +7 -exec rm {} \;"
+    user     => 'root',
+    hour     => '*',
+    minute   => '15',
+    weekday  => '*',
+    monthday => '*',
+    month    => '*',
+    require  => Glassfish::Create_domain[$payara_domain]
+  }
+
   cron { 'Send UiTalerts ASAP':
     command  => "/usr/bin/curl 'http://localhost:${application_http_port}/uitid/rest/savedSearch/batch/ASAP'",
     ensure   => $ensure_send_uitalerts,

@@ -282,4 +282,15 @@ class deployment::uitpas (
     refreshonly => true,
     subscribe   => App['uitpas-app']
   }
+
+  cron { "Cleanup payara logs ${payara_domain}":
+    command  => "/usr/bin/find /opt/payara/glassfish/domains/${payara_domain}/logs -type f -name \"server.log_*\" -mtime +7 -exec rm {} \;"
+    user     => 'root',
+    hour     => '*',
+    minute   => '15',
+    weekday  => '*',
+    monthday => '*',
+    month    => '*',
+    require  => Glassfish::Create_domain[$payara_domain]
+  }
 }
