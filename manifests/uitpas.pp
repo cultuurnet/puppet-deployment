@@ -17,6 +17,7 @@ class deployment::uitpas (
   $timezone                = 'UTC',
   $settings                = {},
   $payara_jmx              = true,
+  $swagger_base_url        = undef,
   $auth0_domain            = undef,
   $ksb_auth0_clientid      = undef,
   $ksb_auth0_secret        = undef,
@@ -159,6 +160,10 @@ class deployment::uitpas (
 
   systemproperty { 'uitpas_cfauth_secret':
     value => 'cd52d819e50c29a41cd82a61412c7b1c'
+  }
+
+  systemproperty { 'uitpas_swagger_base':
+    value => $swagger_base_url
   }
 
   systemproperty { 'UITPAS_AUTH0_DOMAIN':

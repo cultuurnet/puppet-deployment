@@ -23,6 +23,7 @@ class deployment::uitid (
   $auth0_client_secret                   = undef,
   $auth0_domain                          = undef,
   $stackdriver_servicecredentials_source = undef,
+  $swagger_base_url                      = undef,
   $uitalert_use_fast_search              = false
 ) {
 
@@ -163,6 +164,10 @@ class deployment::uitid (
 
   systemproperty { 'uitid_auth0_sync':
     value => bool2str($auth0_userdata_sync)
+  }
+
+  systemproperty { 'uitid_swagger_base':
+    value => $swagger_base_url
   }
 
   systemproperty { 'UITID_AUTH0_CLIENT_ID':
