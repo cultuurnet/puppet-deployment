@@ -294,7 +294,7 @@ class deployment::uitid (
   }
 
   cron { "Cleanup payara logs ${payara_domain}":
-    command  => "/usr/bin/find /opt/payara/glassfish/domains/${payara_domain}/logs -type f -name \"server.log_*\" -mtime +7 -exec rm {} \;"
+    command  => "/usr/bin/find /opt/payara/glassfish/domains/${payara_domain}/logs -type f -name \"server.log_*\" -mtime +7 -exec rm {} \;",
     user     => 'root',
     hour     => '*',
     minute   => '15',
