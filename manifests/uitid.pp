@@ -305,7 +305,7 @@ class deployment::uitid (
   }
 
   cron { 'Send UiTalerts ASAP':
-    command  => "/usr/bin/curl 'http://localhost:${application_http_port}/uitid/rest/savedSearch/batch/ASAP'",
+    command  => "/usr/bin/curl --fail --silent --output /dev/null  'http://localhost:${application_http_port}/uitid/rest/savedSearch/batch/ASAP'",
     ensure   => $ensure_send_uitalerts,
     require  => 'App[uitid-app]',
     user     => 'root',
@@ -317,7 +317,7 @@ class deployment::uitid (
   }
 
   cron { 'Send UiTalerts DAILY':
-    command  => "/usr/bin/curl 'http://localhost:${application_http_port}/uitid/rest/savedSearch/batch/DAILY'",
+    command  => "/usr/bin/curl --fail --silent --output /dev/null 'http://localhost:${application_http_port}/uitid/rest/savedSearch/batch/DAILY'",
     ensure   => $ensure_send_uitalerts,
     require  => 'App[uitid-app]',
     user     => 'root',
@@ -329,7 +329,7 @@ class deployment::uitid (
   }
 
   cron { 'Send UiTalerts WEEKLY':
-    command  => "/usr/bin/curl 'http://localhost:${application_http_port}/uitid/rest/savedSearch/batch/WEEKLY'",
+    command  => "/usr/bin/curl --fail --silent --output /dev/null 'http://localhost:${application_http_port}/uitid/rest/savedSearch/batch/WEEKLY'",
     ensure   => $ensure_send_uitalerts,
     require  => 'App[uitid-app]',
     user     => 'root',
@@ -341,7 +341,7 @@ class deployment::uitid (
   }
 
   cron { 'Clear UiTalerts maillog':
-    command  => "/usr/bin/curl 'http://localhost:${application_http_port}/uitid/rest/maillog/clearold'",
+    command  => "/usr/bin/curl --fail --silent --output /dev/null 'http://localhost:${application_http_port}/uitid/rest/maillog/clearold'",
     ensure   => $ensure_send_uitalerts,
     require  => 'App[uitid-app]',
     user     => 'root',
@@ -353,7 +353,7 @@ class deployment::uitid (
   }
 
   cron { 'Clear UiTID application caches':
-    command  => "/usr/bin/curl 'http://localhost:${application_http_port}/uitid/rest/bootstrap/clearcaches'",
+    command  => "/usr/bin/curl --fail --silent --output /dev/null 'http://localhost:${application_http_port}/uitid/rest/bootstrap/clearcaches'",
     require  => 'App[uitid-app]',
     user     => 'root',
     hour     => [ '4', '16'],
@@ -364,7 +364,7 @@ class deployment::uitid (
   }
 
   cron { 'Clear UiTID application caches for UiTalerts':
-    command  => "/usr/bin/curl 'http://localhost:${application_http_port}/uitid/rest/bootstrap/clearcaches'",
+    command  => "/usr/bin/curl --fail --silent --output /dev/null 'http://localhost:${application_http_port}/uitid/rest/bootstrap/clearcaches'",
     require  => 'App[uitid-app]',
     user     => 'root',
     hour     => [ '7', '8'] ,
@@ -375,7 +375,7 @@ class deployment::uitid (
   }
 
   cron { 'Clear UiTID JPA cache':
-    command  => "/usr/bin/curl 'http://localhost:${application_http_port}/uitid/rest/bootstrap/clearJpaCache'",
+    command  => "/usr/bin/curl --fail --silent --output /dev/null 'http://localhost:${application_http_port}/uitid/rest/bootstrap/clearJpaCache'",
     require  => 'App[uitid-app]',
     user     => 'root',
     hour     => [ '4', '16'],
@@ -386,7 +386,7 @@ class deployment::uitid (
   }
 
   cron { 'Clear UiTID JPA cache for UiTalerts':
-    command  => "/usr/bin/curl 'http://localhost:${application_http_port}/uitid/rest/bootstrap/clearJpaCache'",
+    command  => "/usr/bin/curl --fail --silent --output /dev/null 'http://localhost:${application_http_port}/uitid/rest/bootstrap/clearJpaCache'",
     require  => 'App[uitid-app]',
     user     => 'root',
     hour     => [ '7', '8'],
