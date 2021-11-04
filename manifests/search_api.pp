@@ -379,7 +379,7 @@ class deployment::search_api (
         synonyms_source   => $synonyms_source
       }
     },
-    require               => [ Package['sapi'], Class['profiles::java8']],
+    require               => [ Package['sapi'], Class['profiles::java']],
     before                => App['sapi']
   }
 
