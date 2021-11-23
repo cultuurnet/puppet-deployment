@@ -19,6 +19,7 @@ class deployment::uitpas (
   $payara_jmx              = true,
   $swagger_base_url        = undef,
   $auth0_domain            = undef,
+  $auth0_original_domain   = undef,
   $ksb_auth0_clientid      = undef,
   $ksb_auth0_secret        = undef,
   $sysadmin_auth0_clientid = undef,
@@ -168,6 +169,10 @@ class deployment::uitpas (
 
   systemproperty { 'UITPAS_AUTH0_DOMAIN':
     value => $auth0_domain
+  }
+
+  systemproperty { 'UITPAS_AUTH0_ORIGINAL_DOMAIN':
+    value => $auth0_original_domain
   }
 
   systemproperty { 'UITPAS_KSB_AUTH0_CLIENTID':
