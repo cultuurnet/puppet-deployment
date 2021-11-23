@@ -175,7 +175,7 @@ class deployment::uitpas (
     value => $auth0_domain
   }
 
-  systemproperty { 'UITPAS_AUTH0_ORIGINAL_DOMAIN':
+  systemproperty { 'UITPAS_ORIGINAL_AUTH0_DOMAIN':
     value => $auth0_original_domain
   }
 
