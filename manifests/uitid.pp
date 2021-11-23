@@ -154,7 +154,8 @@ class deployment::uitid (
     }
   }
 
-  set { 'server.network-config.protocols.protocol.http-listener-1.http.scheme-mapping':
+  set { "${payara_domain} server.network-config.protocols.protocol.http-listener-1.http.scheme-mapping":
+    name  => 'server.network-config.protocols.protocol.http-listener-1.http.scheme-mapping',
     value => 'X-Forwarded-Proto'
   }
 
