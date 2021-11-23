@@ -151,6 +151,10 @@ class deployment::uitpas (
     }
   }
 
+  set { 'server.network-config.protocols.protocol.http-listener-1.http.scheme-mapping':
+    value => 'X-Forwarded-Proto'
+  }
+
   systemproperty { 'uitpas_cfauth_base':
     value => 'https://acc.uitid.be/uitid/rest'
   }
