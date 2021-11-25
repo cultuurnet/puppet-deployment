@@ -1,6 +1,5 @@
 class deployment::udb3::silex (
   $config_source,
-  $features_source,
   $permissions_source,
   $externalid_place_mapping_source,
   $externalid_organizer_mapping_source,
@@ -83,14 +82,8 @@ class deployment::udb3::silex (
   }
 
   file { 'udb3-silex-features':
-    ensure  => 'file',
+    ensure  => 'absent',
     path    => '/var/www/udb-silex/features.yml',
-    source  => $features_source,
-    owner   => 'www-data',
-    group   => 'www-data',
-    require => 'Package[udb3-silex]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
-    noop    => $noop_deploy
   }
 
   file { 'udb3-silex-permissions':
