@@ -154,10 +154,10 @@ class deployment::uitid (
     }
   }
 
-  set { "${payara_domain} server.network-config.protocols.protocol.http-listener-1.http.scheme-mapping":
-    property => 'server.network-config.protocols.protocol.http-listener-1.http.scheme-mapping',
-    value    => 'X-Forwarded-Proto'
-  }
+  #set { "${payara_domain} server.network-config.protocols.protocol.http-listener-1.http.scheme-mapping":
+  #  property => 'server.network-config.protocols.protocol.http-listener-1.http.scheme-mapping',
+  #  value    => 'X-Forwarded-Proto'
+  #}
 
   systemproperty { 'uitid_baseurl':
     value => $base_url
