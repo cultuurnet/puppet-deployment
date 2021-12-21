@@ -183,6 +183,10 @@ class deployment::uitid (
     value => $auth0_domain
   }
 
+  systemproperty { 'UITID_ORIGINAL_AUTH0_DOMAIN':
+    value => $auth0_original_domain
+  }
+
   systemproperty { 'GOOGLE_STACKDRIVER_SERVICECREDENTIALS_JSON_PATH':
     value => '/opt/payara/glassfish/domains/uitid/config/application_default_credentials.json'
   }
