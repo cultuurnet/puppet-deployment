@@ -22,6 +22,7 @@ class deployment::uitid (
   $auth0_client_id                       = undef,
   $auth0_client_secret                   = undef,
   $auth0_domain                          = undef,
+  $auth0_original_domain                 = undef,
   $stackdriver_servicecredentials_source = undef,
   $swagger_base_url                      = undef,
   $uitalert_use_fast_search              = false
