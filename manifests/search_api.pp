@@ -48,22 +48,7 @@ class deployment::search_api (
     default => 'absent'
   }
 
-  include ::profiles::apt::keys
-
-  apt::source { 'cultuurnet-sapi':
-    location => "https://${apt_user}:${apt_password}@apt-private.uitdatabank.be/sapi-${environment}",
-    release  => $facts['lsbdistcodename'],
-    repos    => 'main',
-    require  => Class['profiles::apt::keys'],
-    include  => {
-      'deb' => true,
-      'src' => false
-    },
-  }
-
-  profiles::apt::update { 'cultuurnet-sapi':
-    require => Apt::Source['cultuurnet-sapi']
-  }
+  realize Apt::Source['cultuurnet-sapi']
 
   class { 'profiles::glassfish':
     flavor => $glassfish_flavor
@@ -267,7 +252,7 @@ class deployment::search_api (
 
   package { 'sapi':
     ensure  => 'latest',
-    require => Profiles::Apt::Update['cultuurnet-sapi'],
+    require => Apt::Source['cultuurnet-sapi'],
     notify  => App['sapi']
   }
 

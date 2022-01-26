@@ -11,41 +11,24 @@ class deployment::balie (
   $puppetdb_url = undef
 ) {
 
-  include ::profiles::apt::keys
-
-  apt::source { 'cultuurnet-balie':
-    location => "http://apt.uitdatabank.be/balie-${environment}",
-    release  => $facts['lsbdistcodename'],
-    repos    => 'main',
-    require  => Class['profiles::apt::keys'],
-    include  => {
-      'deb' => true,
-      'src' => false
-    },
-    noop     => $noop_deploy
-  }
-
-  profiles::apt::update { 'cultuurnet-balie':
-    require  => Apt::Source['cultuurnet-balie'],
-    noop     => $noop_deploy
-  }
+  realize Apt::Source['cultuurnet-balie']
 
   package { 'balie-silex':
     ensure  => $silex_package_version,
     notify  => 'Class[Apache::Service]',
-    require => Profiles::Apt::Update['cultuurnet-balie'],
+    require => Apt::Source['cultuurnet-balie'],
     noop    => $noop_deploy
   }
 
   package { 'balie-angular-app':
     ensure  => $angular_package_version,
-    require => [ 'Package[balie-silex]', Profiles::Apt::Update['cultuurnet-balie'] ],
+    require => [ 'Package[balie-silex]', Apt::Source['cultuurnet-balie'] ],
     noop    => $noop_deploy
   }
 
   package { 'balie-swagger-ui':
     ensure  => 'latest',
-    require => [ 'Package[balie-silex]', Profiles::Apt::Update['cultuurnet-balie'] ],
+    require => [ 'Package[balie-silex]', Apt::Source['cultuurnet-balie'] ],
     noop    => $noop_deploy
   }
 

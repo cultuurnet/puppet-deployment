@@ -13,36 +13,23 @@ class deployment::museumpas (
 
   $basedir = '/var/www/museumpas'
 
-  include ::profiles::apt::keys
-
-  apt::source { 'publiq-museumpas':
-    location => "http://apt.uitdatabank.be/museumpas-${environment}",
-    release  => $facts['lsbdistcodename'],
-    repos    => 'main',
-    require  => Class['profiles::apt::keys'],
-    include  => {
-      'deb' => true,
-      'src' => false
-    }
-  }
-
-  profiles::apt::update { 'publiq-museumpas': }
+  realize Apt::Source['publiq-museumpas']
 
   package { 'museumpas-website':
     ensure  => $website_version,
-    require => Profiles::Apt::Update['publiq-museumpas'],
+    require => Apt::Source['publiq-museumpas'],
     noop    => $noop_deploy
   }
 
   package { 'museumpas-database':
     ensure => $database_version,
-    require => Profiles::Apt::Update['publiq-museumpas'],
+    require => Apt::Source['publiq-museumpas'],
     noop   => $noop_deploy
   }
 
   package { 'museumpas-files':
     ensure => $files_version,
-    require => Profiles::Apt::Update['publiq-museumpas'],
+    require => Apt::Source['publiq-museumpas'],
     noop   => $noop_deploy
   }
 
