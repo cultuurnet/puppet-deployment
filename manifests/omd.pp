@@ -4,22 +4,8 @@ class deployment::omd (
   $with_media_download_manager = true
 ){
 
-  include ::profiles::apt::keys
-
-  apt::source { 'cultuurnet-omd':
-    location => "http://apt.uitdatabank.be/omd-${environment}",
-    release  => $facts['lsbdistcodename'],
-    repos    => 'main',
-    require  => Class['profiles::apt::keys'],
-    include  => {
-      'deb' => true,
-      'src' => false
-    }
-  }
-
-  profiles::apt::update { 'cultuurnet-omd': }
-
-  realize Profiles::Apt::Update['cultuurnet-tools']
+  realize Apt::Source['cultuurnet-tools']
+  realize Apt::Source['cultuurnet-omd']
 
   realize Package['drush']
 

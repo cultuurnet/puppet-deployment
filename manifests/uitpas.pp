@@ -29,22 +29,8 @@ class deployment::uitpas (
   contain profiles::glassfish
 
   include ::profiles::packages
-  include ::profiles::apt::keys
 
-  apt::source { 'cultuurnet-uitpas':
-    location => "https://${apt_user}:${apt_password}@apt-private.uitdatabank.be/uitpas-${environment}",
-    release  => $facts['lsbdistcodename'],
-    repos    => 'main',
-    require  => Class['profiles::apt::keys'],
-    include  => {
-      'deb' => true,
-      'src' => false
-    },
-  }
-
-  profiles::apt::update { 'cultuurnet-uitpas':
-    require => Apt::Source['cultuurnet-uitpas']
-  }
+  realize Apt::Source['cultuurnet-uitpas']
 
   $passwordfile = "/home/${user}/asadmin.pass"
   $application_http_port = $payara_portbase + 80
@@ -228,13 +214,13 @@ class deployment::uitpas (
 
   package { 'uitpas-db-mgmt':
     ensure  => $db_mgmt_package_version,
-    require => Profiles::Apt::Update['cultuurnet-uitpas'],
+    require => Apt::Source['cultuurnet-uitpas'],
     notify  => Exec['uitpas_database_management']
   }
 
   package { 'uitpas-app':
     ensure  => $package_version,
-    require => Profiles::Apt::Update['cultuurnet-uitpas'],
+    require => Apt::Source['cultuurnet-uitpas'],
     notify  => App['uitpas-app']
   }
 

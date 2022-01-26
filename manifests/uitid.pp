@@ -31,22 +31,8 @@ class deployment::uitid (
   contain profiles::glassfish
 
   include ::profiles::packages
-  include ::profiles::apt::keys
 
-  apt::source { 'cultuurnet-uitid':
-    location => "https://${apt_user}:${apt_password}@apt-private.uitdatabank.be/uitid-${environment}",
-    release  => $facts['lsbdistcodename'],
-    repos    => 'main',
-    require  => Class['profiles::apt::keys'],
-    include  => {
-      'deb' => true,
-      'src' => false
-    },
-  }
-
-  profiles::apt::update { 'cultuurnet-uitid':
-    require => Apt::Source['cultuurnet-uitid']
-  }
+  realize Apt::Source['cultuurnet-uitid']
 
   $passwordfile = "/home/${user}/asadmin.pass"
   $application_http_port = $payara_portbase + 80
@@ -237,7 +223,7 @@ class deployment::uitid (
 
   package { 'uitid-app':
     ensure  => $package_version,
-    require => Profiles::Apt::Update['cultuurnet-uitid'],
+    require => Apt::Source['cultuurnet-uitid'],
     notify  => App['uitid-app']
   }
 
