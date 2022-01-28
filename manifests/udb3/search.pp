@@ -89,14 +89,14 @@ class deployment::udb3::search (
     ensure  => 'directory',
     path    => '/var/www/udb-search/log',
     recurse => true,
-    require => 'Package[udb3-search]'
+    require => Package['udb3-search']
   }
 
   file { 'udb3-search-region-mapping':
     ensure  => 'file',
     path    => '/var/www/udb-search/src/ElasticSearch/Operations/json/mapping_region.json',
     source  => $region_mapping_source,
-    require => 'Package[udb3-search]',
+    require => Package['udb3-search'],
     noop    => $noop_deploy
   }
 
@@ -114,7 +114,7 @@ class deployment::udb3::search (
     create_group  => 'www-data',
     sharedscripts => true,
     postrotate    => '/usr/bin/supervisorctl restart udb3-search-service',
-    require       => 'File[udb3-search-log]',
+    require       => File['udb3-search-log'],
     noop          => $noop_deploy
   }
 
@@ -123,7 +123,8 @@ class deployment::udb3::search (
       command     => 'bin/app.php elasticsearch:migrate',
       cwd         => '/var/www/udb-search',
       path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-search'],
-      subscribe   => [ 'File[udb3-search-config]', 'File[udb3-search-region-mapping]' ],
+      subscribe   => [ File['udb3-search-config'], File['udb3-search-region-mapping'] ],
+      require     => Deployment::Udb3::Terms['udb3-search'],
       logoutput   => true,
       timeout     => $migrate_timeout,
       refreshonly => true,
@@ -134,7 +135,7 @@ class deployment::udb3::search (
   cron { 'reindex_permanent':
     command     => '/var/www/udb-search/bin/app.php udb3-core:reindex-permanent',
     environment => [ 'MAILTO=infra@publiq.be' ],
-    require     => 'Package[udb3-search]',
+    require     => Package['udb3-search'],
     user        => 'root',
     hour        => $reindex_permanent_hour,
     minute      => $reindex_permanent_minute
