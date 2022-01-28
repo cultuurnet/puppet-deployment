@@ -37,24 +37,24 @@ class deployment::repositories {
   }
 
   # These variables should be rolled into /etc/apt/auth.conf, which is managed by the apt class
-  $sapi_apt_user     = lookup('deployment::search_api::apt_user', String, 'first')
-  $sapi_apt_password = lookup('deployment::search_api::apt_password', String, 'first')
+  $sapi_apt_user     = lookup('deployment::search_api::apt_user', String, 'first', '')
+  $sapi_apt_password = lookup('deployment::search_api::apt_password', String, 'first', '')
 
   @apt::source { 'cultuurnet-sapi':
     location => "https://${sapi_apt_user}:${sapi_apt_password}@apt-private.uitdatabank.be/sapi-${environment}"
   }
 
   # These variables should be rolled into /etc/apt/auth.conf, which is managed by the apt class
-  $uitid_apt_user     = lookup('deployment::uitid::apt_user', String, 'first')
-  $uitid_apt_password = lookup('deployment::uitid::apt_password', String, 'first')
+  $uitid_apt_user     = lookup('deployment::uitid::apt_user', String, 'first', '')
+  $uitid_apt_password = lookup('deployment::uitid::apt_password', String, 'first', '')
 
   @apt::source { 'cultuurnet-uitid':
     location => "https://${uitid_apt_user}:${uitid_apt_password}@apt-private.uitdatabank.be/uitid-${environment}"
   }
 
   # These variables should be rolled into /etc/apt/auth.conf, which is managed by the apt class
-  $uitpas_apt_user     = lookup('deployment::uitpas::apt_user', String, 'first')
-  $uitpas_apt_password = lookup('deployment::uitpas::apt_password', String, 'first')
+  $uitpas_apt_user     = lookup('deployment::uitpas::apt_user', String, 'first', '')
+  $uitpas_apt_password = lookup('deployment::uitpas::apt_password', String, 'first', '')
 
   @apt::source { 'cultuurnet-uitpas':
     location => "https://${uitpas_apt_user}:${uitpas_apt_password}@apt-private.uitdatabank.be/uitpas-${environment}"
