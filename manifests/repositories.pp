@@ -79,8 +79,4 @@ class deployment::repositories {
   @apt::source { 'cultuurnet-iis':
     location => "http://apt.uitdatabank.be/iis-${environment}"
   }
-
-  @apt::source { 'cultuurnet-search':
-    location => "http://apt.uitdatabank.be/search-${environment}"
-  }
 }
