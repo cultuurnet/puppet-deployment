@@ -178,5 +178,5 @@ class deployment::museumpas::website (
     puppetdb_url => $puppetdb_url
   }
 
-  Class['php'] -> Class['deployment::museumpas']
+  Class['php'] -> Class['deployment::museumpas::website']
 }
