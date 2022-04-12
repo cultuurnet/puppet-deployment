@@ -2,9 +2,7 @@ class deployment::museumpas::website (
   $config_source,
   $maintenance_source,
   $db_name,
-  $website_version    = 'latest',
-  $database_version   = 'latest',
-  $files_version      = 'latest',
+  $version            = 'latest',
   $robots_source      = undef,
   $project_prefix     = 'museumpas-website',
   $noop_deploy        = false,
@@ -16,22 +14,10 @@ class deployment::museumpas::website (
   realize Apt::Source['publiq-museumpas-website']
 
   package { 'museumpas-website':
-    ensure  => $website_version,
+    ensure  => $version,
     require => Apt::Source['publiq-museumpas-website'],
     noop    => $noop_deploy
   }
-
-  #package { 'museumpas-database':
-  #  ensure => $database_version,
-  #  require => Apt::Source['publiq-museumpas-website'],
-  #  noop   => $noop_deploy
-  #}
-
-  #package { 'museumpas-files':
-  #  ensure => $files_version,
-  #  require => Apt::Source['publiq-museumpas-website'],
-  #  noop   => $noop_deploy
-  #}
 
   file { 'museumpas-website-config':
     ensure  => 'file',
@@ -66,16 +52,6 @@ class deployment::museumpas::website (
     }
   }
 
-  #exec { 'import museumpas database dump':
-  #  command   => "mysql --defaults-extra-file=/root/.my.cnf ${db_name} < /data/museumpas/db.sql",
-  #  path      => [ '/usr/local/bin', '/usr/bin', '/bin'],
-  #  logoutput => true,
-  #  subscribe => Package['museumpas-database'],
-  #  onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = \"${db_name}\";')",
-  #  require   => File['museumpas-website-config'],
-  #  noop      => $noop_deploy
-  #}
-
   exec { 'put museumpas in maintenance mode':
     command     => 'php artisan down',
     cwd         => $basedir,
@@ -84,7 +60,6 @@ class deployment::museumpas::website (
     environment => [ 'HOME=/'],
     logoutput   => true,
     subscribe   => Package['museumpas-website'],
-    #subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
     refreshonly => true,
     require     => File['museumpas-website-config'],
     noop        => $noop_deploy
@@ -100,7 +75,6 @@ class deployment::museumpas::website (
     subscribe   => Package['museumpas-website'],
     refreshonly => true,
     require     => [ File['museumpas-website-config'], Exec['put museumpas in maintenance mode'] ],
-    #require     => [ File['museumpas-website-config'], Exec['import museumpas database dump'], Exec['put museumpas in maintenance mode'] ],
     noop        => $noop_deploy
   }
 
@@ -125,7 +99,6 @@ class deployment::museumpas::website (
     environment => [ 'HOME=/'],
     logoutput   => true,
     subscribe   => Package['museumpas-website'],
-    #subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
     refreshonly => true,
     require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
     noop        => $noop_deploy
@@ -139,7 +112,6 @@ class deployment::museumpas::website (
     environment => [ 'HOME=/'],
     logoutput   => true,
     subscribe   => Package['museumpas-website'],
-    #subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
     refreshonly => true,
     require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'], Exec['clear museumpas cache'] ],
     noop        => $noop_deploy
@@ -152,7 +124,6 @@ class deployment::museumpas::website (
     logoutput   => true,
     unless      => "test -L ${basedir}/public/storage",
     subscribe   => Package['museumpas-website'],
-    #subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
     refreshonly => true,
     require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
     noop        => $noop_deploy
@@ -166,7 +137,6 @@ class deployment::museumpas::website (
     environment => [ 'HOME=/'],
     logoutput   => true,
     subscribe   => Package['museumpas-website'],
-    #subscribe   => [ Package['museumpas-website'], Package['museumpas-files'] ],
     refreshonly => true,
     require     => [ File['museumpas-website-config'], Exec['create storage link'], Exec['clear museumpas model cache'] ],
     noop        => $noop_deploy
