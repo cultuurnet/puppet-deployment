@@ -52,6 +52,19 @@ class deployment::museumpas::website (
     }
   }
 
+  exec { 'composer script post-autoload-dump':
+    command     => 'vendor/bin/composer run-script post-autoload-dump',
+    cwd         => $basedir,
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin', $basedir],
+    user        => 'www-data',
+    environment => [ 'HOME=/tmp'],
+    logoutput   => true,
+    subscribe   => Package['museumpas-website'],
+    refreshonly => true,
+    require     => File['museumpas-website-config'],
+    noop        => $noop_deploy
+  }
+
   exec { 'put museumpas in maintenance mode':
     command     => 'php artisan down',
     cwd         => $basedir,
@@ -61,7 +74,7 @@ class deployment::museumpas::website (
     logoutput   => true,
     subscribe   => Package['museumpas-website'],
     refreshonly => true,
-    require     => File['museumpas-website-config'],
+    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump']],
     noop        => $noop_deploy
   }
 
