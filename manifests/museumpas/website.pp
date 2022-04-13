@@ -78,19 +78,6 @@ class deployment::museumpas::website (
     noop        => $noop_deploy
   }
 
-  exec { 'composer script post-autoload-dump':
-    command     => 'vendor/bin/composer run-script post-autoload-dump',
-    cwd         => $basedir,
-    path        => [ '/usr/local/bin', '/usr/bin', '/bin', $basedir],
-    user        => 'www-data',
-    environment => [ 'HOME=/tmp'],
-    logoutput   => true,
-    subscribe   => Package['museumpas-website'],
-    refreshonly => true,
-    require     => File['museumpas-website-config'],
-    noop        => $noop_deploy
-  }
-
   exec { 'clear museumpas cache':
     command     => 'php artisan optimize:clear',
     cwd         => $basedir,
@@ -100,7 +87,7 @@ class deployment::museumpas::website (
     logoutput   => true,
     subscribe   => Package['museumpas-website'],
     refreshonly => true,
-    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
+    require     => [ File['museumpas-website-config'], Exec['run museumpas database migrations'] ],
     noop        => $noop_deploy
   }
 
@@ -113,7 +100,7 @@ class deployment::museumpas::website (
     logoutput   => true,
     subscribe   => Package['museumpas-website'],
     refreshonly => true,
-    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'], Exec['clear museumpas cache'] ],
+    require     => [ File['museumpas-website-config'], Exec['run museumpas database migrations'], Exec['clear museumpas cache'] ],
     noop        => $noop_deploy
   }
 
@@ -125,7 +112,7 @@ class deployment::museumpas::website (
     unless      => "test -L ${basedir}/public/storage",
     subscribe   => Package['museumpas-website'],
     refreshonly => true,
-    require     => [ File['museumpas-website-config'], Exec['composer script post-autoload-dump'] ],
+    require     => [ File['museumpas-website-config'], Exec['run museumpas database migrations'] ],
     noop        => $noop_deploy
   }
 
