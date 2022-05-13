@@ -13,6 +13,10 @@ class deployment::widgetbeheer::angular (
     noop   => $noop_deploy
   }
 
+  package { 'rubygem-nokogiri':
+    ensure => 'installed'
+  }
+
   file { 'widgetbeheer-angular-app-config':
     ensure  => 'file',
     path    => '/var/www/widgetbeheer/assets/config.json',
