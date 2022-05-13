@@ -13,23 +13,14 @@ class deployment::widgetbeheer::angular (
     noop   => $noop_deploy
   }
 
-  package { 'rubygem-nokogiri':
-    ensure => 'installed'
-  }
-
-  file { 'widgetbeheer-angular-app-env':
-    ensure => 'file',
-    path   => '/var/www/widgetbeheer/.env',
-    source => $config_source,
+  file { 'widgetbeheer-angular-app-config':
+    ensure  => 'file',
+    path    => '/var/www/widgetbeheer/assets/config.json',
+    source  => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[widgetbeheer-angular-app]',
     noop    => $noop_deploy
-  }
-
-  file { 'widgetbeheer-angular-app-config':
-    ensure => 'absent',
-    path   => '/var/www/widgetbeheer/config.json',
   }
 
   file { 'widgetbeheer-angular-htaccess':
@@ -40,11 +31,6 @@ class deployment::widgetbeheer::angular (
     group   => 'www-data',
     require => 'Package[widgetbeheer-angular-app]',
     noop    => $noop_deploy
-  }
-
-  file { 'widgetbeheer-angular-app-deploy-config':
-    ensure => 'absent',
-    path   => '/usr/local/bin/widgetbeheer-angular-deploy-config',
   }
 
   file { 'add_text_css_type':
