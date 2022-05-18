@@ -1,6 +1,5 @@
 class deployment::udb3::silex (
   $config_source,
-  $excluded_labels_source = undef,
   $permissions_source,
   $externalid_place_mapping_source,
   $externalid_organizer_mapping_source,
@@ -10,12 +9,13 @@ class deployment::udb3::silex (
   $db_name,
   $pubkey_source,
   $pubkey_auth0_source,
-  $project_prefix        = 'udb',
-  $event_conclude_ensure = 'present',
-  $event_conclude_hour   = '0',
-  $event_conclude_minute = '0',
-  $noop_deploy           = false,
-  $puppetdb_url          = undef
+  $project_prefix         = 'udb',
+  $event_conclude_ensure  = 'present',
+  $event_conclude_hour    = '0',
+  $event_conclude_minute  = '0',
+  $noop_deploy            = false,
+  $puppetdb_url           = undef,
+  $excluded_labels_source = undef
 ) {
 
   package { 'udb3-silex':
