@@ -9,12 +9,13 @@ class deployment::udb3::silex (
   $db_name,
   $pubkey_source,
   $pubkey_auth0_source,
-  $project_prefix        = 'udb',
-  $event_conclude_ensure = 'present',
-  $event_conclude_hour   = '0',
-  $event_conclude_minute = '0',
-  $noop_deploy           = false,
-  $puppetdb_url          = undef
+  $project_prefix         = 'udb',
+  $event_conclude_ensure  = 'present',
+  $event_conclude_hour    = '0',
+  $event_conclude_minute  = '0',
+  $noop_deploy            = false,
+  $puppetdb_url           = undef,
+  $excluded_labels_source = undef
 ) {
 
   package { 'udb3-silex':
@@ -60,6 +61,19 @@ class deployment::udb3::silex (
     require => 'Package[udb3-silex]',
     notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
     noop    => $noop_deploy
+  }
+
+  if $excluded_labels_source {
+    file { 'udb3-silex-excluded-labels':
+      ensure  => 'file',
+      path    => '/var/www/udb-silex/excluded_labels.yml',
+      source  => $excluded_labels_source,
+      owner   => 'www-data',
+      group   => 'www-data',
+      require => 'Package[udb3-silex]',
+      notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+      noop    => $noop_deploy
+    }
   }
 
   file { 'udb3-silex-permissions':
