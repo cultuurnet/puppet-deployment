@@ -1,5 +1,6 @@
 class deployment::udb3::silex (
   $config_source,
+  $excluded_labels_source,
   $permissions_source,
   $externalid_place_mapping_source,
   $externalid_organizer_mapping_source,
@@ -55,6 +56,17 @@ class deployment::udb3::silex (
     ensure  => 'file',
     path    => '/var/www/udb-silex/config.yml',
     source  => $config_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[udb3-silex]',
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop    => $noop_deploy
+  }
+
+  file { 'udb3-silex-excluded-labels':
+    ensure  => 'file',
+    path    => '/var/www/udb-silex/excluded_labels.yml',
+    source  => $excluded_labels_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-silex]',
