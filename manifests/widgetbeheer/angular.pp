@@ -1,16 +1,21 @@
 class deployment::widgetbeheer::angular (
   $config_source,
   $htaccess_source,
-  $package_version      = 'latest',
-  $noop_deploy          = false,
-  $puppetdb_url         = undef
+  $version          = 'latest',
+  $noop_deploy      = false,
+  $puppetdb_url     = undef
 ) {
+
+  $basedir = '/var/www/widgetbeheer-frontend'
 
   contain deployment
 
-  package { 'widgetbeheer-angular-app':
-    ensure => $package_version,
-    noop   => $noop_deploy
+  realize Apt::Source['widgetbeheer-frontend']
+
+  package { 'widgetbeheer-frontend':
+    ensure => $version,
+    noop   => $noop_deploy,
+    require => Apt::Source['widgetbeheer-frontend']
   }
 
   package { 'rubygem-nokogiri':
@@ -19,21 +24,21 @@ class deployment::widgetbeheer::angular (
 
   file { 'widgetbeheer-angular-app-config':
     ensure  => 'file',
-    path    => '/var/www/widgetbeheer/assets/config.json',
+    path    => "${basedir}/assets/config.json",
     source  => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[widgetbeheer-angular-app]',
+    require => 'Package[widgetbeheer-frontend]',
     noop    => $noop_deploy
   }
 
   file { 'widgetbeheer-angular-htaccess':
-    ensure => 'file',
-    path   => '/var/www/widgetbeheer/.htaccess',
-    source => $htaccess_source,
+    ensure  => 'file',
+    path    => "${basedir}/.htaccess",
+    source  => $htaccess_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[widgetbeheer-angular-app]',
+    require => 'Package[widgetbeheer-frontend]',
     noop    => $noop_deploy
   }
 
@@ -45,17 +50,17 @@ class deployment::widgetbeheer::angular (
   }
 
   exec { 'add_text_css_type':
-    command     => 'add_text_css_type /var/www/widgetbeheer/index.html',
+    command     => "add_text_css_type ${basedir}/index.html",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
     require     => [ File['add_text_css_type'], Package['rubygem-nokogiri'], Class['deployment']],
-    subscribe   => Package['widgetbeheer-angular-app'],
+    subscribe   => Package['widgetbeheer-frontend],
     noop        => $noop_deploy
   }
 
   profiles::deployment::versions { $title:
     project      => 'widgetbeheer',
-    packages     => 'widgetbeheer-angular-app',
+    packages     => 'widgetbeheer-frontend',
     puppetdb_url => $puppetdb_url
   }
 }
