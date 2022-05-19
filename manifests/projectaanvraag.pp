@@ -28,8 +28,6 @@ class deployment::projectaanvraag (
       Apt::Source['cultuurnet-projectaanvraag'] -> Class['deployment::projectaanvraag::angular']
     }
     if $with_widgetbeheer_angular {
-      realize Apt::Source['cultuurnet-widgetbeheer']
-
       contain deployment::widgetbeheer::angular
 
       Apt::Source['cultuurnet-projectaanvraag'] -> Class['deployment::widgetbeheer::angular']

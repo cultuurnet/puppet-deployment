@@ -36,10 +36,6 @@ class deployment::repositories {
     location => "http://apt.uitdatabank.be/projectaanvraag-${environment}"
   }
 
-  @apt::source { 'cultuurnet-widgetbeheer':
-    location => "http://apt.uitdatabank.be/widgetbeheer-${environment}"
-  }
-
   # These variables should be rolled into /etc/apt/auth.conf, which is managed by the apt class
   $sapi_apt_user     = lookup('deployment::search_api::apt_user', String, 'first', '')
   $sapi_apt_password = lookup('deployment::search_api::apt_password', String, 'first', '')
