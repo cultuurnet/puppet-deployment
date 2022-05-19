@@ -54,7 +54,7 @@ class deployment::widgetbeheer::angular (
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
     require     => [ File['add_text_css_type'], Package['rubygem-nokogiri'], Class['deployment']],
-    subscribe   => Package['widgetbeheer-frontend],
+    subscribe   => Package['widgetbeheer-frontend'],
     noop        => $noop_deploy
   }
 
