@@ -10,27 +10,23 @@ class deployment::projectaanvraag (
 
   unless $facts['noop_deploy'] == 'true' {
     if $with_silex {
-      realize Apt::Source['cultuurnet-projectaanvraag']
-
       contain deployment::projectaanvraag::silex
 
-      Apt::Source['cultuurnet-projectaanvraag'] -> Class['deployment::projectaanvraag::silex']
+      Class['deployment::projectaanvraag::silex']
 
       if $with_rabbitmq {
         Class['deployment::projectaanvraag::rabbitmq'] -> Class['deployment::projectaanvraag::silex']
       }
     }
     if $with_angular {
-      realize Apt::Source['cultuurnet-projectaanvraag']
-
       contain deployment::projectaanvraag::angular
 
-      Apt::Source['cultuurnet-projectaanvraag'] -> Class['deployment::projectaanvraag::angular']
+      Class['deployment::projectaanvraag::angular']
     }
     if $with_widgetbeheer_angular {
       contain deployment::widgetbeheer::angular
 
-      Apt::Source['cultuurnet-projectaanvraag'] -> Class['deployment::widgetbeheer::angular']
+      Class['deployment::widgetbeheer::angular']
     }
   }
 }
