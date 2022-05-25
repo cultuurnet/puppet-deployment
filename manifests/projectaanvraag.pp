@@ -12,21 +12,15 @@ class deployment::projectaanvraag (
     if $with_silex {
       contain deployment::projectaanvraag::silex
 
-      Class['deployment::projectaanvraag::silex']
-
       if $with_rabbitmq {
         Class['deployment::projectaanvraag::rabbitmq'] -> Class['deployment::projectaanvraag::silex']
       }
     }
     if $with_angular {
       contain deployment::projectaanvraag::angular
-
-      Class['deployment::projectaanvraag::angular']
     }
     if $with_widgetbeheer_angular {
       contain deployment::widgetbeheer::angular
-
-      Class['deployment::widgetbeheer::angular']
     }
   }
 }
