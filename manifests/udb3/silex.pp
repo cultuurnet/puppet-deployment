@@ -9,7 +9,7 @@ class deployment::udb3::silex (
   $db_name,
   $pubkey_source,
   $pubkey_auth0_source,
-  $project_prefix         = 'udb',
+  $project_prefix         = 'udb3',
   $event_conclude_ensure  = 'present',
   $event_conclude_hour    = '0',
   $event_conclude_minute  = '0',

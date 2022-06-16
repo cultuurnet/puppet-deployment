@@ -4,7 +4,7 @@ class deployment::udb3::iis (
   $uuid_mapping_source,
   $importer_rootdir,
   $db_name,
-  $project_prefix = 'udb',
+  $project_prefix = 'udb3',
   $noop_deploy = false,
   $puppetdb_url = undef
 ) {

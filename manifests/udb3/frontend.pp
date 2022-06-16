@@ -5,7 +5,7 @@ class deployment::udb3::frontend (
   Boolean                                 $service_manage      = true,
   String                                  $service_ensure      = 'running',
   Boolean                                 $service_enable      = true,
-  String                                  $project_prefix      = 'udb',
+  String                                  $project_prefix      = 'udb3',
   Variant[Boolean, Enum['true', 'false']] $noop_deploy         = false,
   Optional[String]                        $puppetdb_url        = undef
 ) {

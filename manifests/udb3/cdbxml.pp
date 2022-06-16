@@ -3,7 +3,7 @@ class deployment::udb3::cdbxml (
   $externalid_place_mapping_source,
   $externalid_organizer_mapping_source,
   $db_name,
-  $project_prefix = 'udb',
+  $project_prefix = 'udb3',
   $noop_deploy = false,
   $puppetdb_url = undef
 ) {

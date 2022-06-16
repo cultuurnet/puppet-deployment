@@ -3,7 +3,7 @@ define deployment::udb3::angular::instance (
   $app_package_name,
   $lib_package_name,
   $app_rootdir,
-  $project_prefix = 'udb',
+  $project_prefix = 'udb3',
   $noop_deploy = false,
   $puppetdb_url = undef
 ) {
