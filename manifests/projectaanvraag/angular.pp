@@ -1,6 +1,6 @@
 class deployment::projectaanvraag::angular (
   $config_source,
-  $package_version      = 'latest',
+  $version              = 'latest',
   $deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
   $noop_deploy          = false,
   $puppetdb_url         = undef
@@ -8,18 +8,20 @@ class deployment::projectaanvraag::angular (
 
   contain deployment
 
-  package { 'projectaanvraag-angular-app':
-    ensure => $package_version,
+  realize Apt::Source['projectaanvraag-frontend']
+
+  package { 'projectaanvraag-frontend':
+    ensure => $version,
     noop   => $noop_deploy
   }
 
   file { 'projectaanvraag-angular-app-config':
     ensure => 'file',
-    path   => '/var/www/projectaanvraag/config.json',
+    path   => '/var/www/projectaanvraag-frontend/config.json',
     source => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => Package['projectaanvraag-angular-app'],
+    require => Package['projectaanvraag-frontend'],
     noop    => $noop_deploy
   }
 
@@ -32,9 +34,9 @@ class deployment::projectaanvraag::angular (
   }
 
   exec { 'angular-deploy-config':
-    command     => 'angular-deploy-config /var/www/projectaanvraag',
+    command     => 'angular-deploy-config /var/www/projectaanvraag-frontend',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
-    subscribe   => [ 'Package[projectaanvraag-angular-app]', 'File[projectaanvraag-angular-app-config]', 'File[projectaanvraag-angular-app-deploy-config]'],
+    subscribe   => [ 'Package[projectaanvraag-frontend]', 'File[projectaanvraag-angular-app-config]', 'File[projectaanvraag-angular-app-deploy-config]'],
     refreshonly => true,
     require     => Class['deployment'],
     noop        => $noop_deploy
@@ -42,7 +44,7 @@ class deployment::projectaanvraag::angular (
 
   profiles::deployment::versions { $title:
     project      => 'projectaanvraag',
-    packages     => 'projectaanvraag-angular-app',
+    packages     => 'projectaanvraag-frontend',
     puppetdb_url => $puppetdb_url
   }
 }

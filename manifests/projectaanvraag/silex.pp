@@ -3,15 +3,17 @@ class deployment::projectaanvraag::silex (
   $user_roles_source,
   $integration_types_source,
   $db_name,
-  $package_version = 'latest',
-  $noop_deploy     = false,
-  $puppetdb_url    = undef
+  $version      = 'latest',
+  $noop_deploy  = false,
+  $puppetdb_url = undef
 ) {
 
   contain deployment
 
-  package { 'projectaanvraag-silex':
-    ensure => $package_version,
+  realize Apt::Source['projectaanvraag-api']
+
+  package { 'projectaanvraag-api':
+    ensure => $version,
     notify => [ Class['apache::service'], Class['supervisord::service'] ],
     noop   => $noop_deploy
   }
@@ -22,7 +24,7 @@ class deployment::projectaanvraag::silex (
     source  => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => Package['projectaanvraag-silex'],
+    require => Package['projectaanvraag-api'],
     notify  => [ Class['apache::service'], Class['supervisord::service'] ],
     noop    => $noop_deploy
   }
@@ -33,7 +35,7 @@ class deployment::projectaanvraag::silex (
     source  => $user_roles_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => Package['projectaanvraag-silex'],
+    require => Package['projectaanvraag-api'],
     notify  => [ Class['apache::service'], Class['supervisord::service'] ],
     noop    => $noop_deploy
   }
@@ -44,7 +46,7 @@ class deployment::projectaanvraag::silex (
     source  => $integration_types_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => Package['projectaanvraag-silex'],
+    require => Package['projectaanvraag-api'],
     notify  => [ Class['apache::service'], Class['supervisord::service'] ],
     noop    => $noop_deploy
   }
@@ -55,7 +57,7 @@ class deployment::projectaanvraag::silex (
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/projectaanvraag-api'],
     logoutput   => true,
     refreshonly => true,
-    subscribe   => [ File['projectaanvraag-silex-config'], Package['projectaanvraag-silex'] ],
+    subscribe   => [ File['projectaanvraag-silex-config'], Package['projectaanvraag-api'] ],
     noop        => $noop_deploy
   }
 
@@ -64,7 +66,7 @@ class deployment::projectaanvraag::silex (
     cwd       => '/var/www/projectaanvraag-api',
     path      => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/projectaanvraag-api'],
     onlyif    => "test 0 -eq $(mysql --defaults-extra-file=/root/.my.cnf -s --skip-column-names -e 'select count(table_name) from information_schema.tables where table_schema = \"${db_name}\";')",
-    subscribe => Package['projectaanvraag-silex'],
+    subscribe => Package['projectaanvraag-api'],
     noop      => $noop_deploy
   }
 
@@ -72,7 +74,7 @@ class deployment::projectaanvraag::silex (
     command     => 'bin/console orm:clear-cache:metadata',
     cwd         => '/var/www/projectaanvraag-api',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/projectaanvraag-api'],
-    subscribe   => Package['projectaanvraag-silex'],
+    subscribe   => Package['projectaanvraag-api'],
     require     => Exec['silex-db-install'],
     refreshonly => true,
     noop        => $noop_deploy
@@ -82,7 +84,7 @@ class deployment::projectaanvraag::silex (
     command     => 'bin/console orm:schema-tool:update --force',
     cwd         => '/var/www/projectaanvraag-api',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/projectaanvraag-api'],
-    subscribe   => Package['projectaanvraag-silex'],
+    subscribe   => Package['projectaanvraag-api'],
     require     => Exec['silex-clear-all-metadata-cache'],
     refreshonly => true,
     noop        => $noop_deploy
@@ -93,13 +95,13 @@ class deployment::projectaanvraag::silex (
     path    => '/var/www/projectaanvraag-api/cache',
     owner   => 'www-data',
     group   => 'www-data',
-    require => [ Package['projectaanvraag-silex'], Exec['projectaanvraag-cache-clear'], Exec['silex-db-install'], Exec['silex-db-migrate']],
+    require => [ Package['projectaanvraag-api'], Exec['projectaanvraag-cache-clear'], Exec['silex-db-install'], Exec['silex-db-migrate']],
     noop    => $noop_deploy
   }
 
   profiles::deployment::versions { $title:
     project      => 'projectaanvraag',
-    packages     => 'projectaanvraag-silex',
+    packages     => 'projectaanvraag-api',
     puppetdb_url => $puppetdb_url
   }
 
