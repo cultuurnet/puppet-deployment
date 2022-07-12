@@ -64,13 +64,22 @@ class deployment::balie (
     noop    => $noop_deploy
   }
 
+  file { '/var/www/uitpas-balie-api/web/swagger':
+    ensure  => 'link',
+    target  => '/var/www/balie/web/swagger',
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[balie-swagger-ui]',
+    noop    => $noop_deploy
+  }
+
   file { 'balie-swagger-ui-config':
     ensure  => 'file',
     path    => '/var/www/uitpas-balie-api/web/swagger/config.json',
     source  => $swagger_ui_config_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[balie-swagger-ui]',
+    require => [ 'Package[balie-swagger-ui]', File['/var/www/uitpas-balie-api/web/swagger'] ],
     noop    => $noop_deploy
   }
 
