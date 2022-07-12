@@ -94,7 +94,7 @@ class deployment::balie (
     command     => 'angular-deploy-config /var/www/uitpas-balie-api/web/app',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
-    subscribe   => [ 'Package[uitpas-balie-frontend', 'File[balie-angular-app-config]', 'File[balie-angular-app-deploy-config]'],
+    subscribe   => [ 'Package[uitpas-balie-frontend]', 'File[balie-angular-app-config]', 'File[balie-angular-app-deploy-config]'],
     noop        => $noop_deploy
   }
 
@@ -102,7 +102,7 @@ class deployment::balie (
     command     => 'swagger-deploy-config /var/www/uitpas-balie-api/web/swagger',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
-    subscribe   => [ 'Package[uitpas-balie-frontend', 'File[balie-angular-app-config]', 'File[balie-angular-app-deploy-config]'],
+    subscribe   => [ 'Package[uitpas-balie-frontend]', 'File[balie-angular-app-config]', 'File[balie-angular-app-deploy-config]'],
     noop        => $noop_deploy
   }
 
