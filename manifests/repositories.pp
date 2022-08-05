@@ -12,16 +12,8 @@ class deployment::repositories {
     require => Class['profiles::apt::keys']
   }
 
-  @apt::source { 'cultuurnet-balie':
-    location => "http://apt.uitdatabank.be/balie-${environment}"
-  }
-
   @apt::source { 'cultuurnet-groepspas':
     location => "http://apt.uitdatabank.be/groepspas-${environment}"
-  }
-
-  @apt::source { 'publiq-museumpas':
-    location => "http://apt.uitdatabank.be/museumpas-${environment}"
   }
 
   @apt::source { 'publiq-museumpas-website':
