@@ -12,63 +12,74 @@ class deployment::balie (
 ) {
 
   realize Apt::Source['cultuurnet-balie']
+  realize Apt::Source['uitpas-balie-frontend']
+  realize Apt::Source['uitpas-balie-api']
 
-  package { 'balie-silex':
+  package { 'uitpas-balie-api':
     ensure  => $silex_package_version,
     notify  => 'Class[Apache::Service]',
-    require => Apt::Source['cultuurnet-balie'],
+    require => Apt::Source['uitpas-balie-api'],
     noop    => $noop_deploy
   }
 
-  package { 'balie-angular-app':
+  package { 'uitpas-balie-frontend':
     ensure  => $angular_package_version,
-    require => [ 'Package[balie-silex]', Apt::Source['cultuurnet-balie'] ],
+    require => [ 'Package[uitpas-balie-api]', Apt::Source['uitpas-balie-api'] ],
     noop    => $noop_deploy
   }
 
   package { 'balie-swagger-ui':
     ensure  => 'latest',
-    require => [ 'Package[balie-silex]', Apt::Source['cultuurnet-balie'] ],
+    require => [ 'Package[uitpas-balie-api]', Apt::Source['cultuurnet-balie'] ],
     noop    => $noop_deploy
   }
 
   file { 'balie-silex-log':
-    path    => '/var/www/balie/log',
+    path    => '/var/www/uitpas-balie-api/log',
     owner   => 'www-data',
     group   => 'www-data',
     recurse => true,
-    require => 'Package[balie-silex]',
+    require => 'Package[uitpas-balie-api]',
     noop    => $noop_deploy
   }
 
   file { 'balie-silex-config':
     ensure  => 'file',
-    path    => '/var/www/balie/config.yml',
+    path    => '/var/www/uitpas-balie-api/config.yml',
     source  => $silex_config_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[balie-silex]',
+    require => 'Package[uitpas-balie-api]',
     notify  => 'Class[Apache::Service]',
     noop    => $noop_deploy
   }
 
   file { 'balie-angular-app-config':
     ensure  => 'file',
-    path    => '/var/www/balie/web/app/config.json',
+    path    => '/var/www/uitpas-balie-api/web/app/config.json',
     source  => $angular_app_config_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[balie-angular-app]',
+    require => 'Package[uitpas-balie-frontend]',
+    noop    => $noop_deploy
+  }
+
+  file { '/var/www/uitpas-balie-api/web/swagger':
+    ensure  => 'link',
+    target  => '/var/www/balie/web/swagger',
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[balie-swagger-ui]',
     noop    => $noop_deploy
   }
 
   file { 'balie-swagger-ui-config':
     ensure  => 'file',
-    path    => '/var/www/balie/web/swagger/config.json',
+    path    => '/var/www/uitpas-balie-api/web/swagger/config.json',
     source  => $swagger_ui_config_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[balie-swagger-ui]',
+    require => [ 'Package[balie-swagger-ui]', File['/var/www/uitpas-balie-api/web/swagger'] ],
     noop    => $noop_deploy
   }
 
@@ -89,24 +100,24 @@ class deployment::balie (
   }
 
   exec { 'angular-deploy-config':
-    command     => 'angular-deploy-config /var/www/balie/web/app',
+    command     => 'angular-deploy-config /var/www/uitpas-balie-api/web/app',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
-    subscribe   => [ 'Package[balie-angular-app]', 'File[balie-angular-app-config]', 'File[balie-angular-app-deploy-config]'],
+    subscribe   => [ 'Package[uitpas-balie-frontend]', 'File[balie-angular-app-config]', 'File[balie-angular-app-deploy-config]'],
     noop        => $noop_deploy
   }
 
   exec { 'swagger-deploy-config':
-    command     => 'swagger-deploy-config /var/www/balie/web/swagger',
+    command     => 'swagger-deploy-config /var/www/uitpas-balie-api/web/swagger',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
-    subscribe   => [ 'Package[balie-angular-app]', 'File[balie-angular-app-config]', 'File[balie-angular-app-deploy-config]'],
+    subscribe   => [ 'Package[uitpas-balie-frontend]', 'File[balie-angular-app-config]', 'File[balie-angular-app-deploy-config]'],
     noop        => $noop_deploy
   }
 
   profiles::deployment::versions { $title:
     project      => $project_prefix,
-    packages     => [ 'balie-angular-app', 'balie-silex', 'balie-swagger-ui'],
+    packages     => [ 'uitpas-balie-frontend', 'uitpas-balie-api', 'balie-swagger-ui'],
     puppetdb_url => $puppetdb_url
   }
 
