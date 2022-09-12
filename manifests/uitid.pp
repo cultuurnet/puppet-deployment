@@ -32,7 +32,7 @@ class deployment::uitid (
 
   include ::profiles::packages
 
-  realize Apt::Source['cultuurnet-uitid']
+  realize Apt::Source['uitid-app']
 
   $passwordfile = "/home/${user}/asadmin.pass"
   $application_http_port = $payara_portbase + 80
@@ -223,7 +223,7 @@ class deployment::uitid (
 
   package { 'uitid-app':
     ensure  => $package_version,
-    require => Apt::Source['cultuurnet-uitid'],
+    require => Apt::Source['uitid-app'],
     notify  => App['uitid-app']
   }
 
