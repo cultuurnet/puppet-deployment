@@ -387,4 +387,11 @@ class deployment::uitid (
     monthday => '*',
     month    => '*'
   }
+
+  profiles::deployment::versions { $title:
+    project      => 'uitid',
+    packages     => 'uitid-app',
+    puppetdb_url => $puppetdb_url,
+    require      => App['uitid-app']
+  }
 }
