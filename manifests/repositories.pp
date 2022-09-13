@@ -33,14 +33,6 @@ class deployment::repositories {
   }
 
   # These variables should be rolled into /etc/apt/auth.conf, which is managed by the apt class
-  $uitid_apt_user     = lookup('deployment::uitid::apt_user', String, 'first', '')
-  $uitid_apt_password = lookup('deployment::uitid::apt_password', String, 'first', '')
-
-  @apt::source { 'cultuurnet-uitid':
-    location => "https://${uitid_apt_user}:${uitid_apt_password}@apt-private.uitdatabank.be/uitid-${environment}"
-  }
-
-  # These variables should be rolled into /etc/apt/auth.conf, which is managed by the apt class
   $uitpas_apt_user     = lookup('deployment::uitpas::apt_user', String, 'first', '')
   $uitpas_apt_password = lookup('deployment::uitpas::apt_password', String, 'first', '')
 
