@@ -294,4 +294,11 @@ class deployment::uitpas (
     month    => '*',
     require  => Glassfish::Create_domain[$payara_domain]
   }
+
+  profiles::deployment::versions { $title:
+    project      => 'uitpas',
+    packages     => 'uitpas-app',
+    puppetdb_url => $puppetdb_url,
+    require      => App['uitpas-app']
+  }
 }
