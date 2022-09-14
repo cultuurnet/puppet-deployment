@@ -30,7 +30,7 @@ class deployment::uitpas (
 
   include ::profiles::packages
 
-  realize Apt::Source['cultuurnet-uitpas']
+  realize Apt::Source['uitpas-app']
 
   $passwordfile = "/home/${user}/asadmin.pass"
   $application_http_port = $payara_portbase + 80
@@ -214,13 +214,13 @@ class deployment::uitpas (
 
   package { 'uitpas-db-mgmt':
     ensure  => $db_mgmt_package_version,
-    require => Apt::Source['cultuurnet-uitpas'],
+    require => Apt::Source['uitpas-app'],
     notify  => Exec['uitpas_database_management']
   }
 
   package { 'uitpas-app':
     ensure  => $package_version,
-    require => Apt::Source['cultuurnet-uitpas'],
+    require => Apt::Source['uitpas-app'],
     notify  => App['uitpas-app']
   }
 
