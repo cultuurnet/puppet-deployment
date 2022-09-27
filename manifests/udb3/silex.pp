@@ -4,20 +4,26 @@ class deployment::udb3::silex (
   $permissions_source,
   $permissions_source_yaml,
   $externalid_place_mapping_source,
+  $externalid_place_mapping_source_yaml,
   $externalid_organizer_mapping_source,
+  $externalid_organizer_mapping_source_yaml,
   $term_mapping_facilities_source,
+  $term_mapping_facilities_source_yaml,
   $term_mapping_themes_source,
+  $term_mapping_themes_source_yaml,
   $term_mapping_types_source,
+  $term_mapping_types_source_yaml,
   $db_name,
   $pubkey_source,
   $pubkey_auth0_source,
-  $project_prefix         = 'udb3',
-  $event_conclude_ensure  = 'present',
-  $event_conclude_hour    = '0',
-  $event_conclude_minute  = '0',
-  $noop_deploy            = false,
-  $puppetdb_url           = undef,
-  $excluded_labels_source = undef
+  $project_prefix              = 'udb3',
+  $event_conclude_ensure       = 'present',
+  $event_conclude_hour         = '0',
+  $event_conclude_minute       = '0',
+  $noop_deploy                 = false,
+  $puppetdb_url                = undef,
+  $excluded_labels_source      = undef,
+  $excluded_labels_source_yaml = undef
 ) {
 
   package { 'udb3-silex':
@@ -79,8 +85,21 @@ class deployment::udb3::silex (
   if $excluded_labels_source {
     file { 'udb3-silex-excluded-labels':
       ensure  => 'file',
-      path    => '/var/www/udb-silex/excluded_labels.yml',
+      path    => '/var/www/udb-silex/config.excluded_labels.php',
       source  => $excluded_labels_source,
+      owner   => 'www-data',
+      group   => 'www-data',
+      require => 'Package[udb3-silex]',
+      notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+      noop    => $noop_deploy
+    }
+  }
+
+  if $excluded_labels_source_yaml {
+    file { 'udb3-silex-excluded-labels_yaml':
+      ensure  => 'file',
+      path    => '/var/www/udb-silex/excluded_labels.yml',
+      source  => $excluded_labels_source_yaml,
       owner   => 'www-data',
       group   => 'www-data',
       require => 'Package[udb3-silex]',
@@ -132,19 +151,43 @@ class deployment::udb3::silex (
   }
 
   deployment::udb3::externalid { 'udb3-silex':
+    directory                  => '/var/www/udb-silex',
+    place_mapping_source       => $externalid_place_mapping_source,
+    organizer_mapping_source   => $externalid_organizer_mapping_source,
+    place_mapping_filename     => 'config.external_id_mapping_place.php',
+    organizer_mapping_filename => 'config.external_id_mapping_organizer.php',
+    require                    => 'Package[udb3-silex]',
+    notify                     => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop_deploy                => $noop_deploy
+  }
+
+  deployment::udb3::externalid { 'udb3-silex-yaml':
     directory                => '/var/www/udb-silex',
-    place_mapping_source     => $externalid_place_mapping_source,
-    organizer_mapping_source => $externalid_organizer_mapping_source,
+    place_mapping_source     => $externalid_place_mapping_source_yaml,
+    organizer_mapping_source => $externalid_organizer_mapping_source_yaml,
     require                  => 'Package[udb3-silex]',
     notify                   => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
     noop_deploy              => $noop_deploy
   }
 
   deployment::udb3::terms { 'udb3-silex':
+    directory                   => '/var/www/udb-silex',
+    facilities_mapping_source   => $term_mapping_facilities_source,
+    themes_mapping_source       => $term_mapping_themes_source,
+    types_mapping_source        => $term_mapping_types_source,
+    facilities_mapping_filename => 'config.term_mapping_facilities.php',
+    themes_mapping_filename     => 'config.term_mapping_themes.php',
+    types_mapping_filename      => 'config.term_mapping_types.php',
+    require                     => Package['udb3-silex'],
+    notify                      => [ Class['apache::service'], Class['supervisord::service']],
+    noop_deploy                 => $noop_deploy
+  }
+
+  deployment::udb3::terms { 'udb3-silex-yaml':
     directory                 => '/var/www/udb-silex',
-    facilities_mapping_source => $term_mapping_facilities_source,
-    themes_mapping_source     => $term_mapping_themes_source,
-    types_mapping_source      => $term_mapping_types_source,
+    facilities_mapping_source => $term_mapping_facilities_source_yaml,
+    themes_mapping_source     => $term_mapping_themes_source_yaml,
+    types_mapping_source      => $term_mapping_types_source_yaml,
     require                   => Package['udb3-silex'],
     notify                    => [ Class['apache::service'], Class['supervisord::service']],
     noop_deploy               => $noop_deploy
