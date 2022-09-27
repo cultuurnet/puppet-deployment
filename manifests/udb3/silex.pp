@@ -1,6 +1,8 @@
 class deployment::udb3::silex (
   $config_source,
+  $config_source_yaml,
   $permissions_source,
+  $permissions_source_yaml,
   $externalid_place_mapping_source,
   $externalid_organizer_mapping_source,
   $term_mapping_facilities_source,
@@ -54,8 +56,19 @@ class deployment::udb3::silex (
 
   file { 'udb3-silex-config':
     ensure  => 'file',
-    path    => '/var/www/udb-silex/config.yml',
+    path    => '/var/www/udb-silex/config.php',
     source  => $config_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[udb3-silex]',
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop    => $noop_deploy
+  }
+
+  file { 'udb3-silex-config-yaml':
+    ensure  => 'file',
+    path    => '/var/www/udb-silex/config.yml',
+    source  => $config_source_yaml,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-silex]',
@@ -78,8 +91,19 @@ class deployment::udb3::silex (
 
   file { 'udb3-silex-permissions':
     ensure  => 'file',
-    path    => '/var/www/udb-silex/user_permissions.yml',
+    path    => '/var/www/udb-silex/config.allow_all.php',
     source  => $permissions_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => 'Package[udb3-silex]',
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    noop    => $noop_deploy
+  }
+
+  file { 'udb3-silex-permissions_yaml':
+    ensure  => 'file',
+    path    => '/var/www/udb-silex/user_permissions.yml',
+    source  => $permissions_source_yaml,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[udb3-silex]',
