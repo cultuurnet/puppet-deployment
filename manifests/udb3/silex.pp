@@ -1,18 +1,11 @@
 class deployment::udb3::silex (
   $config_source,
-  $config_source_yaml,
   $permissions_source,
-  $permissions_source_yaml,
   $externalid_place_mapping_source,
-  $externalid_place_mapping_source_yaml,
   $externalid_organizer_mapping_source,
-  $externalid_organizer_mapping_source_yaml,
   $term_mapping_facilities_source,
-  $term_mapping_facilities_source_yaml,
   $term_mapping_themes_source,
-  $term_mapping_themes_source_yaml,
   $term_mapping_types_source,
-  $term_mapping_types_source_yaml,
   $db_name,
   $pubkey_source,
   $pubkey_auth0_source,
@@ -22,8 +15,7 @@ class deployment::udb3::silex (
   $event_conclude_minute       = '0',
   $noop_deploy                 = false,
   $puppetdb_url                = undef,
-  $excluded_labels_source      = undef,
-  $excluded_labels_source_yaml = undef
+  $excluded_labels_source      = undef
 ) {
 
   package { 'udb3-silex':
@@ -72,14 +64,8 @@ class deployment::udb3::silex (
   }
 
   file { 'udb3-silex-config-yaml':
-    ensure  => 'file',
-    path    => '/var/www/udb-silex/config.yml',
-    source  => $config_source_yaml,
-    owner   => 'www-data',
-    group   => 'www-data',
-    require => 'Package[udb3-silex]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
-    noop    => $noop_deploy
+    ensure  => 'absent',
+    path    => '/var/www/udb-silex/config.yml'
   }
 
   if $excluded_labels_source {
@@ -95,17 +81,9 @@ class deployment::udb3::silex (
     }
   }
 
-  if $excluded_labels_source_yaml {
-    file { 'udb3-silex-excluded-labels_yaml':
-      ensure  => 'file',
-      path    => '/var/www/udb-silex/excluded_labels.yml',
-      source  => $excluded_labels_source_yaml,
-      owner   => 'www-data',
-      group   => 'www-data',
-      require => 'Package[udb3-silex]',
-      notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
-      noop    => $noop_deploy
-    }
+  file { 'udb3-silex-excluded-labels_yaml':
+    ensure  => 'absent',
+    path    => '/var/www/udb-silex/excluded_labels.yml'
   }
 
   file { 'udb3-silex-permissions':
@@ -120,14 +98,8 @@ class deployment::udb3::silex (
   }
 
   file { 'udb3-silex-permissions_yaml':
-    ensure  => 'file',
-    path    => '/var/www/udb-silex/user_permissions.yml',
-    source  => $permissions_source_yaml,
-    owner   => 'www-data',
-    group   => 'www-data',
-    require => 'Package[udb3-silex]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
-    noop    => $noop_deploy
+    ensure  => 'absent',
+    path    => '/var/www/udb-silex/user_permissions.yml'
   }
 
   file { 'udb3-silex-pubkey':
@@ -161,13 +133,14 @@ class deployment::udb3::silex (
     noop_deploy                => $noop_deploy
   }
 
-  deployment::udb3::externalid { 'udb3-silex-yaml':
-    directory                => '/var/www/udb-silex',
-    place_mapping_source     => $externalid_place_mapping_source_yaml,
-    organizer_mapping_source => $externalid_organizer_mapping_source_yaml,
-    require                  => 'Package[udb3-silex]',
-    notify                   => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
-    noop_deploy              => $noop_deploy
+  file { 'external_place_mapping_yaml':
+    ensure => 'absent',
+    path   => '/var/www/udb-silex/external_id_mapping_place.yml'
+  }
+
+  file { 'external_organizer_mapping_yaml':
+    ensure => 'absent',
+    path   => '/var/www/udb-silex/external_id_mapping_organizer.yml'
   }
 
   deployment::udb3::terms { 'udb3-silex':
@@ -183,14 +156,19 @@ class deployment::udb3::silex (
     noop_deploy                 => $noop_deploy
   }
 
-  deployment::udb3::terms { 'udb3-silex-yaml':
-    directory                 => '/var/www/udb-silex',
-    facilities_mapping_source => $term_mapping_facilities_source_yaml,
-    themes_mapping_source     => $term_mapping_themes_source_yaml,
-    types_mapping_source      => $term_mapping_types_source_yaml,
-    require                   => Package['udb3-silex'],
-    notify                    => [ Class['apache::service'], Class['supervisord::service']],
-    noop_deploy               => $noop_deploy
+  file { 'udb3_terms_facilities_yaml':
+    ensure => 'absent',
+    path   => '/var/www/udb-silex/term_mapping_facilities.yml'
+  }
+
+  file { 'udb3_terms_themes_yaml':
+    ensure => 'absent',
+    path   => '/var/www/udb-silex/term_mapping_themes.yml'
+  }
+
+  file { 'udb3_terms_types_yaml':
+    ensure => 'absent',
+    path   => '/var/www/udb-silex/term_mapping_types.yml'
   }
 
   logrotate::rule { 'udb3-silex':
