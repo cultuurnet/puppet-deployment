@@ -23,15 +23,19 @@ class deployment::udb3::search (
     group   => 'www-data'
   }
 
+  realize Apt::Source['cultuurnet-search']
+
   package { 'udb3-search':
-    ensure => $search_package_version,
-    notify => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
-    noop   => $noop_deploy
+    ensure  => $search_package_version,
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    require => Apt::Source['cultuurnet-search'],
+    noop    => $noop_deploy
   }
 
   package { 'udb3-geojson-data':
-    ensure => $geojson_package_version,
-    noop   => $noop_deploy
+    ensure  => $geojson_package_version,
+    require => Apt::Source['cultuurnet-search'],
+    noop    => $noop_deploy
   }
 
   file { 'udb3-search-config':

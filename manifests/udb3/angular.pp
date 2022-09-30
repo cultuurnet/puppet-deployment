@@ -3,8 +3,6 @@ class deployment::udb3::angular (
   $instances            = {}
 ) {
 
-  contain deployment
-
   file { 'udb3-angular-app-deploy-config':
     ensure => 'file',
     path   => '/usr/local/bin/angular-deploy-config',

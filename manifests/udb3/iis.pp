@@ -9,16 +9,20 @@ class deployment::udb3::iis (
   $puppetdb_url = undef
 ) {
 
+  realize Apt::Source['cultuurnet-iis']
+
   package { 'udb3-iis-silex':
-    ensure => 'latest',
-    notify => 'Class[Apache::Service]',
-    noop   => $noop_deploy
+    ensure  => 'latest',
+    notify  => 'Class[Apache::Service]',
+    require => Apt::Source['cultuurnet-iis'],
+    noop    => $noop_deploy
   }
 
   package { 'udb3-iis-importer':
-    ensure => 'latest',
-    notify => 'Class[Supervisord::Service]',
-    noop   => $noop_deploy
+    ensure  => 'latest',
+    notify  => 'Class[Supervisord::Service]',
+    require => Apt::Source['cultuurnet-iis'],
+    noop    => $noop_deploy
   }
 
   file { 'udb3-iis-silex-log':

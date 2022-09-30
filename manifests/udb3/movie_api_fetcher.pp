@@ -11,10 +11,13 @@ class deployment::udb3::movie_api_fetcher (
   $puppetdb_url              = undef
 ) {
 
+  realize Apt::Source['cultuurnet-iis']
+
   package { 'udb3-movie-api-fetcher':
-    ensure => 'latest',
-    notify => 'Class[Apache::Service]',
-    noop   => $noop_deploy
+    ensure  => 'latest',
+    notify  => 'Class[Apache::Service]',
+    require => Apt::Source['cultuurnet-iis'],
+    noop    => $noop_deploy
   }
 
   file { 'udb3-movie-api-fetcher-log':
