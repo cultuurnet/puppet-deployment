@@ -16,7 +16,7 @@ class deployment::udb3::search (
   $puppetdb_url             = undef
 ) {
 
-  $basedir = '/var/www/udb-search'
+  $basedir = '/var/www/udb3-search'
 
   File {
     owner   => 'www-data',
@@ -24,11 +24,12 @@ class deployment::udb3::search (
   }
 
   realize Apt::Source['cultuurnet-search']
+  realize Apt::Source['uitdatabank-search-api']
 
-  package { 'udb3-search':
+  package { 'uitdatabank-search-api':
     ensure  => $search_package_version,
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
-    require => Apt::Source['cultuurnet-search'],
+    notify  => [Class['Apache::Service'], Class['Supervisord::Service']],
+    require => Apt::Source['uitdatabank-search-api'],
     noop    => $noop_deploy
   }
 
@@ -42,8 +43,8 @@ class deployment::udb3::search (
     ensure  => 'file',
     path    => "${basedir}/config.yml",
     source  => $config_source,
-    require => 'Package[udb3-search]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    require => Package['uitdatabank-search-api'],
+    notify  => [ Class['Apache::Service'], Class['Supervisord::Service']],
     noop    => $noop_deploy
   }
 
@@ -51,8 +52,8 @@ class deployment::udb3::search (
     ensure  => 'file',
     path    => "${basedir}/features.yml",
     source  => $features_source,
-    require => 'Package[udb3-search]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    require => Package['uitdatabank-search-api'],
+    notify  => [ Class['Apache::Service'], Class['Supervisord::Service']],
     noop    => $noop_deploy
   }
 
@@ -62,8 +63,8 @@ class deployment::udb3::search (
     ensure  => 'file',
     path    => "${basedir}/facet_mapping_regions.yml",
     source  => '/var/www/geojson-data/output/facet_mapping_regions.yml',
-    require => [ 'Package[udb3-search]', 'Package[udb3-geojson-data]'],
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    require => [Package['uitdatabank-search-api'], Package['udb3-geojson-data']],
+    notify  => [Class['Apache::Service'], Class['Supervisord::Service']],
     noop    => $noop_deploy
   }
 
@@ -73,8 +74,8 @@ class deployment::udb3::search (
     ensure  => 'file',
     path    => "${basedir}/web/autocomplete.json",
     source  => '/var/www/geojson-data/output/autocomplete.json',
-    require => [ 'Package[udb3-search]', 'Package[udb3-geojson-data]'],
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    require => [Package['uitdatabank-search-api'], Package['udb3-geojson-data']],
+    notify  => [Class['Apache::Service'], Class['Supervisord::Service']],
     noop    => $noop_deploy
   }
 
@@ -86,8 +87,8 @@ class deployment::udb3::search (
     facilities_mapping_filename => 'facet_mapping_facilities.yml',
     themes_mapping_filename     => 'facet_mapping_themes.yml',
     types_mapping_filename      => 'facet_mapping_types.yml',
-    require                     => Package['udb3-search'],
-    notify                      => [ Class['apache::service'], Class['supervisord::service']],
+    require                     => Package['uitdatabank-search-api'],
+    notify                      => [Class['apache::service'], Class['supervisord::service']],
     noop                        => $noop_deploy
   }
 
@@ -95,14 +96,14 @@ class deployment::udb3::search (
     ensure  => 'directory',
     path    => "${basedir}/log",
     recurse => true,
-    require => Package['udb3-search']
+    require => Package['uitdatabank-search-api']
   }
 
   file { 'udb3-search-region-mapping':
     ensure  => 'file',
     path    => "${basedir}/src/ElasticSearch/Operations/json/mapping_region.json",
     source  => $region_mapping_source,
-    require => Package['udb3-search'],
+    require => Package['uitdatabank-search-api'],
     noop    => $noop_deploy
   }
 
@@ -140,8 +141,8 @@ class deployment::udb3::search (
 
   cron { 'reindex_permanent':
     command     => "${basedir}/bin/app.php udb3-core:reindex-permanent",
-    environment => [ 'MAILTO=infra@publiq.be' ],
-    require     => Package['udb3-search'],
+    environment => ['MAILTO=infra@publiq.be'],
+    require     => Package['uitdatabank-search-api'],
     user        => 'root',
     hour        => $reindex_permanent_hour,
     minute      => $reindex_permanent_minute
@@ -149,7 +150,7 @@ class deployment::udb3::search (
 
   profiles::deployment::versions { $title:
     project      => $project_prefix,
-    packages     => [ 'udb3-search', 'udb3-geojson-data'],
+    packages     => ['uitdatabank-search-api', 'udb3-geojson-data'],
     puppetdb_url => $puppetdb_url
   }
 
