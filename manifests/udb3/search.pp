@@ -16,7 +16,7 @@ class deployment::udb3::search (
   $puppetdb_url             = undef
 ) {
 
-  $basedir = '/var/www/udb3-search'
+  $basedir = '/var/www/udb3-search-service'
 
   File {
     owner   => 'www-data',
