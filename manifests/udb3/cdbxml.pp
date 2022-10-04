@@ -8,10 +8,13 @@ class deployment::udb3::cdbxml (
   $puppetdb_url = undef
 ) {
 
+  realize Apt::Source['cultuurnet-cdbxml']
+
   package { 'udb3-cdbxml':
-    ensure => 'latest',
-    notify => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
-    noop   => $noop_deploy
+    ensure  => 'latest',
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    require => Apt::Source['cultuurnet-cdbxml'],
+    noop    => $noop_deploy
   }
 
   file { 'udb3-cdbxml-config':

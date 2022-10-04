@@ -7,10 +7,13 @@ class deployment::udb3::jwtprovider (
 
   $basedir = '/var/www/udb-jwt-provider'
 
+  realize Apt::Source['cultuurnet-jwtprovider']
+
   package { 'udb3-jwt-provider':
-    ensure => 'latest',
-    notify => 'Class[Apache::Service]',
-    noop   => $noop_deploy
+    ensure  => 'latest',
+    notify  => 'Class[Apache::Service]',
+    require => Apt::Source['cultuurnet-jwtprovider'],
+    noop    => $noop_deploy
   }
 
   file { 'udb3-jwtprovider-config':
