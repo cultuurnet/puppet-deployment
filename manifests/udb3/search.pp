@@ -138,7 +138,7 @@ class deployment::udb3::search (
     create_owner  => 'www-data',
     create_group  => 'www-data',
     sharedscripts => true,
-    postrotate    => 'systemctl restart udb3-consume-*',
+    postrotate    => '/bin/systemctl restart udb3-consume-*',
     require       => [ File['udb3-search-log'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related']],
     noop          => $noop_deploy
   }
