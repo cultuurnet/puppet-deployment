@@ -10,17 +10,17 @@ class deployment::udb3::frontend (
   Optional[String]                        $puppetdb_url        = undef
 ) {
 
-  $basedir      = '/var/www/udb-frontend'
-  $package_name = 'udb3-frontend'
-  $service_name = 'udb3-frontend'
+  $basedir      = '/var/www/udb3-frontend'
+  $package_name = 'uitdatabank-frontend'
+  $service_name = 'uitdatabank-frontend'
 
   $noop = any2bool($noop_deploy)
 
-  realize Apt::Source['cultuurnet-udb3']
+  realize Apt::Source['uitdatabank-frontend']
 
   package { $package_name:
     ensure  => $package_version,
-    require => Apt::Source['cultuurnet-udb3'],
+    require => Apt::Source['uitdatabank-frontend'],
     noop    => $noop
   }
 
