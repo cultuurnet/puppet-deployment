@@ -4,13 +4,17 @@ class deployment::udb3::apidoc (
   $puppetdb_url   = undef
 ) {
 
+  realize Apt::Source['cultuurnet-udb3']
+
   package { 'udb3-swagger':
     ensure  => 'latest',
+    require => Apt::Source['cultuurnet-udb3'],
     noop    => $noop_deploy
   }
 
   package { 'udb3-schema':
     ensure  => 'latest',
+    require => Apt::Source['cultuurnet-udb3'],
     noop    => $noop_deploy
   }
 

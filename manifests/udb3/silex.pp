@@ -9,19 +9,22 @@ class deployment::udb3::silex (
   $db_name,
   $pubkey_source,
   $pubkey_auth0_source,
-  $project_prefix         = 'udb3',
-  $event_conclude_ensure  = 'present',
-  $event_conclude_hour    = '0',
-  $event_conclude_minute  = '0',
-  $noop_deploy            = false,
-  $puppetdb_url           = undef,
-  $excluded_labels_source = undef
+  $project_prefix              = 'udb3',
+  $event_conclude_ensure       = 'present',
+  $event_conclude_hour         = '0',
+  $event_conclude_minute       = '0',
+  $noop_deploy                 = false,
+  $puppetdb_url                = undef,
+  $excluded_labels_source      = undef
 ) {
 
+  realize Apt::Source['cultuurnet-udb3']
+
   package { 'udb3-silex':
-    ensure => 'latest',
-    notify => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
-    noop   => $noop_deploy
+    ensure  => 'latest',
+    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    require => Apt::Source['cultuurnet-udb3'],
+    noop    => $noop_deploy
   }
 
   file { 'udb3-silex-log':
@@ -30,7 +33,7 @@ class deployment::udb3::silex (
     owner   => 'www-data',
     group   => 'www-data',
     recurse => true,
-    require => 'Package[udb3-silex]',
+    require => Package['udb3-silex'],
     noop    => $noop_deploy
   }
 
@@ -39,7 +42,7 @@ class deployment::udb3::silex (
     path    => '/var/www/udb-silex/web/uploads',
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[udb3-silex]',
+    require => Package['udb3-silex'],
     noop    => $noop_deploy
   }
 
@@ -48,43 +51,58 @@ class deployment::udb3::silex (
     path    => '/var/www/udb-silex/web/downloads',
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[udb3-silex]',
+    require => Package['udb3-silex'],
     noop    => $noop_deploy
   }
 
   file { 'udb3-silex-config':
     ensure  => 'file',
-    path    => '/var/www/udb-silex/config.yml',
+    path    => '/var/www/udb-silex/config.php',
     source  => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[udb3-silex]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    require => Package['udb3-silex'],
+    notify  => [ Class['Apache::Service'], Class['Supervisord::Service']],
     noop    => $noop_deploy
+  }
+
+  file { 'udb3-silex-config-yaml':
+    ensure  => 'absent',
+    path    => '/var/www/udb-silex/config.yml'
   }
 
   if $excluded_labels_source {
     file { 'udb3-silex-excluded-labels':
       ensure  => 'file',
-      path    => '/var/www/udb-silex/excluded_labels.yml',
+      path    => '/var/www/udb-silex/config.excluded_labels.php',
       source  => $excluded_labels_source,
       owner   => 'www-data',
       group   => 'www-data',
-      require => 'Package[udb3-silex]',
-      notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+      require => Package['udb3-silex'],
+      notify  => [ Class['Apache::Service'], Class['Supervisord::Service']],
       noop    => $noop_deploy
     }
   }
 
+  file { 'udb3-silex-excluded-labels_yaml':
+    ensure  => 'absent',
+    path    => '/var/www/udb-silex/excluded_labels.yml'
+  }
+
   file { 'udb3-silex-permissions':
     ensure  => 'file',
-    path    => '/var/www/udb-silex/user_permissions.yml',
+    path    => '/var/www/udb-silex/config.allow_all.php',
     source  => $permissions_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[udb3-silex]',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    require => Package['udb3-silex'],
+    notify  => [ Class['Apache::Service'], Class['Supervisord::Service']],
     noop    => $noop_deploy
+  }
+
+  file { 'udb3-silex-permissions_yaml':
+    ensure  => 'absent',
+    path    => '/var/www/udb-silex/user_permissions.yml'
   }
 
   file { 'udb3-silex-pubkey':
@@ -93,7 +111,7 @@ class deployment::udb3::silex (
     source  => $pubkey_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[udb3-silex]',
+    require => Package['udb3-silex'],
     noop    => $noop_deploy
   }
 
@@ -103,27 +121,57 @@ class deployment::udb3::silex (
     source  => $pubkey_auth0_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[udb3-silex]',
+    require => Package['udb3-silex'],
     noop    => $noop_deploy
   }
 
   deployment::udb3::externalid { 'udb3-silex':
-    directory                => '/var/www/udb-silex',
-    place_mapping_source     => $externalid_place_mapping_source,
-    organizer_mapping_source => $externalid_organizer_mapping_source,
-    require                  => 'Package[udb3-silex]',
-    notify                   => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
-    noop_deploy              => $noop_deploy
+    directory                  => '/var/www/udb-silex',
+    place_mapping_source       => $externalid_place_mapping_source,
+    organizer_mapping_source   => $externalid_organizer_mapping_source,
+    place_mapping_filename     => 'config.external_id_mapping_place.php',
+    organizer_mapping_filename => 'config.external_id_mapping_organizer.php',
+    require                    => Package['udb3-silex'],
+    notify                     => [ Class['Apache::Service'], Class['Supervisord::Service']],
+    noop_deploy                => $noop_deploy
+  }
+
+  file { 'external_place_mapping_yaml':
+    ensure => 'absent',
+    path   => '/var/www/udb-silex/external_id_mapping_place.yml'
+  }
+
+  file { 'external_organizer_mapping_yaml':
+    ensure => 'absent',
+    path   => '/var/www/udb-silex/external_id_mapping_organizer.yml'
   }
 
   deployment::udb3::terms { 'udb3-silex':
-    directory                 => '/var/www/udb-silex',
-    facilities_mapping_source => $term_mapping_facilities_source,
-    themes_mapping_source     => $term_mapping_themes_source,
-    types_mapping_source      => $term_mapping_types_source,
-    require                   => Package['udb3-silex'],
-    notify                    => [ Class['apache::service'], Class['supervisord::service']],
-    noop_deploy               => $noop_deploy
+    directory                   => '/var/www/udb-silex',
+    facilities_mapping_source   => $term_mapping_facilities_source,
+    themes_mapping_source       => $term_mapping_themes_source,
+    types_mapping_source        => $term_mapping_types_source,
+    facilities_mapping_filename => 'config.term_mapping_facilities.php',
+    themes_mapping_filename     => 'config.term_mapping_themes.php',
+    types_mapping_filename      => 'config.term_mapping_types.php',
+    require                     => Package['udb3-silex'],
+    notify                      => [ Class['apache::service'], Class['supervisord::service']],
+    noop_deploy                 => $noop_deploy
+  }
+
+  file { 'udb3_terms_facilities_yaml':
+    ensure => 'absent',
+    path   => '/var/www/udb-silex/term_mapping_facilities.yml'
+  }
+
+  file { 'udb3_terms_themes_yaml':
+    ensure => 'absent',
+    path   => '/var/www/udb-silex/term_mapping_themes.yml'
+  }
+
+  file { 'udb3_terms_types_yaml':
+    ensure => 'absent',
+    path   => '/var/www/udb-silex/term_mapping_types.yml'
   }
 
   logrotate::rule { 'udb3-silex':
@@ -139,8 +187,8 @@ class deployment::udb3::silex (
     create_owner  => 'www-data',
     create_group  => 'www-data',
     sharedscripts => true,
-    postrotate    => '/usr/bin/supervisorctl restart udb3-amqp-listener udb3-search-cache-warmer udb3-worker udb3-bulk-label-offer-worker udb3-event-export-worker',
-    require       => 'Package[udb3-silex]',
+    postrotate    => '/usr/bin/supervisorctl restart udb3-bulk-label-offer-worker udb3-event-export-worker',
+    require       => Package['udb3-silex'],
     noop          => $noop_deploy
   }
 
@@ -148,7 +196,7 @@ class deployment::udb3::silex (
     command     => 'vendor/bin/doctrine-dbal --no-interaction migrations:migrate',
     cwd         => '/var/www/udb-silex',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-silex'],
-    subscribe   => 'Package[udb3-silex]',
+    subscribe   => Package['udb3-silex'],
     refreshonly => true,
     noop        => $noop_deploy
   }
@@ -156,7 +204,7 @@ class deployment::udb3::silex (
   cron { 'event_conclude':
     ensure  => $event_conclude_ensure,
     command => '/var/www/udb-silex/bin/udb3.php event:conclude',
-    require => 'Package[udb3-silex]',
+    require => Package['udb3-silex'],
     user    => 'root',
     hour    => $event_conclude_hour,
     minute  => $event_conclude_minute

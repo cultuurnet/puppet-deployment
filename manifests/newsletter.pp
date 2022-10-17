@@ -4,26 +4,29 @@ class deployment::newsletter (
   $puppetdb_url = undef
 ) {
 
-  package { 'newsletter-silex':
-    ensure => 'latest',
-    notify => 'Class[Apache::Service]',
-    noop   => $noop_deploy
+  realize Apt::Source['uitdatabank-newsletter-api']
+
+  package { 'uitdatabank-newsletter-api':
+    ensure  => 'latest',
+    notify  => 'Class[Apache::Service]',
+    require => Apt::Source['uitdatabank-newsletter-api'],
+    noop    => $noop_deploy
   }
 
-  file { 'newsletter-config':
+  file { 'uitdatabank-newsletter-api-config':
     ensure  => 'file',
-    path    => '/var/www/newsletter-silex/config.yml',
+    path    => '/var/www/newsletter-api/config.yml',
     source  => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[newsletter-silex]',
+    require => 'Package[uitdatabank-newsletter-api]',
     notify  => 'Class[Apache::Service]',
     noop    => $noop_deploy
   }
 
   profiles::deployment::versions { $title:
-    project      => 'newsletter',
-    packages     => 'newsletter-silex',
+    project      => 'uitdatabank',
+    packages     => 'uitdatabank-newsletter-api',
     puppetdb_url => $puppetdb_url
   }
 

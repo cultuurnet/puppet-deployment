@@ -5,20 +5,22 @@ class deployment::udb3::frontend (
   Boolean                                 $service_manage      = true,
   String                                  $service_ensure      = 'running',
   Boolean                                 $service_enable      = true,
-  String                                  $project_prefix      = 'udb3',
   Variant[Boolean, Enum['true', 'false']] $noop_deploy         = false,
   Optional[String]                        $puppetdb_url        = undef
 ) {
 
-  $basedir = '/var/www/udb-frontend'
-  $package_name = 'udb3-frontend'
-  $service_name = 'udb3-frontend'
+  $basedir      = '/var/www/udb3-frontend'
+  $package_name = 'uitdatabank-frontend'
+  $service_name = 'uitdatabank-frontend'
 
   $noop = any2bool($noop_deploy)
 
+  realize Apt::Source['uitdatabank-frontend']
+
   package { $package_name:
-    ensure => $package_version,
-    noop   => $noop
+    ensure  => $package_version,
+    require => Apt::Source['uitdatabank-frontend'],
+    noop    => $noop
   }
 
   file { "${package_name}-config":
@@ -52,7 +54,7 @@ class deployment::udb3::frontend (
   }
 
   profiles::deployment::versions { $title:
-    project      => $project_prefix,
+    project      => 'uitdatabank',
     packages     => $package_name,
     puppetdb_url => $puppetdb_url
   }

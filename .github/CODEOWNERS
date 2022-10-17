@@ -1,0 +1,4 @@
+# CODEOWNERS are automatically assigned as possible reviewers to new PRs.
+
+# Global owners
+* @paulherbosch @willaerk
