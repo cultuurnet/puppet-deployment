@@ -36,7 +36,11 @@ class deployment::udb3 (
       contain deployment::udb3::search
     }
     if $with_movie_api_fetcher {
+      realize Apt::Source['uitdatabank-api-movie-fetcher']
+
       contain deployment::udb3::movie_api_fetcher
+
+      Apt::Source['uitdatabank-api-movie-fetcher'] -> Class['deployment::udb3::movie_api_fetcher']
     }
   }
 }
