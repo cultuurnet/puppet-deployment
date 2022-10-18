@@ -51,8 +51,4 @@ class deployment::repositories {
   @apt::source { 'cultuurnet-jwtprovider':
     location => "http://apt.uitdatabank.be/jwtprovider-${environment}"
   }
-
-  @apt::source { 'cultuurnet-iis':
-    location => "http://apt.uitdatabank.be/iis-${environment}"
-  }
 }
