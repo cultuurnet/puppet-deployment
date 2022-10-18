@@ -11,11 +11,11 @@ class deployment::museumpas::website (
 
   $basedir = '/var/www/museumpas'
 
-  realize Apt::Source['publiq-museumpas-website']
+  realize Apt::Source['museumpas-website']
 
   package { 'museumpas-website':
     ensure  => $version,
-    require => Apt::Source['publiq-museumpas-website'],
+    require => Apt::Source['museumpas-website'],
     noop    => $noop_deploy
   }
 
