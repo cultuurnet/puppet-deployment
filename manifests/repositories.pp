@@ -40,10 +40,6 @@ class deployment::repositories {
     location => "http://apt.uitdatabank.be/udb3-${environment}"
   }
 
-  @apt::source { 'cultuurnet-udb-nl':
-    location => "http://apt.uitdatabank.be/udb-nl-${environment}"
-  }
-
   @apt::source { 'cultuurnet-cdbxml':
     location => "http://apt.uitdatabank.be/cdbxml-${environment}"
   }
