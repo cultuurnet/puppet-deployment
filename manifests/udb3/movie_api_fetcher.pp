@@ -69,16 +69,6 @@ class deployment::udb3::movie_api_fetcher (
     noop    => $noop_deploy
   }
 
-  if $enable_api_fetcher {
-    cron { 'movie-api-fetcher-kinepolis':
-      command    => '/var/www/movie-api-fetcher/bin/app.php apifetcher',
-      require    => 'Package[uitdatabank-movie-api-fetcher]',
-      user       => 'root',
-      hour       => $api_fetcher_hour,
-      minute     => $api_fetcher_minute
-    }
-  }
-
   logrotate::rule { 'uitdatabank-movie-api-fetcher':
     path          => '/var/www/movie-api-fetcher/log/*.log',
     rotate        => '10',
