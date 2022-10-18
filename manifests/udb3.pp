@@ -7,7 +7,6 @@ class deployment::udb3 (
   $with_jwtprovider       = true,
   $with_apidoc            = true,
   $with_search            = true,
-  $with_iis               = true,
   $with_movie_api_fetcher = true
 ){
 
@@ -36,11 +35,12 @@ class deployment::udb3 (
     if $with_search {
       contain deployment::udb3::search
     }
-    if $with_iis {
-      contain deployment::udb3::iis
-    }
     if $with_movie_api_fetcher {
+      realize Apt::Source['uitdatabank-movie-api-fetcher']
+
       contain deployment::udb3::movie_api_fetcher
+
+      Apt::Source['uitdatabank-movie-api-fetcher'] -> Class['deployment::udb3::movie_api_fetcher']
     }
   }
 }

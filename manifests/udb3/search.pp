@@ -4,10 +4,8 @@ class deployment::udb3::search (
   $facet_mapping_facilities_source,
   $facet_mapping_themes_source,
   $facet_mapping_types_source,
-  $search_package_version   = 'latest',
-  $geojson_package_version  = 'latest',
+  $version                  = 'latest',
   $migrate_data             = true,
-  $project_prefix           = 'udb3',
   $migrate_timeout          = '300',
   $reindex_permanent_hour   = '0',
   $reindex_permanent_minute = '0',
@@ -26,16 +24,12 @@ class deployment::udb3::search (
   realize Apt::Source['cultuurnet-search']
   realize Apt::Source['uitdatabank-search-api']
 
+  include deployment::udb3::geojson_data
+
   package { 'uitdatabank-search-api':
     ensure  => $search_package_version,
     notify  => [Class['Apache::Service'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related']],
     require => Apt::Source['uitdatabank-search-api'],
-    noop    => $noop_deploy
-  }
-
-  package { 'udb3-geojson-data':
-    ensure  => $geojson_package_version,
-    require => Apt::Source['cultuurnet-search'],
     noop    => $noop_deploy
   }
 
@@ -44,7 +38,7 @@ class deployment::udb3::search (
     path    => "${basedir}/config.yml",
     source  => $config_source,
     require => Package['uitdatabank-search-api'],
-    notify  => [ Class['Apache::Service'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related']],
+    notify  => [Class['Apache::Service'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related']],
     noop    => $noop_deploy
   }
 
@@ -53,7 +47,7 @@ class deployment::udb3::search (
     path    => "${basedir}/features.yml",
     source  => $features_source,
     require => Package['uitdatabank-search-api'],
-    notify  => [ Class['Apache::Service'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related']],
+    notify  => [Class['Apache::Service'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related']],
     noop    => $noop_deploy
   }
 
@@ -63,7 +57,7 @@ class deployment::udb3::search (
     ensure  => 'file',
     path    => "${basedir}/facet_mapping_regions.yml",
     source  => '/var/www/geojson-data/output/facet_mapping_regions.yml',
-    require => [Package['uitdatabank-search-api'], Package['udb3-geojson-data']],
+    require => [Package['uitdatabank-search-api'], Class['deployment::udb3::geojson_data']],
     notify  => [Class['Apache::Service'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related']],
     noop    => $noop_deploy
   }
@@ -74,7 +68,7 @@ class deployment::udb3::search (
     ensure  => 'file',
     path    => "${basedir}/web/autocomplete.json",
     source  => '/var/www/geojson-data/output/autocomplete.json',
-    require => [Package['uitdatabank-search-api'], Package['udb3-geojson-data']],
+    require => [Package['uitdatabank-search-api'], Class['deployment::udb3::geojson_data']],
     notify  => [Class['Apache::Service'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related']],
     noop    => $noop_deploy
   }
@@ -167,8 +161,8 @@ class deployment::udb3::search (
   }
 
   profiles::deployment::versions { $title:
-    project      => $project_prefix,
-    packages     => ['uitdatabank-search-api', 'udb3-geojson-data'],
+    project      => 'uitdatabank',
+    packages     => 'uitdatabank-search-api',
     puppetdb_url => $puppetdb_url
   }
 
