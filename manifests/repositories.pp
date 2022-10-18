@@ -16,10 +16,6 @@ class deployment::repositories {
     location => "http://apt.uitdatabank.be/groepspas-${environment}"
   }
 
-  @apt::source { 'publiq-museumpas-website':
-    location => "https://apt.publiq.be/museumpas-website-${environment}"
-  }
-
   @apt::source { 'cultuurnet-omd':
     location => "http://apt.uitdatabank.be/omd-${environment}"
   }
