@@ -21,7 +21,6 @@ class deployment::udb3::search (
     group   => 'www-data'
   }
 
-  realize Apt::Source['cultuurnet-search']
   realize Apt::Source['uitdatabank-search-api']
 
   include deployment::udb3::geojson_data
