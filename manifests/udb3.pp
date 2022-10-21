@@ -1,7 +1,6 @@
 class deployment::udb3 (
   $with_silex             = true,
   $with_angular           = true,
-  $with_angular_nl        = false,
   $with_frontend          = false,
   $with_cdbxml            = true,
   $with_jwtprovider       = true,
@@ -15,9 +14,6 @@ class deployment::udb3 (
       contain deployment::udb3::silex
     }
     if $with_angular {
-      contain deployment::udb3::angular
-    }
-    if $with_angular_nl {
       contain deployment::udb3::angular
     }
     if $with_frontend {
@@ -36,11 +32,7 @@ class deployment::udb3 (
       contain deployment::udb3::search
     }
     if $with_movie_api_fetcher {
-      realize Apt::Source['uitdatabank-movie-api-fetcher']
-
       contain deployment::udb3::movie_api_fetcher
-
-      Apt::Source['uitdatabank-movie-api-fetcher'] -> Class['deployment::udb3::movie_api_fetcher']
     }
   }
 }

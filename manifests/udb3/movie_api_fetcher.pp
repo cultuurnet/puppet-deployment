@@ -3,17 +3,17 @@ class deployment::udb3::movie_api_fetcher (
   $db_name,
   $kinepolis_theaters_source = 'puppet:///modules/deployment/movie_api_fetcher/kinepolis_theaters.yml',
   $kinepolis_terms_source    = 'puppet:///modules/deployment/movie_api_fetcher/kinepolis_terms.yml',
-  $enable_api_fetcher        = false,
-  $api_fetcher_hour          = '0',
-  $api_fetcher_minute        = '0',
   $noop_deploy               = false,
   $puppetdb_url              = undef
 ) {
 
+  realize Apt::Source['uitdatabank-movie-api-fetcher']
+
   package { 'uitdatabank-movie-api-fetcher':
-    ensure => 'latest',
-    notify => 'Class[Apache::Service]',
-    noop   => $noop_deploy
+    ensure  => 'latest',
+    notify  => 'Class[Apache::Service]',
+    require => Apt::Source['uitdatabank-movie-api-fetcher'],
+    noop    => $noop_deploy
   }
 
   file { 'uitdatabank-movie-api-fetcher-log':
