@@ -21,7 +21,7 @@ class deployment::udb3::jwtprovider (
     source  => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[uitdatabank-jwt-provider',
+    require => 'Package[uitdatabank-jwt-provider]',
     notify  => 'Class[Apache::Service]',
     noop    => $noop_deploy
   }
@@ -32,13 +32,13 @@ class deployment::udb3::jwtprovider (
     owner   => 'www-data',
     group   => 'www-data',
     recurse => true,
-    require => 'Package[uitdatabank-jwt-provider',
+    require => 'Package[uitdatabank-jwt-provider]',
     noop    => $noop_deploy
   }
 
   profiles::deployment::versions { $title:
     project      => 'uitdatabank',
-    packages     => 'uitdatabank-jwt-provider',
+    packages     => 'uitdatabank-jwt-provider]',
     puppetdb_url => $puppetdb_url
   }
 
