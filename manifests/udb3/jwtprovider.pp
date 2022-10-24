@@ -38,7 +38,7 @@ class deployment::udb3::jwtprovider (
 
   profiles::deployment::versions { $title:
     project      => 'uitdatabank',
-    packages     => 'uitdatabank-jwt-provider]',
+    packages     => 'uitdatabank-jwt-provider',
     puppetdb_url => $puppetdb_url
   }
 
