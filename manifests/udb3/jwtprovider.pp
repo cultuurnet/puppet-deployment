@@ -1,18 +1,17 @@
 class deployment::udb3::jwtprovider (
   $config_source,
-  $project_prefix = 'udb3',
   $noop_deploy = false,
   $puppetdb_url = undef
 ) {
 
-  $basedir = '/var/www/udb-jwt-provider'
+  $basedir = '/var/www/udb3-jwt-provider'
 
-  realize Apt::Source['cultuurnet-jwtprovider']
+  realize Apt::Source['uitdatabank-jwt-provider']
 
-  package { 'udb3-jwt-provider':
+  package { 'uitdatabank-jwt-provider':
     ensure  => 'latest',
     notify  => 'Class[Apache::Service]',
-    require => Apt::Source['cultuurnet-jwtprovider'],
+    require => Apt::Source['uitdatabank-jwt-provider'],
     noop    => $noop_deploy
   }
 
@@ -22,7 +21,7 @@ class deployment::udb3::jwtprovider (
     source  => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[udb3-jwt-provider]',
+    require => 'Package[uitdatabank-jwt-provider',
     notify  => 'Class[Apache::Service]',
     noop    => $noop_deploy
   }
@@ -33,13 +32,13 @@ class deployment::udb3::jwtprovider (
     owner   => 'www-data',
     group   => 'www-data',
     recurse => true,
-    require => 'Package[udb3-jwt-provider]',
+    require => 'Package[uitdatabank-jwt-provider',
     noop    => $noop_deploy
   }
 
   profiles::deployment::versions { $title:
-    project      => $project_prefix,
-    packages     => 'udb3-jwt-provider',
+    project      => 'uitdatabank',
+    packages     => 'uitdatabank-jwt-provider',
     puppetdb_url => $puppetdb_url
   }
 
