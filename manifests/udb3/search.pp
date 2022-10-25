@@ -26,7 +26,7 @@ class deployment::udb3::search (
   include deployment::udb3::geojson_data
 
   package { 'uitdatabank-search-api':
-    ensure  => $search_package_version,
+    ensure  => $version,
     notify  => [Class['Apache::Service'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related']],
     require => Apt::Source['uitdatabank-search-api'],
     noop    => $noop_deploy
