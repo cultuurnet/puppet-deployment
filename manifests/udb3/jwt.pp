@@ -2,14 +2,15 @@ class deployment::udb3::jwt (
   $config_source,
   $privkey_source,
   $pubkey_source,
-  $project_prefix = 'udb3',
   $noop_deploy = false,
   $puppetdb_url = undef
 ) {
 
-  $basedir = '/var/www/udb-jwt'
+  $basedir = '/var/www/udb3-jwt-provider-uitidv1'
 
-  package { 'udb3-jwt':
+  realize Apt::Source['uitdatabank-jwt-provider-uitidv1']
+
+  package { 'uitdatabank-jwt-provider-uitidv1':
     ensure => 'latest',
     notify => 'Class[Apache::Service]',
     noop   => $noop_deploy
@@ -21,7 +22,7 @@ class deployment::udb3::jwt (
     source  => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[udb3-jwt]',
+    require => 'Package[uitdatabank-jwt-provider-uitidv1]',
     notify  => 'Class[Apache::Service]',
     noop    => $noop_deploy
   }
@@ -32,7 +33,7 @@ class deployment::udb3::jwt (
     owner   => 'www-data',
     group   => 'www-data',
     recurse => true,
-    require => 'Package[udb3-jwt]',
+    require => 'Package[uitdatabank-jwt-provider-uitidv1]',
     noop    => $noop_deploy
   }
 
@@ -42,7 +43,7 @@ class deployment::udb3::jwt (
     source  => $privkey_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[udb3-jwt]',
+    require => 'Package[uitdatabank-jwt-provider-uitidv1]',
     noop    => $noop_deploy
   }
 
@@ -52,13 +53,13 @@ class deployment::udb3::jwt (
     source  => $pubkey_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[udb3-jwt]',
+    require => 'Package[uitdatabank-jwt-provider-uitidv1]',
     noop    => $noop_deploy
   }
 
   profiles::deployment::versions { $title:
-    project      => $project_prefix,
-    packages     => 'udb3-jwt',
+    project      => 'uitdatabank',
+    packages     => 'uitdatabank-jwt-provider-uitidv1',
     puppetdb_url => $puppetdb_url
   }
 
