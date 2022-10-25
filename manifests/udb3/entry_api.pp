@@ -68,11 +68,6 @@ class deployment::udb3::entry_api (
     noop    => $noop_deploy
   }
 
-  file { 'udb3-silex-config-yaml':
-    ensure  => 'absent',
-    path    => "${basedir}/config.yml"
-  }
-
   if $excluded_labels_source {
     file { 'udb3-silex-excluded-labels':
       ensure  => 'file',
@@ -86,11 +81,6 @@ class deployment::udb3::entry_api (
     }
   }
 
-  file { 'udb3-silex-excluded-labels_yaml':
-    ensure  => 'absent',
-    path    => "${basedir}/excluded_labels.yml"
-  }
-
   file { 'udb3-silex-permissions':
     ensure  => 'file',
     path    => "{basedir}/config.allow_all.php",
@@ -100,11 +90,6 @@ class deployment::udb3::entry_api (
     require => Package['udb3-silex'],
     notify  => [ Class['Apache::Service'], Class['Supervisord::Service']],
     noop    => $noop_deploy
-  }
-
-  file { 'udb3-silex-permissions_yaml':
-    ensure  => 'absent',
-    path    => "${basedir}/user_permissions.yml"
   }
 
   file { 'udb3-silex-pubkey':
@@ -138,16 +123,6 @@ class deployment::udb3::entry_api (
     noop_deploy                => $noop_deploy
   }
 
-  file { 'external_place_mapping_yaml':
-    ensure => 'absent',
-    path   => "${basedir}/external_id_mapping_place.yml"
-  }
-
-  file { 'external_organizer_mapping_yaml':
-    ensure => 'absent',
-    path   => "${basedir}/external_id_mapping_organizer.yml"
-  }
-
   deployment::udb3::terms { 'udb3-silex':
     directory                   => $basedir,
     facilities_mapping_source   => $term_mapping_facilities_source,
@@ -159,21 +134,6 @@ class deployment::udb3::entry_api (
     require                     => Package['udb3-silex'],
     notify                      => [ Class['apache::service'], Class['supervisord::service']],
     noop_deploy                 => $noop_deploy
-  }
-
-  file { 'udb3_terms_facilities_yaml':
-    ensure => 'absent',
-    path   => "${basedir}/term_mapping_facilities.yml"
-  }
-
-  file { 'udb3_terms_themes_yaml':
-    ensure => 'absent',
-    path   => "${basedir}/term_mapping_themes.yml"
-  }
-
-  file { 'udb3_terms_types_yaml':
-    ensure => 'absent',
-    path   => "${basedir}/term_mapping_types.yml"
   }
 
   logrotate::rule { 'udb3-silex':
