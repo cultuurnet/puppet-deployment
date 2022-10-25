@@ -1,5 +1,5 @@
 class deployment::udb3 (
-  $with_silex             = true,
+  $with_entry_api         = true,
   $with_angular           = true,
   $with_frontend          = false,
   $with_cdbxml            = true,
@@ -11,7 +11,7 @@ class deployment::udb3 (
 
   unless $facts['noop_deploy'] == 'true' {
     if $with_silex {
-      contain deployment::udb3::silex
+      contain deployment::udb3::entry_api
     }
     if $with_angular {
       contain deployment::udb3::angular

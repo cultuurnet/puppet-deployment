@@ -1,4 +1,4 @@
-class deployment::udb3::silex (
+class deployment::udb3::entry_api (
   $config_source,
   $permissions_source,
   $externalid_place_mapping_source,
@@ -20,6 +20,8 @@ class deployment::udb3::silex (
 
   realize Apt::Source['cultuurnet-udb3']
 
+  $basedir = '/var/www/udb-silex'
+
   package { 'udb3-silex':
     ensure  => 'latest',
     notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
@@ -29,7 +31,7 @@ class deployment::udb3::silex (
 
   file { 'udb3-silex-log':
     ensure  => 'directory',
-    path    => '/var/www/udb-silex/log',
+    path    => "${basedir}/log",
     owner   => 'www-data',
     group   => 'www-data',
     recurse => true,
@@ -39,7 +41,7 @@ class deployment::udb3::silex (
 
   file { 'udb3-uploads':
     ensure  => 'directory',
-    path    => '/var/www/udb-silex/web/uploads',
+    path    => "${basedir}/web/uploads",
     owner   => 'www-data',
     group   => 'www-data',
     require => Package['udb3-silex'],
@@ -48,7 +50,7 @@ class deployment::udb3::silex (
 
   file { 'udb3-downloads':
     ensure  => 'directory',
-    path    => '/var/www/udb-silex/web/downloads',
+    path    => "${basedir}/web/downloads",
     owner   => 'www-data',
     group   => 'www-data',
     require => Package['udb3-silex'],
@@ -57,7 +59,7 @@ class deployment::udb3::silex (
 
   file { 'udb3-silex-config':
     ensure  => 'file',
-    path    => '/var/www/udb-silex/config.php',
+    path    => "${basedir}/config.php",
     source  => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
@@ -66,15 +68,10 @@ class deployment::udb3::silex (
     noop    => $noop_deploy
   }
 
-  file { 'udb3-silex-config-yaml':
-    ensure  => 'absent',
-    path    => '/var/www/udb-silex/config.yml'
-  }
-
   if $excluded_labels_source {
     file { 'udb3-silex-excluded-labels':
       ensure  => 'file',
-      path    => '/var/www/udb-silex/config.excluded_labels.php',
+      path    => "${basedir}/config.excluded_labels.php",
       source  => $excluded_labels_source,
       owner   => 'www-data',
       group   => 'www-data',
@@ -84,14 +81,9 @@ class deployment::udb3::silex (
     }
   }
 
-  file { 'udb3-silex-excluded-labels_yaml':
-    ensure  => 'absent',
-    path    => '/var/www/udb-silex/excluded_labels.yml'
-  }
-
   file { 'udb3-silex-permissions':
     ensure  => 'file',
-    path    => '/var/www/udb-silex/config.allow_all.php',
+    path    => "{basedir}/config.allow_all.php",
     source  => $permissions_source,
     owner   => 'www-data',
     group   => 'www-data',
@@ -100,14 +92,9 @@ class deployment::udb3::silex (
     noop    => $noop_deploy
   }
 
-  file { 'udb3-silex-permissions_yaml':
-    ensure  => 'absent',
-    path    => '/var/www/udb-silex/user_permissions.yml'
-  }
-
   file { 'udb3-silex-pubkey':
     ensure  => 'file',
-    path    => '/var/www/udb-silex/public.pem',
+    path    => "${basedir}/public.pem",
     source  => $pubkey_source,
     owner   => 'www-data',
     group   => 'www-data',
@@ -117,7 +104,7 @@ class deployment::udb3::silex (
 
   file { 'udb3-silex-pubkey-auth0':
     ensure  => 'file',
-    path    => '/var/www/udb-silex/public-auth0.pem',
+    path    => "${basedir}/public-auth0.pem",
     source  => $pubkey_auth0_source,
     owner   => 'www-data',
     group   => 'www-data',
@@ -126,7 +113,7 @@ class deployment::udb3::silex (
   }
 
   deployment::udb3::externalid { 'udb3-silex':
-    directory                  => '/var/www/udb-silex',
+    directory                  => $basedir,
     place_mapping_source       => $externalid_place_mapping_source,
     organizer_mapping_source   => $externalid_organizer_mapping_source,
     place_mapping_filename     => 'config.external_id_mapping_place.php',
@@ -136,18 +123,8 @@ class deployment::udb3::silex (
     noop_deploy                => $noop_deploy
   }
 
-  file { 'external_place_mapping_yaml':
-    ensure => 'absent',
-    path   => '/var/www/udb-silex/external_id_mapping_place.yml'
-  }
-
-  file { 'external_organizer_mapping_yaml':
-    ensure => 'absent',
-    path   => '/var/www/udb-silex/external_id_mapping_organizer.yml'
-  }
-
   deployment::udb3::terms { 'udb3-silex':
-    directory                   => '/var/www/udb-silex',
+    directory                   => $basedir,
     facilities_mapping_source   => $term_mapping_facilities_source,
     themes_mapping_source       => $term_mapping_themes_source,
     types_mapping_source        => $term_mapping_types_source,
@@ -159,23 +136,8 @@ class deployment::udb3::silex (
     noop_deploy                 => $noop_deploy
   }
 
-  file { 'udb3_terms_facilities_yaml':
-    ensure => 'absent',
-    path   => '/var/www/udb-silex/term_mapping_facilities.yml'
-  }
-
-  file { 'udb3_terms_themes_yaml':
-    ensure => 'absent',
-    path   => '/var/www/udb-silex/term_mapping_themes.yml'
-  }
-
-  file { 'udb3_terms_types_yaml':
-    ensure => 'absent',
-    path   => '/var/www/udb-silex/term_mapping_types.yml'
-  }
-
   logrotate::rule { 'udb3-silex':
-    path          => '/var/www/udb-silex/log/*.log',
+    path          => "${basedir}/log/*.log",
     rotate        => '10',
     rotate_every  => 'day',
     missingok     => true,
@@ -194,8 +156,8 @@ class deployment::udb3::silex (
 
   exec { 'silex_db_migrate':
     command     => 'vendor/bin/doctrine-dbal --no-interaction migrations:migrate',
-    cwd         => '/var/www/udb-silex',
-    path        => [ '/usr/local/bin', '/usr/bin', '/bin', '/var/www/udb-silex'],
+    cwd         => $basedir,
+    path        => [ '/usr/local/bin', '/usr/bin', '/bin', $basedir],
     subscribe   => Package['udb3-silex'],
     refreshonly => true,
     noop        => $noop_deploy
@@ -203,7 +165,7 @@ class deployment::udb3::silex (
 
   cron { 'event_conclude':
     ensure  => $event_conclude_ensure,
-    command => '/var/www/udb-silex/bin/udb3.php event:conclude',
+    command => "${basedir}/bin/udb3.php event:conclude",
     require => Package['udb3-silex'],
     user    => 'root',
     hour    => $event_conclude_hour,
@@ -216,5 +178,5 @@ class deployment::udb3::silex (
     puppetdb_url => $puppetdb_url
   }
 
-  Class['php'] -> Class['deployment::udb3::silex']
+  Class['php'] -> Class['deployment::udb3::entry_api']
 }
