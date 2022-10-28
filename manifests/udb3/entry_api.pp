@@ -9,7 +9,6 @@ class deployment::udb3::entry_api (
   $db_name,
   $pubkey_source,
   $pubkey_auth0_source,
-  $project_prefix              = 'udb3',
   $event_conclude_ensure       = 'present',
   $event_conclude_hour         = '0',
   $event_conclude_minute       = '0',
@@ -173,7 +172,7 @@ class deployment::udb3::entry_api (
   }
 
   profiles::deployment::versions { $title:
-    project      => $project_prefix,
+    project      => 'uitdatabank',
     packages     => 'udb3-silex',
     puppetdb_url => $puppetdb_url
   }
