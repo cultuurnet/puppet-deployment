@@ -83,7 +83,7 @@ class deployment::udb3::entry_api (
 
   file { 'udb3-silex-permissions':
     ensure  => 'file',
-    path    => "{basedir}/config.allow_all.php",
+    path    => "${basedir}/config.allow_all.php",
     source  => $permissions_source,
     owner   => 'www-data',
     group   => 'www-data',
