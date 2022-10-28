@@ -17,112 +17,112 @@ class deployment::udb3::entry_api (
   $excluded_labels_source      = undef
 ) {
 
-  realize Apt::Source['cultuurnet-udb3']
+  realize Apt::Source['uitdatabank-entry-api']
 
-  $basedir = '/var/www/udb-silex'
+  $basedir = '/var/www/udb3-backend'
 
-  package { 'udb3-silex':
+  package { 'uitdatabank-entry-api':
     ensure  => 'latest',
     notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
-    require => Apt::Source['cultuurnet-udb3'],
+    require => Apt::Source['uitdatabank-entry-api'],
     noop    => $noop_deploy
   }
 
-  file { 'udb3-silex-log':
+  file { 'uitdatabank-entry-api-log':
     ensure  => 'directory',
     path    => "${basedir}/log",
     owner   => 'www-data',
     group   => 'www-data',
     recurse => true,
-    require => Package['udb3-silex'],
+    require => Package['uitdatabank-entry-api'],
     noop    => $noop_deploy
   }
 
-  file { 'udb3-uploads':
+  file { 'uitdatabank-uploads':
     ensure  => 'directory',
     path    => "${basedir}/web/uploads",
     owner   => 'www-data',
     group   => 'www-data',
-    require => Package['udb3-silex'],
+    require => Package['uitdatabank-entry-api'],
     noop    => $noop_deploy
   }
 
-  file { 'udb3-downloads':
+  file { 'uitdatabank-downloads':
     ensure  => 'directory',
     path    => "${basedir}/web/downloads",
     owner   => 'www-data',
     group   => 'www-data',
-    require => Package['udb3-silex'],
+    require => Package['uitdatabank-entry-api'],
     noop    => $noop_deploy
   }
 
-  file { 'udb3-silex-config':
+  file { 'uitdatabank-entry-api-config':
     ensure  => 'file',
     path    => "${basedir}/config.php",
     source  => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => Package['udb3-silex'],
+    require => Package['uitdatabank-entry-api'],
     notify  => [ Class['Apache::Service'], Class['Supervisord::Service']],
     noop    => $noop_deploy
   }
 
   if $excluded_labels_source {
-    file { 'udb3-silex-excluded-labels':
+    file { 'uitdatabank-entry-api-excluded-labels':
       ensure  => 'file',
       path    => "${basedir}/config.excluded_labels.php",
       source  => $excluded_labels_source,
       owner   => 'www-data',
       group   => 'www-data',
-      require => Package['udb3-silex'],
+      require => Package['uitdatabank-entry-api'],
       notify  => [ Class['Apache::Service'], Class['Supervisord::Service']],
       noop    => $noop_deploy
     }
   }
 
-  file { 'udb3-silex-permissions':
+  file { 'uitdatabank-entry-api-permissions':
     ensure  => 'file',
     path    => "${basedir}/config.allow_all.php",
     source  => $permissions_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => Package['udb3-silex'],
+    require => Package['uitdatabank-entry-api'],
     notify  => [ Class['Apache::Service'], Class['Supervisord::Service']],
     noop    => $noop_deploy
   }
 
-  file { 'udb3-silex-pubkey':
+  file { 'uitdatabank-entry-api-pubkey':
     ensure  => 'file',
     path    => "${basedir}/public.pem",
     source  => $pubkey_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => Package['udb3-silex'],
+    require => Package['uitdatabank-entry-api'],
     noop    => $noop_deploy
   }
 
-  file { 'udb3-silex-pubkey-auth0':
+  file { 'uitdatabank-entry-api-pubkey-auth0':
     ensure  => 'file',
     path    => "${basedir}/public-auth0.pem",
     source  => $pubkey_auth0_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => Package['udb3-silex'],
+    require => Package['uitdatabank-entry-api'],
     noop    => $noop_deploy
   }
 
-  deployment::udb3::externalid { 'udb3-silex':
+  deployment::udb3::externalid { 'uitdatabank-entry-api':
     directory                  => $basedir,
     place_mapping_source       => $externalid_place_mapping_source,
     organizer_mapping_source   => $externalid_organizer_mapping_source,
     place_mapping_filename     => 'config.external_id_mapping_place.php',
     organizer_mapping_filename => 'config.external_id_mapping_organizer.php',
-    require                    => Package['udb3-silex'],
+    require                    => Package['uitdatabank-entry-api'],
     notify                     => [ Class['Apache::Service'], Class['Supervisord::Service']],
     noop_deploy                => $noop_deploy
   }
 
-  deployment::udb3::terms { 'udb3-silex':
+  deployment::udb3::terms { 'uitdatabank-entry-api':
     directory                   => $basedir,
     facilities_mapping_source   => $term_mapping_facilities_source,
     themes_mapping_source       => $term_mapping_themes_source,
@@ -130,12 +130,12 @@ class deployment::udb3::entry_api (
     facilities_mapping_filename => 'config.term_mapping_facilities.php',
     themes_mapping_filename     => 'config.term_mapping_themes.php',
     types_mapping_filename      => 'config.term_mapping_types.php',
-    require                     => Package['udb3-silex'],
+    require                     => Package['uitdatabank-entry-api'],
     notify                      => [ Class['apache::service'], Class['supervisord::service']],
     noop_deploy                 => $noop_deploy
   }
 
-  logrotate::rule { 'udb3-silex':
+  logrotate::rule { 'uitdatabank-entry-api':
     path          => "${basedir}/log/*.log",
     rotate        => '10',
     rotate_every  => 'day',
@@ -149,23 +149,23 @@ class deployment::udb3::entry_api (
     create_group  => 'www-data',
     sharedscripts => true,
     postrotate    => '/usr/bin/supervisorctl restart udb3-bulk-label-offer-worker udb3-event-export-worker',
-    require       => Package['udb3-silex'],
+    require       => Package['uitdatabank-entry-api'],
     noop          => $noop_deploy
   }
 
-  exec { 'silex_db_migrate':
+  exec { 'uitdatabank-entry-api-db-migrate':
     command     => 'vendor/bin/doctrine-dbal --no-interaction migrations:migrate',
     cwd         => $basedir,
     path        => [ '/usr/local/bin', '/usr/bin', '/bin', $basedir],
-    subscribe   => Package['udb3-silex'],
+    subscribe   => Package['uitdatabank-entry-api'],
     refreshonly => true,
     noop        => $noop_deploy
   }
 
-  cron { 'event_conclude':
+  cron { 'uitdatabank-entry-api-event-conclude':
     ensure  => $event_conclude_ensure,
     command => "${basedir}/bin/udb3.php event:conclude",
-    require => Package['udb3-silex'],
+    require => Package['uitdatabank-entry-api'],
     user    => 'root',
     hour    => $event_conclude_hour,
     minute  => $event_conclude_minute
@@ -173,7 +173,7 @@ class deployment::udb3::entry_api (
 
   profiles::deployment::versions { $title:
     project      => 'uitdatabank',
-    packages     => 'udb3-silex',
+    packages     => 'uitdatabank-entry-api',
     puppetdb_url => $puppetdb_url
   }
 
