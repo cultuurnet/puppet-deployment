@@ -1,5 +1,5 @@
 class deployment::udb3::movie_api_fetcher (
-  $silex_config_source,
+  $config_source,
   $db_name,
   $kinepolis_theaters_source = 'puppet:///modules/deployment/movie_api_fetcher/kinepolis_theaters.yml',
   $kinepolis_terms_source    = 'puppet:///modules/deployment/movie_api_fetcher/kinepolis_terms.yml',
@@ -39,7 +39,7 @@ class deployment::udb3::movie_api_fetcher (
   file { 'uitdatabank-movie-api-fetcher-config':
     ensure  => 'file',
     path    => '/var/www/movie-api-fetcher/config.yml',
-    source  => $silex_config_source,
+    source  => $config_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => 'Package[uitdatabank-movie-api-fetcher]',
