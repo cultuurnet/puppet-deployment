@@ -10,7 +10,7 @@ class deployment::udb3 (
 ){
 
   unless $facts['noop_deploy'] == 'true' {
-    if $with_silex {
+    if $with_entry_api {
       contain deployment::udb3::entry_api
     }
     if $with_angular {
