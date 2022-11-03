@@ -20,22 +20,6 @@ class deployment::repositories {
     location => "http://apt.uitdatabank.be/omd-${environment}"
   }
 
-  # These variables should be rolled into /etc/apt/auth.conf, which is managed by the apt class
-  $sapi_apt_user     = lookup('deployment::search_api::apt_user', String, 'first', '')
-  $sapi_apt_password = lookup('deployment::search_api::apt_password', String, 'first', '')
-
-  @apt::source { 'cultuurnet-sapi':
-    location => "https://${sapi_apt_user}:${sapi_apt_password}@apt-private.uitdatabank.be/sapi-${environment}"
-  }
-
-  # These variables should be rolled into /etc/apt/auth.conf, which is managed by the apt class
-  $uitpas_apt_user     = lookup('deployment::uitpas::apt_user', String, 'first', '')
-  $uitpas_apt_password = lookup('deployment::uitpas::apt_password', String, 'first', '')
-
-  @apt::source { 'cultuurnet-uitpas':
-    location => "https://${uitpas_apt_user}:${uitpas_apt_password}@apt-private.uitdatabank.be/uitpas-${environment}"
-  }
-
   @apt::source { 'cultuurnet-udb3':
     location => "http://apt.uitdatabank.be/udb3-${environment}"
   }
