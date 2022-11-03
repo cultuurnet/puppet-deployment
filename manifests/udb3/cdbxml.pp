@@ -8,7 +8,16 @@ class deployment::udb3::cdbxml (
   $puppetdb_url = undef
 ) {
 
-  realize Apt::Source['cultuurnet-cdbxml']
+  apt::source { 'cultuurnet-cdbxml':
+    location => "http://apt.uitdatabank.be/cdbxml-${environment}",
+    release => $facts['lsbdistcodename'],
+    repos   => 'main',
+    include => {
+      'deb' => true,
+      'src' => false
+    },
+    require => Class['profiles::apt::keys']
+  }
 
   package { 'udb3-cdbxml':
     ensure  => 'latest',
