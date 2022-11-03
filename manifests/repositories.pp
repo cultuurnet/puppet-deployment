@@ -27,8 +27,4 @@ class deployment::repositories {
   @apt::source { 'cultuurnet-cdbxml':
     location => "http://apt.uitdatabank.be/cdbxml-${environment}"
   }
-
-  @apt::source { 'cultuurnet-jwtprovider':
-    location => "http://apt.uitdatabank.be/jwtprovider-${environment}"
-  }
 }
