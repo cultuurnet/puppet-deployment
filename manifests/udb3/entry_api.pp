@@ -38,7 +38,7 @@ class deployment::udb3::entry_api (
     noop    => $noop_deploy
   }
 
-  file { 'uitdatabank-uploads':
+  file { 'uitdatabank-entry-api-uploads':
     ensure  => 'directory',
     path    => "${basedir}/web/uploads",
     owner   => 'www-data',
@@ -47,7 +47,7 @@ class deployment::udb3::entry_api (
     noop    => $noop_deploy
   }
 
-  file { 'uitdatabank-downloads':
+  file { 'uitdatabank-entry-api-downloads':
     ensure  => 'directory',
     path    => "${basedir}/web/downloads",
     owner   => 'www-data',
