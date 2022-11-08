@@ -1,30 +1,31 @@
 class deployment::groepspas (
   $angular_app_config_source,
   $angular_app_deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
-  $project_prefix = 'groepspas',
   $noop_deploy = false,
   $puppetdb_url = undef
 ) {
 
-  realize Apt::Source['cultuurnet-groepspas']
+  $basedir = '/var/www/uitpas-groepspas-frontend'
 
-  package { 'groepspas-angular-app':
+  realize Apt::Source['uitpas-groepspas-frontend']
+
+  package { 'uitpas-groepspas-frontend':
     ensure  => 'latest',
-    require => Apt::Source['cultuurnet-groepspas'],
+    require => Apt::Source['uitpas-groepspas-frontend'],
     noop    => $noop_deploy
   }
 
-  file { 'groepspas-angular-app-config':
+  file { 'uitpas-groepspas-frontend-config':
     ensure  => 'file',
-    path    => '/var/www/groepspas/config.json',
+    path    => "${basedir}/config.json",
     source  => $angular_app_config_source,
     owner   => 'www-data',
     group   => 'www-data',
-    require => 'Package[groepspas-angular-app]',
+    require => 'Package[uitpas-groepspas-frontend]',
     noop    => $noop_deploy
   }
 
-  file { 'groepspas-angular-app-deploy-config':
+  file { 'uitpas-groepspas-frontend-deploy-config':
     ensure => 'file',
     path   => '/usr/local/bin/angular2-deploy-config',
     source => $angular_app_deploy_config_source,
@@ -36,13 +37,13 @@ class deployment::groepspas (
     command     => 'angular2-deploy-config /var/www/groepspas',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
-    subscribe   => [ 'Package[groepspas-angular-app]', 'File[groepspas-angular-app-config]', 'File[groepspas-angular-app-deploy-config]'],
+    subscribe   => [ 'Package[uitpas-groepspas-frontend]', 'File[uitpas-groepspas-frontend-config]', 'File[uitpas-groepspas-frontend-deploy-config]'],
     noop        => $noop_deploy
   }
 
   profiles::deployment::versions { $title:
-    project      => $project_prefix,
-    packages     => 'groepspas-angular-app',
+    project      => 'uitpas',
+    packages     => 'uitpas-groepspas-frontend',
     puppetdb_url => $puppetdb_url
   }
 }
