@@ -34,7 +34,7 @@ class deployment::groepspas (
   }
 
   exec { 'angular2-deploy-config':
-    command     => 'angular2-deploy-config /var/www/groepspas',
+    command     => "angular2-deploy-config ${basedir}",
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
     subscribe   => [ 'Package[uitpas-groepspas-frontend]', 'File[uitpas-groepspas-frontend-config]', 'File[uitpas-groepspas-frontend-deploy-config]'],
