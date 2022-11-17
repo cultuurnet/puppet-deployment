@@ -7,18 +7,18 @@ define deployment::udb3::angular::instance (
   $puppetdb_url = undef
 ) {
 
-  realize Apt::Source['cultuurnet-udb3']
+  realize Apt::Source['uitdatabank-angular-app']
 
   package { $app_package_name:
     ensure  => 'latest',
     notify  => Profiles::Deployment::Versions[$title],
-    require => Apt::Source['cultuurnet-udb3'],
+    require => Apt::Source['uitdatabank-angular-app'],
     noop    => $noop_deploy
   }
 
   package { $lib_package_name:
     ensure  => 'latest',
-    require => Apt::Source['cultuurnet-udb3'],
+    require => Apt::Source['uitdatabank-angular-app'],
     noop    => $noop_deploy
   }
 
