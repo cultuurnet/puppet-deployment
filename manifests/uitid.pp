@@ -223,9 +223,8 @@ class deployment::uitid (
 
   package { 'uitid-app':
     ensure  => $package_version,
-    notify  => Profiles::Deployment::Versions[$title],
-    require => Apt::Source['uitid-app'],
-    notify  => App['uitid-app']
+    notify  => [ App['uitid-app'], Profiles::Deployment::Versions[$title]],
+    require => Apt::Source['uitid-app']
   }
 
   exec { 'uitid-app_schema_install':
