@@ -27,7 +27,7 @@ class deployment::udb3::search (
 
   package { 'uitdatabank-search-api':
     ensure  => $version,
-    notify  => [Class['Apache::Service'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related']],
+    notify  => [Class['Apache::Service'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related'], Profiles::Deployment::Versions[$title]],
     require => Apt::Source['uitdatabank-search-api'],
     noop    => $noop_deploy
   }
@@ -160,8 +160,6 @@ class deployment::udb3::search (
   }
 
   profiles::deployment::versions { $title:
-    project      => 'uitdatabank',
-    packages     => 'uitdatabank-search-api',
     puppetdb_url => $puppetdb_url
   }
 

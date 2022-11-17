@@ -12,7 +12,7 @@ class deployment::udb3::jwt (
 
   package { 'uitdatabank-jwt-provider-uitidv1':
     ensure => 'latest',
-    notify => 'Class[Apache::Service]',
+    notify => [Class['apache::service'], Profiles::Deployment::Versions[$title]],
     noop   => $noop_deploy
   }
 
@@ -58,8 +58,6 @@ class deployment::udb3::jwt (
   }
 
   profiles::deployment::versions { $title:
-    project      => 'uitdatabank',
-    packages     => 'uitdatabank-jwt-provider-uitidv1',
     puppetdb_url => $puppetdb_url
   }
 

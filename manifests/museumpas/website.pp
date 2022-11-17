@@ -4,7 +4,6 @@ class deployment::museumpas::website (
   $db_name,
   $version            = 'latest',
   $robots_source      = undef,
-  $project_prefix     = 'museumpas-website',
   $noop_deploy        = false,
   $puppetdb_url       = undef
 ) {
@@ -16,6 +15,7 @@ class deployment::museumpas::website (
   package { 'museumpas-website':
     ensure  => $version,
     require => Apt::Source['museumpas-website'],
+    notify  => Profiles::Deployment::Versions[$title],
     noop    => $noop_deploy
   }
 
@@ -143,8 +143,6 @@ class deployment::museumpas::website (
   }
 
   profiles::deployment::versions { $title:
-    project      => $project_prefix,
-    packages     => [ 'museumpas-website'],
     puppetdb_url => $puppetdb_url
   }
 

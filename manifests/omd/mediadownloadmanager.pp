@@ -7,7 +7,7 @@ class deployment::omd::mediadownloadmanager (
 
   package { 'omd-media-download-manager':
     ensure => 'latest',
-    notify => 'Class[Apache::Service]',
+    notify => [ Class['apache::service'], Profiles::Deployment::Versions[$title]],
     noop   => $noop_deploy
   }
 
@@ -50,8 +50,6 @@ class deployment::omd::mediadownloadmanager (
   }
 
   profiles::deployment::versions { $title:
-    project      => $project_prefix,
-    packages     => [ 'omd-media-download-manager'],
     puppetdb_url => $puppetdb_url
   }
 

@@ -8,13 +8,12 @@ class deployment::udb3::geojson_data (
 
   package { 'uitdatabank-geojson-data':
     ensure  => $version,
+    notify  => Profiles::Deployment::Versions[$title],
     require => Apt::Source['uitdatabank-geojson-data'],
     noop    => $noop_deploy
   }
 
   profiles::deployment::versions { $title:
-    project      => 'uitdatabank',
-    packages     => 'uitdatabank-geojson-data',
     puppetdb_url => $puppetdb_url
   }
 }

@@ -21,7 +21,7 @@ class deployment::udb3::cdbxml (
 
   package { 'udb3-cdbxml':
     ensure  => 'latest',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    notify  => [ Class['apache::service'], Class['supervisord::service'], Profiles::Deployment::Versions[$title]],
     require => Apt::Source['cultuurnet-cdbxml'],
     noop    => $noop_deploy
   }
@@ -84,8 +84,6 @@ class deployment::udb3::cdbxml (
   }
 
   profiles::deployment::versions { $title:
-    project      => $project_prefix,
-    packages     => 'udb3-cdbxml',
     puppetdb_url => $puppetdb_url
   }
 

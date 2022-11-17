@@ -8,7 +8,7 @@ class deployment::newsletter (
 
   package { 'uitdatabank-newsletter-api':
     ensure  => 'latest',
-    notify  => 'Class[Apache::Service]',
+    notify  => [ Class[apache::service], Profiles::Deployment::Versions[$title]],
     require => Apt::Source['uitdatabank-newsletter-api'],
     noop    => $noop_deploy
   }
@@ -25,8 +25,6 @@ class deployment::newsletter (
   }
 
   profiles::deployment::versions { $title:
-    project      => 'uitdatabank',
-    packages     => 'uitdatabank-newsletter-api',
     puppetdb_url => $puppetdb_url
   }
 

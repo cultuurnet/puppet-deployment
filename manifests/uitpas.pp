@@ -215,13 +215,13 @@ class deployment::uitpas (
   package { 'uitpas-db-mgmt':
     ensure  => $db_mgmt_package_version,
     require => Apt::Source['uitpas-app'],
-    notify  => Exec['uitpas_database_management']
+    notify  => [ Exec['uitpas_database_management'], Profiles::Deployment::Versions[$title]]
   }
 
   package { 'uitpas-app':
     ensure  => $package_version,
     require => Apt::Source['uitpas-app'],
-    notify  => App['uitpas-app']
+    notify  => [ App['uitpas-app'], Profiles::Deployment::Versions[$title]]
   }
 
   exec { 'uitpas_database_management':
@@ -296,8 +296,6 @@ class deployment::uitpas (
   }
 
   profiles::deployment::versions { $title:
-    project      => 'uitpas',
-    packages     => 'uitpas-app',
     puppetdb_url => $puppetdb_url,
     require      => App['uitpas-app']
   }

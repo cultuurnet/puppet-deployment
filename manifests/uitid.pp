@@ -223,6 +223,7 @@ class deployment::uitid (
 
   package { 'uitid-app':
     ensure  => $package_version,
+    notify  => Profiles::Deployment::Versions[$title],
     require => Apt::Source['uitid-app'],
     notify  => App['uitid-app']
   }
@@ -389,8 +390,6 @@ class deployment::uitid (
   }
 
   profiles::deployment::versions { $title:
-    project      => 'uitid',
-    packages     => 'uitid-app',
     puppetdb_url => $puppetdb_url,
     require      => App['uitid-app']
   }

@@ -19,6 +19,7 @@ class deployment::udb3::frontend (
 
   package { $package_name:
     ensure  => $package_version,
+    notify  => Profiles::Deployment::Versions[$title],
     require => Apt::Source['uitdatabank-frontend'],
     noop    => $noop
   }
@@ -54,8 +55,6 @@ class deployment::udb3::frontend (
   }
 
   profiles::deployment::versions { $title:
-    project      => 'uitdatabank',
-    packages     => $package_name,
     puppetdb_url => $puppetdb_url
   }
 }

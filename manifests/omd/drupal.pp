@@ -12,13 +12,13 @@ class deployment::omd::drupal (
 
   package { 'omd-drupal':
     ensure => 'latest',
-    notify => 'Class[Apache::Service]',
+    notify => [Class['apache::service'], Profiles::Deployment::Versions[$title]],
     noop   => $noop_deploy
   }
 
   package { 'omd-fs-data':
     ensure  => 'latest',
-    notify  => 'Class[Apache::Service]',
+    notify => [Class['apache::service'], Profiles::Deployment::Versions[$title]],
     require => 'Package[omd-drupal]',
     noop    => $noop_deploy
   }
@@ -100,8 +100,6 @@ class deployment::omd::drupal (
   }
 
   profiles::deployment::versions { $title:
-    project      => $project_prefix,
-    packages     => [ 'omd-drupal'],
     puppetdb_url => $puppetdb_url
   }
 

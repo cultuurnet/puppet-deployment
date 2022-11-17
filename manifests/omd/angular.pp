@@ -10,7 +10,7 @@ class deployment::omd::angular (
 
   package { 'omd-angular-app':
     ensure => 'latest',
-    notify => 'Class[Apache::Service]',
+    notify => [ Class['apache::service'], Profiles::Deployment::Versions[$title]],
     noop   => $noop_deploy
   }
 
@@ -41,8 +41,6 @@ class deployment::omd::angular (
   }
 
   profiles::deployment::versions { $title:
-    project      => $project_prefix,
-    packages     => [ 'omd-angular-app'],
     puppetdb_url => $puppetdb_url
   }
 

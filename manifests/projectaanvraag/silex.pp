@@ -14,7 +14,7 @@ class deployment::projectaanvraag::silex (
 
   package { 'projectaanvraag-api':
     ensure => $version,
-    notify => [ Class['apache::service'], Class['supervisord::service'] ],
+    notify => [ Class['apache::service'], Class['supervisord::service'], Profiles::Deployment::Versions[$title]],
     noop   => $noop_deploy
   }
 
@@ -100,8 +100,6 @@ class deployment::projectaanvraag::silex (
   }
 
   profiles::deployment::versions { $title:
-    project      => 'projectaanvraag',
-    packages     => 'projectaanvraag-api',
     puppetdb_url => $puppetdb_url
   }
 

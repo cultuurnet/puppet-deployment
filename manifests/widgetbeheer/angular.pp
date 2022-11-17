@@ -13,8 +13,9 @@ class deployment::widgetbeheer::angular (
   realize Apt::Source['widgetbeheer-frontend']
 
   package { 'widgetbeheer-frontend':
-    ensure => $version,
-    noop   => $noop_deploy,
+    ensure  => $version,
+    noop    => $noop_deploy,
+    notify  => Profiles::Deployment::Versions[$title],
     require => Apt::Source['widgetbeheer-frontend']
   }
 
@@ -59,8 +60,6 @@ class deployment::widgetbeheer::angular (
   }
 
   profiles::deployment::versions { $title:
-    project      => 'widgetbeheer',
-    packages     => 'widgetbeheer-frontend',
     puppetdb_url => $puppetdb_url
   }
 }

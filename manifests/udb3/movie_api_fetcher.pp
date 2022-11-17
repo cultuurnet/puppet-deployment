@@ -11,7 +11,7 @@ class deployment::udb3::movie_api_fetcher (
 
   package { 'uitdatabank-movie-api-fetcher':
     ensure  => 'latest',
-    notify  => 'Class[Apache::Service]',
+    notify  => [Class['apache::service'], Profiles::Deployment::Versions[$title]],
     require => Apt::Source['uitdatabank-movie-api-fetcher'],
     noop    => $noop_deploy
   }
@@ -107,8 +107,6 @@ class deployment::udb3::movie_api_fetcher (
   }
 
   profiles::deployment::versions { $title:
-    project      => 'uitdatabank',
-    packages     => [ 'uitdatabank-movie-api-fetcher'],
     puppetdb_url => $puppetdb_url
   }
 

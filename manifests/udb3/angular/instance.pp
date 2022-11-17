@@ -3,7 +3,6 @@ define deployment::udb3::angular::instance (
   $app_package_name,
   $lib_package_name,
   $app_rootdir,
-  $project_prefix = 'udb3',
   $noop_deploy = false,
   $puppetdb_url = undef
 ) {
@@ -12,6 +11,7 @@ define deployment::udb3::angular::instance (
 
   package { $app_package_name:
     ensure  => 'latest',
+    notify  => Profiles::Deployment::Versions[$title],
     require => Apt::Source['cultuurnet-udb3'],
     noop    => $noop_deploy
   }
@@ -42,8 +42,6 @@ define deployment::udb3::angular::instance (
   }
 
   profiles::deployment::versions { $title:
-    project      => $project_prefix,
-    packages     => [ $app_package_name, $lib_package_name],
     puppetdb_url => $puppetdb_url
   }
 }

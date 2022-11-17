@@ -23,7 +23,7 @@ class deployment::udb3::entry_api (
 
   package { 'uitdatabank-entry-api':
     ensure  => 'latest',
-    notify  => [ 'Class[Apache::Service]', 'Class[Supervisord::Service]'],
+    notify  => [ Class['apache::service'], Class['supervisord::service'], Profiles::Deployment::Versions[$title]],
     require => Apt::Source['uitdatabank-entry-api'],
     noop    => $noop_deploy
   }
@@ -172,8 +172,6 @@ class deployment::udb3::entry_api (
   }
 
   profiles::deployment::versions { $title:
-    project      => 'uitdatabank',
-    packages     => 'uitdatabank-entry-api',
     puppetdb_url => $puppetdb_url
   }
 

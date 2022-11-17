@@ -4,7 +4,6 @@ class deployment::balie (
   $silex_package_version = 'latest',
   $angular_package_version = 'latest',
   $angular_app_deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
-  $project_prefix = 'balie',
   $noop_deploy = false,
   $puppetdb_url = undef
 ) {
@@ -14,7 +13,7 @@ class deployment::balie (
 
   package { 'uitpas-balie-api':
     ensure  => $silex_package_version,
-    notify  => 'Class[Apache::Service]',
+    notify  => [ Class['apache::service'], Profiles::Deployment::Versions[$title]],
     require => Apt::Source['uitpas-balie-api'],
     noop    => $noop_deploy
   }
@@ -72,8 +71,6 @@ class deployment::balie (
   }
 
   profiles::deployment::versions { $title:
-    project      => $project_prefix,
-    packages     => [ 'uitpas-balie-frontend', 'uitpas-balie-api'],
     puppetdb_url => $puppetdb_url
   }
 

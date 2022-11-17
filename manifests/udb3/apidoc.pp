@@ -8,6 +8,7 @@ class deployment::udb3::apidoc (
 
   package { 'udb3-swagger':
     ensure  => 'latest',
+    notify  => Profiles::Deployment::Versions[$title],
     require => Apt::Source['cultuurnet-udb3'],
     noop    => $noop_deploy
   }
@@ -19,8 +20,6 @@ class deployment::udb3::apidoc (
   }
 
   profiles::deployment::versions { $title:
-    project      => $project_prefix,
-    packages     => [ 'udb3-swagger', 'udb3-schema'],
     puppetdb_url => $puppetdb_url
   }
 }

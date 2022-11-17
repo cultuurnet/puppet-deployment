@@ -18,18 +18,21 @@ class deployment::museumpas (
   package { 'museumpas-website':
     ensure  => $website_version,
     require => Apt::Source['publiq-museumpas'],
+    notify  => Profiles::Deployment::Versions[$title],
     noop    => $noop_deploy
   }
 
   package { 'museumpas-database':
     ensure => $database_version,
     require => Apt::Source['publiq-museumpas'],
+    notify  => Profiles::Deployment::Versions[$title],
     noop   => $noop_deploy
   }
 
   package { 'museumpas-files':
     ensure => $files_version,
     require => Apt::Source['publiq-museumpas'],
+    notify  => Profiles::Deployment::Versions[$title],
     noop   => $noop_deploy
   }
 
@@ -167,8 +170,6 @@ class deployment::museumpas (
   }
 
   profiles::deployment::versions { $title:
-    project      => $project_prefix,
-    packages     => [ 'museumpas-website'],
     puppetdb_url => $puppetdb_url
   }
 

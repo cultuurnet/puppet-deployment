@@ -12,6 +12,7 @@ class deployment::projectaanvraag::angular (
 
   package { 'projectaanvraag-frontend':
     ensure => $version,
+    notify => Profiles::Deployment::Versions[$title],
     noop   => $noop_deploy
   }
 
@@ -43,8 +44,6 @@ class deployment::projectaanvraag::angular (
   }
 
   profiles::deployment::versions { $title:
-    project      => 'projectaanvraag',
-    packages     => 'projectaanvraag-frontend',
     puppetdb_url => $puppetdb_url
   }
 }
