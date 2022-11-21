@@ -13,8 +13,8 @@ class deployment::udb3::entry_api (
   $event_conclude_hour         = '0',
   $event_conclude_minute       = '0',
   $noop_deploy                 = false,
-  $puppetdb_url                = undef,
-  $excluded_labels_source      = undef
+  $excluded_labels_source      = undef,
+  $puppetdb_url                = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   realize Apt::Source['uitdatabank-entry-api']

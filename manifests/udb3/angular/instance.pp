@@ -4,7 +4,7 @@ define deployment::udb3::angular::instance (
   $lib_package_name,
   $app_rootdir,
   $noop_deploy = false,
-  $puppetdb_url = undef
+  $puppetdb_url = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   realize Apt::Source['uitdatabank-angular-app']

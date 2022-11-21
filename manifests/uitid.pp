@@ -25,7 +25,8 @@ class deployment::uitid (
   $auth0_original_domain                 = undef,
   $stackdriver_servicecredentials_source = undef,
   $swagger_base_url                      = undef,
-  $uitalert_use_fast_search              = false
+  $uitalert_use_fast_search              = false,
+  $puppetdb_url                          = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   contain profiles::glassfish

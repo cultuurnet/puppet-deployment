@@ -1,7 +1,7 @@
 class deployment::udb3::geojson_data (
   $version      = 'latest',
   $noop_deploy  = false,
-  $puppetdb_url = undef
+  $puppetdb_url = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   realize Apt::Source['uitdatabank-geojson-data']

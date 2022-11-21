@@ -3,7 +3,7 @@ class deployment::udb3::jwt (
   $privkey_source,
   $pubkey_source,
   $noop_deploy = false,
-  $puppetdb_url = undef
+  $puppetdb_url = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   $basedir = '/var/www/udb3-jwt-provider-uitidv1'

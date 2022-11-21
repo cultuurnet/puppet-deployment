@@ -2,7 +2,7 @@ class deployment::omd::mediadownloadmanager (
   $config_source,
   $project_prefix = 'omd',
   $noop_deploy = false,
-  $puppetdb_url = undef
+  $puppetdb_url = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   package { 'omd-media-download-manager':

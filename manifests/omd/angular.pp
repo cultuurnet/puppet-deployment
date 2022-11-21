@@ -3,7 +3,7 @@ class deployment::omd::angular (
   $deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
   $project_prefix = 'omd',
   $noop_deploy = false,
-  $puppetdb_url = undef
+  $puppetdb_url = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   contain deployment

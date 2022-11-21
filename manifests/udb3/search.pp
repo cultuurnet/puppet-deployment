@@ -11,7 +11,7 @@ class deployment::udb3::search (
   $reindex_permanent_minute = '0',
   $region_mapping_source    = 'puppet:///modules/deployment/search/mapping_region.json',
   $noop_deploy              = false,
-  $puppetdb_url             = undef
+  $puppetdb_url             = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   $basedir = '/var/www/udb3-search-service'

@@ -1,7 +1,7 @@
 class deployment::newsletter (
   $config_source,
   $noop_deploy = false,
-  $puppetdb_url = undef
+  $puppetdb_url = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   realize Apt::Source['uitdatabank-newsletter-api']
