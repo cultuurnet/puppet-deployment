@@ -2,7 +2,7 @@ class deployment::groepspas (
   $angular_app_config_source,
   $angular_app_deploy_config_source = 'puppet:///modules/deployment/angular/angular-deploy-config.rb',
   $noop_deploy = false,
-  $puppetdb_url = undef
+  $puppetdb_url = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   $basedir = '/var/www/uitpas-groepspas-frontend'

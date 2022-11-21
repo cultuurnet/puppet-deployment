@@ -5,7 +5,7 @@ class deployment::projectaanvraag::silex (
   $db_name,
   $version      = 'latest',
   $noop_deploy  = false,
-  $puppetdb_url = undef
+  $puppetdb_url = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   contain deployment

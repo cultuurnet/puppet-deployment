@@ -4,7 +4,7 @@ class deployment::udb3::movie_api_fetcher (
   $kinepolis_theaters_source = 'puppet:///modules/deployment/movie_api_fetcher/kinepolis_theaters.yml',
   $kinepolis_terms_source    = 'puppet:///modules/deployment/movie_api_fetcher/kinepolis_terms.yml',
   $noop_deploy               = false,
-  $puppetdb_url              = undef
+  $puppetdb_url              = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   realize Apt::Source['uitdatabank-movie-api-fetcher']

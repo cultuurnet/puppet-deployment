@@ -5,7 +5,7 @@ class deployment::omd::drupal (
   $pubkey_source,
   $project_prefix = 'omd',
   $noop_deploy = false,
-  $puppetdb_url = undef
+  $puppetdb_url = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   contain deployment

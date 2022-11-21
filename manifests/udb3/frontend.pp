@@ -6,7 +6,7 @@ class deployment::udb3::frontend (
   String                                  $service_ensure      = 'running',
   Boolean                                 $service_enable      = true,
   Variant[Boolean, Enum['true', 'false']] $noop_deploy         = false,
-  Optional[String]                        $puppetdb_url        = undef
+  Optional[String]                        $puppetdb_url        = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   $basedir      = '/var/www/udb3-frontend'

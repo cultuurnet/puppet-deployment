@@ -23,7 +23,8 @@ class deployment::uitpas (
   $ksb_auth0_clientid      = undef,
   $ksb_auth0_secret        = undef,
   $sysadmin_auth0_clientid = undef,
-  $sysadmin_auth0_secret   = undef
+  $sysadmin_auth0_secret   = undef,
+  $puppetdb_url            = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   contain profiles::glassfish

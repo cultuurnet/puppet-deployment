@@ -5,7 +5,7 @@ class deployment::museumpas::website (
   $version            = 'latest',
   $robots_source      = undef,
   $noop_deploy        = false,
-  $puppetdb_url       = undef
+  $puppetdb_url       = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   $basedir = '/var/www/museumpas'

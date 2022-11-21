@@ -3,7 +3,7 @@ class deployment::widgetbeheer::angular (
   $htaccess_source,
   $version          = 'latest',
   $noop_deploy      = false,
-  $puppetdb_url     = undef
+  $puppetdb_url     = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   $basedir = '/var/www/widgetbeheer-frontend'
