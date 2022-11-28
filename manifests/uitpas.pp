@@ -1,7 +1,5 @@
 class deployment::uitpas (
   $user,
-  $apt_user,
-  $apt_password,
   $payara_domain,
   $mysql_user,
   $mysql_password,

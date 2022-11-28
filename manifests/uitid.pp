@@ -1,7 +1,5 @@
 class deployment::uitid (
   $user,
-  $apt_user,
-  $apt_password,
   $payara_domain,
   $base_url,
   $mysql_user,
