@@ -4,7 +4,6 @@ class deployment::udb3 (
   $with_frontend          = false,
   $with_cdbxml            = true,
   $with_jwtprovider       = true,
-  $with_apidoc            = true,
   $with_search            = true,
   $with_movie_api_fetcher = true
 ){
@@ -24,9 +23,6 @@ class deployment::udb3 (
     }
     if $with_jwtprovider {
       contain deployment::udb3::jwtprovider
-    }
-    if $with_apidoc {
-      contain deployment::udb3::apidoc
     }
     if $with_search {
       contain deployment::udb3::search
