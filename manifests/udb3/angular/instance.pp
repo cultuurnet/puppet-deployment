@@ -37,7 +37,6 @@ define deployment::udb3::angular::instance (
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     subscribe   => [ Package[$app_package_name], File["${title}-angular-app-config"]],
     refreshonly => true,
-    require     => Class['deployment'],
     noop        => $noop_deploy
   }
 

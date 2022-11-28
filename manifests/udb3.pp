@@ -9,8 +9,6 @@ class deployment::udb3 (
   $with_movie_api_fetcher = true
 ){
 
-  contain deployment
-
   unless $facts['noop_deploy'] == 'true' {
     if $with_entry_api {
       contain deployment::udb3::entry_api
