@@ -2,7 +2,6 @@ class deployment::udb3 (
   $with_entry_api         = true,
   $with_angular           = true,
   $with_frontend          = false,
-  $with_cdbxml            = true,
   $with_jwtprovider       = true,
   $with_search            = true,
   $with_movie_api_fetcher = true
@@ -17,9 +16,6 @@ class deployment::udb3 (
     }
     if $with_frontend {
       contain deployment::udb3::frontend
-    }
-    if $with_cdbxml {
-      contain deployment::udb3::cdbxml
     }
     if $with_jwtprovider {
       contain deployment::udb3::jwtprovider
