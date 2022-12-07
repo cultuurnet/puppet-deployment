@@ -12,7 +12,7 @@ class deployment::uitid (
   $payara_portbase                       = '14800',
   $payara_start_heap                     = undef,
   $payara_max_heap                       = undef,
-  $payara_truststore                     = undef,
+  $system_truststore                     = false,
   $timezone                              = 'UTC',
   $settings                              = {},
   $payara_jmx                            = true,
@@ -95,7 +95,7 @@ class deployment::uitid (
     }
   }
 
-  if $payara_truststore {
+  if $system_truststore {
     jvmoption { "Clear domain ${payara_domain} default truststore":
       ensure   => 'absent',
       option   => '-Djavax.net.ssl.trustStore=${com.sun.aas.instanceRoot}/config/cacerts.jks'
