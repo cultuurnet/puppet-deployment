@@ -12,6 +12,7 @@ class deployment::uitid (
   $payara_portbase                       = '14800',
   $payara_start_heap                     = undef,
   $payara_max_heap                       = undef,
+  $payara_truststore                     = undef,
   $timezone                              = 'UTC',
   $settings                              = {},
   $payara_jmx                            = true,
@@ -92,6 +93,19 @@ class deployment::uitid (
 
       Jvmoption["Clear domain ${payara_domain} default start heap"] -> Jvmoption["Domain ${payara_domain} start heap"]
     }
+  }
+
+  if $payara_truststore {
+    jvmoption { "Clear domain ${payara_domain} default truststore":
+      ensure   => 'absent',
+      option   => '-Djavax.net.ssl.trustStore=${com.sun.aas.instanceRoot}/config/cacerts.jks'
+    }
+
+    jvmoption { "Domain ${payara_domain} truststore":
+      option   => "-Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts"
+    }
+
+    Jvmoption["Clear domain ${payara_domain} default truststore"] -> Jvmoption["Domain ${payara_domain} truststore"]
   }
 
   # This will only work if the default start heap value (512m) is present in
