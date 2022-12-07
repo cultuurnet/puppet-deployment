@@ -98,7 +98,7 @@ class deployment::uitid (
   if $system_truststore {
     jvmoption { "Clear domain ${payara_domain} default truststore":
       ensure   => 'absent',
-      option   => '-Djavax.net.ssl.trustStore=${com.sun.aas.instanceRoot}/config/cacerts.jks'
+      option   => '-Djavax.net.ssl.trustStore=\$\{com.sun.aas.instanceRoot\}/config/cacerts.jks'
     }
 
     jvmoption { "Domain ${payara_domain} truststore":
