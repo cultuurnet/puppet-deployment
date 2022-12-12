@@ -1,7 +1,7 @@
 class deployment::udb3 (
   $with_entry_api         = true,
   $with_angular           = true,
-  $with_frontend          = false,
+  $with_frontend          = true,
   $with_jwtprovider       = true,
   $with_search            = true,
   $with_movie_api_fetcher = true
