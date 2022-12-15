@@ -104,7 +104,6 @@ class deployment::udb3::search (
     content   => template('deployment/udb3/search/udb3-consume-api.service.erb'),
     enable    => true,
     active    => true,
-    hasstatus => true,
     subscribe => Package['uitdatabank-search-api']
   }
 
@@ -112,7 +111,6 @@ class deployment::udb3::search (
     content   => template('deployment/udb3/search/udb3-consume-cli.service.erb'),
     enable    => true,
     active    => true,
-    hasstatus => true,
     subscribe => Package['uitdatabank-search-api']
   }
 
@@ -120,7 +118,6 @@ class deployment::udb3::search (
     content   => template('deployment/udb3/search/udb3-consume-related.service.erb'),
     enable    => true,
     active    => true,
-    hasstatus => true,
     subscribe => Package['uitdatabank-search-api']
   }
 
