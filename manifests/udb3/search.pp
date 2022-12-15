@@ -27,7 +27,7 @@ class deployment::udb3::search (
 
   package { 'uitdatabank-search-api':
     ensure  => $version,
-    notify  => [Class['Apache::Service'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related'], Profiles::Deployment::Versions[$title]],
+    notify  => [Class['Apache::Systemd::Unit_file'], Systemd::Unit_file['udb3-consume-api'], Systemd::Unit_file['udb3-consume-cli'], Systemd::Unit_file['udb3-consume-related'], Profiles::Deployment::Versions[$title]],
     require => Apt::Source['uitdatabank-search-api'],
     noop    => $noop_deploy
   }
@@ -37,7 +37,7 @@ class deployment::udb3::search (
     path    => "${basedir}/config.yml",
     source  => $config_source,
     require => Package['uitdatabank-search-api'],
-    notify  => [Class['Apache::Service'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related']],
+    notify  => [Class['Apache::Systemd::Unit_file'], Systemd::Unit_file['udb3-consume-api'], Systemd::Unit_file['udb3-consume-cli'], Systemd::Unit_file['udb3-consume-related']],
     noop    => $noop_deploy
   }
 
@@ -46,7 +46,7 @@ class deployment::udb3::search (
     path    => "${basedir}/features.yml",
     source  => $features_source,
     require => Package['uitdatabank-search-api'],
-    notify  => [Class['Apache::Service'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related']],
+    notify  => [Class['Apache::Systemd::Unit_file'], Systemd::Unit_file['udb3-consume-api'], Systemd::Unit_file['udb3-consume-cli'], Systemd::Unit_file['udb3-consume-related']],
     noop    => $noop_deploy
   }
 
@@ -57,7 +57,7 @@ class deployment::udb3::search (
     path    => "${basedir}/facet_mapping_regions.yml",
     source  => '/var/www/geojson-data/output/facet_mapping_regions.yml',
     require => [Package['uitdatabank-search-api'], Class['deployment::udb3::geojson_data']],
-    notify  => [Class['Apache::Service'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related']],
+    notify  => [Class['Apache::Systemd::Unit_file'], Systemd::Unit_file['udb3-consume-api'], Systemd::Unit_file['udb3-consume-cli'], Systemd::Unit_file['udb3-consume-related']],
     noop    => $noop_deploy
   }
 
@@ -68,7 +68,7 @@ class deployment::udb3::search (
     path    => "${basedir}/web/autocomplete.json",
     source  => '/var/www/geojson-data/output/autocomplete.json',
     require => [Package['uitdatabank-search-api'], Class['deployment::udb3::geojson_data']],
-    notify  => [Class['Apache::Service'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related']],
+    notify  => [Class['Apache::Systemd::Unit_file'], Systemd::Unit_file['udb3-consume-api'], Systemd::Unit_file['udb3-consume-cli'], Systemd::Unit_file['udb3-consume-related']],
     noop    => $noop_deploy
   }
 
@@ -81,7 +81,7 @@ class deployment::udb3::search (
     themes_mapping_filename     => 'facet_mapping_themes.yml',
     types_mapping_filename      => 'facet_mapping_types.yml',
     require                     => Package['uitdatabank-search-api'],
-    notify                      => [Class['apache::service'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related']],
+    notify                      => [Class['apache::service'], Systemd::Unit_file['udb3-consume-api'], Systemd::Unit_file['udb3-consume-cli'], Systemd::Unit_file['udb3-consume-related']],
     noop                        => $noop_deploy
   }
 
@@ -100,22 +100,25 @@ class deployment::udb3::search (
     noop    => $noop_deploy
   }
 
-  service { 'udb3-consume-api':
-    ensure    => 'running',
+  systemd::unit_file { 'udb3-consume-api.service':
+    content   => template('deployment/udb3/search/udb3-consume-api.service.erb'),
     enable    => true,
-    hasstatus => true
+    active    => true,
+    subscribe => Package['uitdatabank-search-api']
   }
 
-  service { 'udb3-consume-cli':
-    ensure    => 'running',
+  systemd::unit_file { 'udb3-consume-cli.service':
+    content   => template('deployment/udb3/search/udb3-consume-cli.service.erb'),
     enable    => true,
-    hasstatus => true
+    active    => true,
+    subscribe => Package['uitdatabank-search-api']
   }
 
-  service { 'udb3-consume-related':
-    ensure    => 'running',
+  systemd::unit_file { 'udb3-consume-related.service':
+    content   => template('deployment/udb3/search/udb3-consume-related.service.erb'),
     enable    => true,
-    hasstatus => true
+    active    => true,
+    subscribe => Package['uitdatabank-search-api']
   }
 
   logrotate::rule { 'udb3-search':
@@ -132,7 +135,7 @@ class deployment::udb3::search (
     create_group  => 'www-data',
     sharedscripts => true,
     postrotate    => '/bin/systemctl restart udb3-consume-*',
-    require       => [ File['udb3-search-log'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related']],
+    require       => [ File['udb3-search-log'], Systemd::Unit_file['udb3-consume-api'], Systemd::Unit_file['udb3-consume-cli'], Systemd::Unit_file['udb3-consume-related']],
     noop          => $noop_deploy
   }
 
