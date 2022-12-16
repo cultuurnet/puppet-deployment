@@ -11,7 +11,7 @@ Environment=APP_INCLUDE=/var/www/udb3-backend/worker_bootstrap.php
 Environment=INTERVAL=1
 Environment=QUEUE=bulk_label_offer
 Environment=VVERBOSE=true
-ExecStart=/usr/bin/php bin/udb3.php resque.php
+ExecStart=/usr/bin/php resque.php
 Restart=on-failure
 RestartSec=10s
 Type=simple
