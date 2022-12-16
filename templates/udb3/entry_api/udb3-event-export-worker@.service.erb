@@ -1,7 +1,7 @@
 [Unit]
 Description=UiTdatabank event export worker %i
 After=syslog.target network.target remote-fs.target nss-lookup.target
-PartOf=udb3-event-export-worker.target
+PartOf=udb3-event-export-workers.target
 
 [Service]
 User=www-data
