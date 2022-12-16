@@ -24,7 +24,7 @@ class deployment::udb3::entry_api (
 
   package { 'uitdatabank-entry-api':
     ensure  => 'latest',
-    notify  => [ Class['apache::service'], Class['supervisord::service'], Profiles::Deployment::Versions[$title]],
+    notify  => [Class['apache::service'], Profiles::Deployment::Versions[$title]],
     require => Apt::Source['uitdatabank-entry-api'],
     noop    => $noop_deploy
   }
@@ -64,7 +64,7 @@ class deployment::udb3::entry_api (
     owner   => 'www-data',
     group   => 'www-data',
     require => Package['uitdatabank-entry-api'],
-    notify  => [ Class['Apache::Service'], Class['Supervisord::Service']],
+    notify  => [Class['apache::service'],
     noop    => $noop_deploy
   }
 
@@ -76,7 +76,7 @@ class deployment::udb3::entry_api (
       owner   => 'www-data',
       group   => 'www-data',
       require => Package['uitdatabank-entry-api'],
-      notify  => [ Class['Apache::Service'], Class['Supervisord::Service']],
+      notify  => [Class['apache::service'], Service['udb3-amqp-listener-uitpas'], Service['udb3-bulk-label-offer-worker'], Systemd::Unit_file['udb3-event-export-workers.target']],
       noop    => $noop_deploy
     }
   }
@@ -88,7 +88,7 @@ class deployment::udb3::entry_api (
     owner   => 'www-data',
     group   => 'www-data',
     require => Package['uitdatabank-entry-api'],
-    notify  => [ Class['Apache::Service'], Class['Supervisord::Service']],
+    notify  => [Class['apache::service'], Service['udb3-amqp-listener-uitpas'], Service['udb3-bulk-label-offer-worker'], Systemd::Unit_file['udb3-event-export-workers.target']],
     noop    => $noop_deploy
   }
 
@@ -162,7 +162,7 @@ class deployment::udb3::entry_api (
     place_mapping_filename     => 'config.external_id_mapping_place.php',
     organizer_mapping_filename => 'config.external_id_mapping_organizer.php',
     require                    => Package['uitdatabank-entry-api'],
-    notify                     => [ Class['Apache::Service'], Class['Supervisord::Service']],
+    notify                     => [Class['apache::service'], Service['udb3-amqp-listener-uitpas'], Service['udb3-bulk-label-offer-worker'], Systemd::Unit_file['udb3-event-export-workers.target']],
     noop_deploy                => $noop_deploy
   }
 
@@ -175,7 +175,7 @@ class deployment::udb3::entry_api (
     themes_mapping_filename     => 'config.term_mapping_themes.php',
     types_mapping_filename      => 'config.term_mapping_types.php',
     require                     => Package['uitdatabank-entry-api'],
-    notify                      => [ Class['apache::service'], Class['supervisord::service']],
+    notify                      => [Class['apache::service'], Service['udb3-amqp-listener-uitpas'], Service['udb3-bulk-label-offer-worker'], Systemd::Unit_file['udb3-event-export-workers.target']],
     noop_deploy                 => $noop_deploy
   }
 
@@ -192,7 +192,7 @@ class deployment::udb3::entry_api (
     create_owner  => 'www-data',
     create_group  => 'www-data',
     sharedscripts => true,
-    postrotate    => '/usr/bin/supervisorctl restart udb3-bulk-label-offer-worker udb3-event-export-worker',
+    postrotate    => '/bin/systemctl restart udb3-amqp-listener-uitpas udb3-bulk-label-offer-worker udb3-event-export-workers.target',
     require       => Package['uitdatabank-entry-api'],
     noop          => $noop_deploy
   }
