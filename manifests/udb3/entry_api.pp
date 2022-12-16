@@ -139,7 +139,7 @@ class deployment::udb3::entry_api (
       content => template('deployment/udb3/entry_api/udb3-event-export-worker@.service.erb')
     }
 
-    Integer[1, $event_export_worker_count].each |id| {
+    Integer[1, $event_export_worker_count].each |$id| {
       service { "udb3-event-export-worker@${id}":
         ensure    => 'running',
         enable    => true,
