@@ -1,0 +1,20 @@
+[Unit]
+Description=UiTdatabank bulk label worker
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+User=www-data
+Group=www-data
+PIDFile=/var/run/udb3-bulk-label-offer-worker.pid
+WorkingDirectory=<%= @basedir %>/vendor/chrisboulton/php-resque
+Environment=APP_INCLUDE=/var/www/udb3-backend/worker_bootstrap.php
+Environment=INTERVAL=1
+Environment=QUEUE=bulk_label_offer
+Environment=VVERBOSE=true
+ExecStart=/usr/bin/php bin/udb3.php resque.php
+Restart=on-failure
+RestartSec=10s
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
