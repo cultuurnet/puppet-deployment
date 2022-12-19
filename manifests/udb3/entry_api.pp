@@ -64,7 +64,7 @@ class deployment::udb3::entry_api (
     owner   => 'www-data',
     group   => 'www-data',
     require => Package['uitdatabank-entry-api'],
-    notify  => [Class['apache::service'],
+    notify  => [Class['apache::service'], Service['udb3-amqp-listener-uitpas'], Service['udb3-bulk-label-offer-worker'], Systemd::Unit_file['udb3-event-export-workers.target']],
     noop    => $noop_deploy
   }
 
