@@ -4,6 +4,7 @@ class deployment::udb3::search (
   $facet_mapping_facilities_source,
   $facet_mapping_themes_source,
   $facet_mapping_types_source,
+  $pubkey_auth0_source,
   $version                  = 'latest',
   $migrate_data             = true,
   $migrate_timeout          = '300',
@@ -47,6 +48,16 @@ class deployment::udb3::search (
     source  => $features_source,
     require => Package['uitdatabank-search-api'],
     notify  => [Class['apache::service'], Service['udb3-consume-api'], Service['udb3-consume-cli'], Service['udb3-consume-related']],
+    noop    => $noop_deploy
+  }
+
+  file { 'uitdatabank-search-api-pubkey-auth0':
+    ensure  => 'file',
+    path    => "${basedir}/public-auth0.pem",
+    source  => $pubkey_auth0_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => Package['uitdatabank-search-api'],
     noop    => $noop_deploy
   }
 
