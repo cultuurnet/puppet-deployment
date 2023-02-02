@@ -11,7 +11,6 @@ WorkingDirectory=<%= @basedir %>/vendor/chrisboulton/php-resque
 Environment=APP_INCLUDE=/var/www/udb3-backend/worker_bootstrap.php
 Environment=INTERVAL=1
 Environment=QUEUE=event_export
-Environment=VVERBOSE=true
 ExecStart=/usr/bin/php resque.php
 Restart=on-failure
 RestartSec=10s
