@@ -6,6 +6,7 @@ class deployment::udb3::entry_api (
   $term_mapping_facilities_source,
   $term_mapping_themes_source,
   $term_mapping_types_source,
+  $excluded_labels_source,
   $db_name,
   $pubkey_source,
   $pubkey_auth0_source,
@@ -16,7 +17,6 @@ class deployment::udb3::entry_api (
   Boolean    $with_bulk_label_offer_worker = true,
   Boolean    $with_amqp_listener_uitpas    = true,
   $noop_deploy                             = false,
-  $excluded_labels_source                  = undef,
   $puppetdb_url                            = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
@@ -66,21 +66,19 @@ class deployment::udb3::entry_api (
     owner   => 'www-data',
     group   => 'www-data',
     require => Package['uitdatabank-entry-api'],
-    notify  => [Class['apache::service'], Service['udb3-amqp-listener-uitpas'], Service['udb3-bulk-label-offer-worker'], Systemd::Unit_file['udb3-event-export-workers.target']],
+    notify  => Class['apache::service'],
     noop    => $noop_deploy
   }
 
-  if $excluded_labels_source {
-    file { 'uitdatabank-entry-api-excluded-labels':
-      ensure  => 'file',
-      path    => "${basedir}/config.excluded_labels.php",
-      source  => $excluded_labels_source,
-      owner   => 'www-data',
-      group   => 'www-data',
-      require => Package['uitdatabank-entry-api'],
-      notify  => [Class['apache::service'], Service['udb3-amqp-listener-uitpas'], Service['udb3-bulk-label-offer-worker'], Systemd::Unit_file['udb3-event-export-workers.target']],
-      noop    => $noop_deploy
-    }
+  file { 'uitdatabank-entry-api-excluded-labels':
+    ensure  => 'file',
+    path    => "${basedir}/config.excluded_labels.php",
+    source  => $excluded_labels_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => Package['uitdatabank-entry-api'],
+    notify  => Class['apache::service'],
+    noop    => $noop_deploy
   }
 
   file { 'uitdatabank-entry-api-permissions':
@@ -90,7 +88,7 @@ class deployment::udb3::entry_api (
     owner   => 'www-data',
     group   => 'www-data',
     require => Package['uitdatabank-entry-api'],
-    notify  => [Class['apache::service'], Service['udb3-amqp-listener-uitpas'], Service['udb3-bulk-label-offer-worker'], Systemd::Unit_file['udb3-event-export-workers.target']],
+    notify  => Class['apache::service'],
     noop    => $noop_deploy
   }
 
@@ -123,7 +121,7 @@ class deployment::udb3::entry_api (
       ensure    => 'running',
       enable    => true,
       hasstatus => true,
-      subscribe => [Package['uitdatabank-entry-api'], Systemd::Unit_file['udb3-amqp-listener-uitpas.service']]
+      subscribe => [Package['uitdatabank-entry-api'], Systemd::Unit_file['udb3-amqp-listener-uitpas.service'], File['uitdatabank-entry-api-config'], File['uitdatabank-entry-api-permissions'], File['uitdatabank-entry-api-excluded-labels'], File['uitdatabank-entry-api-pubkey'], File['uitdatabank-entry-api-pubkey-auth0'], Deployment::Udb3::Externalid['uitdatabank-entry-api'], Deployment::Udb3::Terms['uitdatabank-entry-api']]
     }
   }
 
@@ -136,7 +134,7 @@ class deployment::udb3::entry_api (
       ensure    => 'running',
       enable    => true,
       hasstatus => true,
-      subscribe => [Package['uitdatabank-entry-api'], Systemd::Unit_file['udb3-bulk-label-offer-worker.service']]
+      subscribe => [Package['uitdatabank-entry-api'], Systemd::Unit_file['udb3-amqp-listener-uitpas.service'], File['uitdatabank-entry-api-config'], File['uitdatabank-entry-api-permissions'], File['uitdatabank-entry-api-excluded-labels'], File['uitdatabank-entry-api-pubkey'], File['uitdatabank-entry-api-pubkey-auth0'], Deployment::Udb3::Externalid['uitdatabank-entry-api'], Deployment::Udb3::Terms['uitdatabank-entry-api']]
     }
   }
 
@@ -150,7 +148,7 @@ class deployment::udb3::entry_api (
         ensure    => 'running',
         enable    => true,
         hasstatus => true,
-        subscribe => [Package['uitdatabank-entry-api'], Systemd::Unit_file['udb3-event-export-worker@.service']]
+        subscribe => [Package['uitdatabank-entry-api'], Systemd::Unit_file['udb3-amqp-listener-uitpas.service'], File['uitdatabank-entry-api-config'], File['uitdatabank-entry-api-permissions'], File['uitdatabank-entry-api-excluded-labels'], File['uitdatabank-entry-api-pubkey'], File['uitdatabank-entry-api-pubkey-auth0'], Deployment::Udb3::Externalid['uitdatabank-entry-api'], Deployment::Udb3::Terms['uitdatabank-entry-api']]
       }
     }
 
@@ -168,7 +166,7 @@ class deployment::udb3::entry_api (
     place_mapping_filename     => 'config.external_id_mapping_place.php',
     organizer_mapping_filename => 'config.external_id_mapping_organizer.php',
     require                    => Package['uitdatabank-entry-api'],
-    notify                     => [Class['apache::service'], Service['udb3-amqp-listener-uitpas'], Service['udb3-bulk-label-offer-worker'], Systemd::Unit_file['udb3-event-export-workers.target']],
+    notify                     => Class['apache::service'],
     noop_deploy                => $noop_deploy
   }
 
@@ -181,7 +179,7 @@ class deployment::udb3::entry_api (
     themes_mapping_filename     => 'config.term_mapping_themes.php',
     types_mapping_filename      => 'config.term_mapping_types.php',
     require                     => Package['uitdatabank-entry-api'],
-    notify                      => [Class['apache::service'], Service['udb3-amqp-listener-uitpas'], Service['udb3-bulk-label-offer-worker'], Systemd::Unit_file['udb3-event-export-workers.target']],
+    notify                      => Class['apache::service'],
     noop_deploy                 => $noop_deploy
   }
 
