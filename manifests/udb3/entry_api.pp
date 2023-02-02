@@ -9,13 +9,15 @@ class deployment::udb3::entry_api (
   $db_name,
   $pubkey_source,
   $pubkey_auth0_source,
-  $event_conclude_ensure                = 'present',
-  $event_conclude_hour                  = '0',
-  $event_conclude_minute                = '0',
-  Integer[0] $event_export_worker_count = 1,
-  $noop_deploy                          = false,
-  $excluded_labels_source               = undef,
-  $puppetdb_url                         = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
+  $event_conclude_ensure                   = 'present',
+  $event_conclude_hour                     = '0',
+  $event_conclude_minute                   = '0',
+  Integer[0] $event_export_worker_count    = 1,
+  Boolean    $with_bulk_label_offer_worker = true,
+  Boolean    $with_amqp_listener_uitpas    = true,
+  $noop_deploy                             = false,
+  $excluded_labels_source                  = undef,
+  $puppetdb_url                            = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   realize Apt::Source['uitdatabank-entry-api']
@@ -112,26 +114,30 @@ class deployment::udb3::entry_api (
     noop    => $noop_deploy
   }
 
-  systemd::unit_file { 'udb3-amqp-listener-uitpas.service':
-    content   => template('deployment/udb3/entry_api/udb3-amqp-listener-uitpas.service.erb')
+  if $with_amqp_listener_uitpas {
+    systemd::unit_file { 'udb3-amqp-listener-uitpas.service':
+      content   => template('deployment/udb3/entry_api/udb3-amqp-listener-uitpas.service.erb')
+    }
+
+    service { 'udb3-amqp-listener-uitpas':
+      ensure    => 'running',
+      enable    => true,
+      hasstatus => true,
+      subscribe => [Package['uitdatabank-entry-api'], Systemd::Unit_file['udb3-amqp-listener-uitpas.service']]
+    }
   }
 
-  service { 'udb3-amqp-listener-uitpas':
-    ensure    => 'running',
-    enable    => true,
-    hasstatus => true,
-    subscribe => [Package['uitdatabank-entry-api'], Systemd::Unit_file['udb3-amqp-listener-uitpas.service']]
-  }
+  if $with_bulk_label_offer_worker {
+    systemd::unit_file { 'udb3-bulk-label-offer-worker.service':
+      content   => template('deployment/udb3/entry_api/udb3-bulk-label-offer-worker.service.erb')
+    }
 
-  systemd::unit_file { 'udb3-bulk-label-offer-worker.service':
-    content   => template('deployment/udb3/entry_api/udb3-bulk-label-offer-worker.service.erb')
-  }
-
-  service { 'udb3-bulk-label-offer-worker':
-    ensure    => 'running',
-    enable    => true,
-    hasstatus => true,
-    subscribe => [Package['uitdatabank-entry-api'], Systemd::Unit_file['udb3-bulk-label-offer-worker.service']]
+    service { 'udb3-bulk-label-offer-worker':
+      ensure    => 'running',
+      enable    => true,
+      hasstatus => true,
+      subscribe => [Package['uitdatabank-entry-api'], Systemd::Unit_file['udb3-bulk-label-offer-worker.service']]
+    }
   }
 
   if $event_export_worker_count > 0 {
