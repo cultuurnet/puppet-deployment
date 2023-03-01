@@ -46,7 +46,8 @@ class deployment::uitid (
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $payara_portbase,
-    require      => [Glassfish::Create_asadmin_passfile["${user}_asadmin_passfile"], Glassfish::Create_domain[$payara_domain]]
+    require      => [Glassfish::Create_asadmin_passfile["${user}_asadmin_passfile"], Glassfish::Create_domain[$payara_domain]],
+    notify       => Exec["restart_service_${service_name}"]
   }
 
   Set {
@@ -54,7 +55,8 @@ class deployment::uitid (
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $payara_portbase,
-    require      => [Glassfish::Create_asadmin_passfile["${user}_asadmin_passfile"], Glassfish::Create_domain[$payara_domain]]
+    require      => [Glassfish::Create_asadmin_passfile["${user}_asadmin_passfile"], Glassfish::Create_domain[$payara_domain]],
+    notify       => Exec["restart_service_${service_name}"]
   }
 
   Systemproperty {
