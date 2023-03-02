@@ -12,6 +12,7 @@ class deployment::uitpas (
   $payara_portbase         = '24800',
   $payara_start_heap       = undef,
   $payara_max_heap         = undef,
+  $system_truststore       = false,
   $timezone                = 'UTC',
   $settings                = {},
   $payara_jmx              = true,
@@ -43,7 +44,8 @@ class deployment::uitpas (
     ensure       => 'present',
     user         => $user,
     passwordfile => $passwordfile,
-    require      => Glassfish::Create_domain[$payara_domain]
+    require      => [Glassfish::Create_asadmin_passfile["${user}_asadmin_passfile"], Glassfish::Create_domain[$payara_domain]],
+    notify       => Exec["restart_service_${service_name}"]
   }
 
   Systemproperty {
@@ -51,7 +53,8 @@ class deployment::uitpas (
     user         => $user,
     passwordfile => $passwordfile,
     portbase     => $payara_portbase,
-    require      => Glassfish::Create_domain[$payara_domain]
+    require      => [Glassfish::Create_asadmin_passfile["${user}_asadmin_passfile"], Glassfish::Create_domain[$payara_domain]],
+    notify       => Exec["restart_service_${service_name}"]
   }
 
   glassfish::create_domain { $payara_domain:
@@ -81,6 +84,19 @@ class deployment::uitpas (
 
       Jvmoption["Clear domain ${payara_domain} default start heap"] -> Jvmoption["Domain ${payara_domain} start heap"]
     }
+  }
+
+  if $system_truststore {
+    jvmoption { "Clear domain ${payara_domain} default truststore":
+      ensure   => 'absent',
+      option   => '-Djavax.net.ssl.trustStore=\$\{com.sun.aas.instanceRoot\}/config/cacerts.jks'
+    }
+
+    jvmoption { "Domain ${payara_domain} truststore":
+      option   => "-Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts"
+    }
+
+    Jvmoption["Clear domain ${payara_domain} default truststore"] -> Jvmoption["Domain ${payara_domain} truststore"]
   }
 
   # This will only work if the default start heap value (512m) is present in
