@@ -1,6 +1,7 @@
 class deployment::udb3::entry_api (
   $config_source,
-  $permissions_source,
+  $admin_permissions_source,
+  $client_permissions_source,
   $externalid_place_mapping_source,
   $externalid_organizer_mapping_source,
   $term_mapping_facilities_source,
@@ -81,10 +82,21 @@ class deployment::udb3::entry_api (
     noop    => $noop_deploy
   }
 
-  file { 'uitdatabank-entry-api-permissions':
+  file { 'uitdatabank-entry-api-admin-permissions':
     ensure  => 'file',
     path    => "${basedir}/config.allow_all.php",
-    source  => $permissions_source,
+    source  => $admin_permissions_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => Package['uitdatabank-entry-api'],
+    notify  => Class['apache::service'],
+    noop    => $noop_deploy
+  }
+
+  file { 'uitdatabank-entry-api-client-permissions':
+    ensure  => 'file',
+    path    => "${basedir}/config.client_permissions.php",
+    source  => $client_permissions_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => Package['uitdatabank-entry-api'],
