@@ -11,9 +11,6 @@ class deployment::udb3::entry_api (
   $db_name,
   $pubkey_source,
   $pubkey_auth0_source,
-  $event_conclude_ensure                   = 'present',
-  $event_conclude_hour                     = '0',
-  $event_conclude_minute                   = '0',
   Integer[0] $event_export_worker_count    = 1,
   Boolean    $with_bulk_label_offer_worker = true,
   Boolean    $with_amqp_listener_uitpas    = true,
@@ -237,12 +234,7 @@ class deployment::udb3::entry_api (
   }
 
   cron { 'uitdatabank-entry-api-event-conclude':
-    ensure  => $event_conclude_ensure,
-    command => "${basedir}/bin/udb3.php event:conclude",
-    require => Package['uitdatabank-entry-api'],
-    user    => 'root',
-    hour    => $event_conclude_hour,
-    minute  => $event_conclude_minute
+    ensure  => 'absent'
   }
 
   profiles::deployment::versions { $title:
