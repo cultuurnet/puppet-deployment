@@ -237,12 +237,7 @@ class deployment::udb3::entry_api (
   }
 
   cron { 'uitdatabank-entry-api-event-conclude':
-    ensure  => $event_conclude_ensure,
-    command => "${basedir}/bin/udb3.php event:conclude",
-    require => Package['uitdatabank-entry-api'],
-    user    => 'root',
-    hour    => $event_conclude_hour,
-    minute  => $event_conclude_minute
+    ensure  => 'absent'
   }
 
   profiles::deployment::versions { $title:
