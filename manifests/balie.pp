@@ -46,7 +46,7 @@ class deployment::balie (
 
   file { 'balie-angular-app-config':
     ensure  => 'file',
-    path    => '/var/www/uitpas-balie-api/web/app/config.json',
+    path    => '/var/www/uitpas-balie-api/web/app_v1/config.json',
     source  => $angular_app_config_source,
     owner   => 'www-data',
     group   => 'www-data',
@@ -63,7 +63,7 @@ class deployment::balie (
   }
 
   exec { 'angular-deploy-config':
-    command     => 'angular-deploy-config /var/www/uitpas-balie-api/web/app',
+    command     => 'angular-deploy-config /var/www/uitpas-balie-api/web/app_v1',
     path        => [ '/usr/local/bin', '/usr/bin', '/bin'],
     refreshonly => true,
     subscribe   => [ 'Package[uitpas-balie-frontend]', 'File[balie-angular-app-config]', 'File[balie-angular-app-deploy-config]'],
