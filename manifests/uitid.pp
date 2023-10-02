@@ -25,6 +25,7 @@ class deployment::uitid (
   $stackdriver_servicecredentials_source = undef,
   $swagger_base_url                      = undef,
   $uitalert_use_fast_search              = false,
+  $mailing_slack_url                     = undef,
   $puppetdb_url                          = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
@@ -195,6 +196,10 @@ class deployment::uitid (
 
   systemproperty { 'be.culturefeed.ejb.UitAlertBean.USE_FAST_SEARCH':
     value => bool2str($uitalert_use_fast_search)
+  }
+
+  systemproperty { 'mailing_slack_url':
+    value => $mailing_slack_url
   }
 
   file { 'stackdriver_servicecredentials':
