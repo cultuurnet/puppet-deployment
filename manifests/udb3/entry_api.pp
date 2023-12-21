@@ -67,11 +67,6 @@ class deployment::udb3::entry_api (
     noop    => $noop_deploy
   }
 
-  file { 'uitdatabank-entry-api-excluded-labels':
-    ensure  => 'absent',
-    path    => "${basedir}/config.excluded_labels.php",
-  }
-
   file { 'uitdatabank-entry-api-admin-permissions':
     ensure  => 'file',
     path    => "${basedir}/config.allow_all.php",
@@ -223,10 +218,6 @@ class deployment::udb3::entry_api (
     subscribe   => Package['uitdatabank-entry-api'],
     refreshonly => true,
     noop        => $noop_deploy
-  }
-
-  cron { 'uitdatabank-entry-api-event-conclude':
-    ensure  => 'absent'
   }
 
   profiles::deployment::versions { $title:
