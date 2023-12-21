@@ -7,8 +7,6 @@ class deployment::udb3::entry_api (
   $term_mapping_facilities_source,
   $term_mapping_themes_source,
   $term_mapping_types_source,
-  $excluded_labels_source,
-  $db_name,
   $pubkey_source,
   $pubkey_auth0_source,
   Integer[0] $event_export_worker_count    = 1,
@@ -70,14 +68,8 @@ class deployment::udb3::entry_api (
   }
 
   file { 'uitdatabank-entry-api-excluded-labels':
-    ensure  => 'file',
+    ensure  => 'absent',
     path    => "${basedir}/config.excluded_labels.php",
-    source  => $excluded_labels_source,
-    owner   => 'www-data',
-    group   => 'www-data',
-    require => Package['uitdatabank-entry-api'],
-    notify  => Class['apache::service'],
-    noop    => $noop_deploy
   }
 
   file { 'uitdatabank-entry-api-admin-permissions':
