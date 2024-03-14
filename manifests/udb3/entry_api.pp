@@ -29,6 +29,16 @@ class deployment::udb3::entry_api (
     noop    => $noop_deploy
   }
 
+  cron { 'uitdatabank_process_duplicates':
+    command     => "${basedir}/bin/udb3.php place:process-duplicates",
+    environment => [ 'SHELL=/bin/bash', "TZ=${local_timezone}", 'MAILTO=infra@publiq.be'],
+    user        => 'ubuntu',
+    minute      => '00'
+    hour        => '5',
+    weekday     => 'Monday',
+    require     => Package['uitdatabank-entry-api']
+  }
+
   file { 'uitdatabank-entry-api-log':
     ensure  => 'directory',
     path    => "${basedir}/log",
