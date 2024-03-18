@@ -30,7 +30,7 @@ class deployment::udb3::entry_api (
   }
 
   cron { 'uitdatabank_process_duplicates':
-    command     => '/var/www/udb3-backend/bin/udb3.php place:process-duplicates',
+    command     => "${basedir}/bin/udb3.php place:process\\-duplicates",
     environment => [ 'SHELL=/bin/bash', "TZ=${local_timezone}", 'MAILTO=infra@publiq.be'],
     user        => 'ubuntu',
     minute      => 0,
