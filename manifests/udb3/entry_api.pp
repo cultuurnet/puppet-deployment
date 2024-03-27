@@ -30,14 +30,14 @@ class deployment::udb3::entry_api (
   }
 
   cron { 'uitdatabank_process_duplicates':
-    command     => "${basedir}/bin/udb3.php place:process-duplicates",
-    environment => [ 'SHELL=/bin/bash', 'MAILTO=infra@publiq.be'],
+    command     => "${basedir}/bin/udb3.php place:process-duplicates --force",
+    environment => ['SHELL=/bin/bash', 'MAILTO=infra@publiq.be'],
     user        => 'ubuntu',
-    minute      => 0,
-    hour        => 5,
+    minute      => '0',
+    hour        => '5',
     monthday    => '*',
     month       => '*',
-    weekday     => 1,
+    weekday     => '1',
     require     => Package['uitdatabank-entry-api']
   }
 
