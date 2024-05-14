@@ -1,5 +1,6 @@
 class deployment::udb3::entry_api (
   $config_source,
+  $movie_fetcher_config_source,
   $admin_permissions_source,
   $client_permissions_source,
   $completeness_source,
@@ -73,6 +74,17 @@ class deployment::udb3::entry_api (
     ensure  => 'file',
     path    => "${basedir}/config.php",
     source  => $config_source,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => Package['uitdatabank-entry-api'],
+    notify  => Class['apache::service'],
+    noop    => $noop_deploy
+  }
+
+  file { 'uitdatabank-movie-fetcher-config':
+    ensure  => 'file',
+    path    => "${basedir}/config.kinepolis.php",
+    source  => $movie_fetcher_config_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => Package['uitdatabank-entry-api'],
