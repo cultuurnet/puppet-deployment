@@ -34,7 +34,7 @@ class deployment::udb3::entry_api (
   cron { 'uitdatabank_process_duplicates':
     command     => "${basedir}/bin/udb3.php place:process-duplicates --force",
     environment => ['SHELL=/bin/bash', 'MAILTO=infra@publiq.be'],
-    user        => 'ubuntu',
+    user        => 'www-data',
     minute      => '0',
     hour        => '5',
     monthday    => '*',
@@ -50,7 +50,7 @@ class deployment::udb3::entry_api (
                    },
     command     => "${basedir}/bin/udb3.php movies:fetch --force",
     environment => ['SHELL=/bin/bash', 'MAILTO=infra@publiq.be'],
-    user        => 'ubuntu',
+    user        => 'www-data',
     minute      => '0',
     hour        => '4',
     monthday    => '*',
