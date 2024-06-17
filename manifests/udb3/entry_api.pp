@@ -49,7 +49,7 @@ class deployment::udb3::entry_api (
                      false => 'absent'
                    },
     command     => "${basedir}/bin/udb3.php movies:fetch --force",
-    environment => ['SHELL=/bin/bash', 'MAILTO=infra@publiq.be'],
+    environment => ['SHELL=/bin/bash', 'MAILTO=infra@publiq.be,jonas.verhaeghe@publiq.be'],
     user        => 'www-data',
     minute      => '0',
     hour        => '4',
