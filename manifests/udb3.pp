@@ -3,7 +3,6 @@ class deployment::udb3 (
   $with_angular           = true,
   $with_frontend          = true,
   $with_jwtprovider       = true,
-  $with_search            = true,
   $with_movie_api_fetcher = true
 ){
 
@@ -19,9 +18,6 @@ class deployment::udb3 (
     }
     if $with_jwtprovider {
       contain deployment::udb3::jwtprovider
-    }
-    if $with_search {
-      contain deployment::udb3::search
     }
     if $with_movie_api_fetcher {
       contain deployment::udb3::movie_api_fetcher
