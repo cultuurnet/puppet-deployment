@@ -195,7 +195,7 @@ class deployment::udb3::entry_api (
       ensure    => 'running',
       enable    => true,
       hasstatus => true,
-      subscribe => [Package['uitdatabank-entry-api'], Systemd::Unit_file['udb3-amqp-listener-uitpas.service'], File['uitdatabank-entry-api-config'], File['uitdatabank-entry-api-admin-permissions'], File['uitdatabank-entry-api-client-permissions'], File['uitdatabank-entry-api-pubkey'], File['uitdatabank-entry-api-pubkey-auth0'], File['uitdatabank-entry-api-pubkey-keycloak'], Deployment::Udb3::Externalid['uitdatabank-entry-api'], Deployment::Udb3::Terms['uitdatabank-entry-api']]
+      subscribe => [Package['uitdatabank-entry-api'], Systemd::Unit_file['udb3-amqp-listener-rdf.service'], File['uitdatabank-entry-api-config'], File['uitdatabank-entry-api-admin-permissions'], File['uitdatabank-entry-api-client-permissions'], File['uitdatabank-entry-api-pubkey'], File['uitdatabank-entry-api-pubkey-auth0'], File['uitdatabank-entry-api-pubkey-keycloak'], Deployment::Udb3::Externalid['uitdatabank-entry-api'], Deployment::Udb3::Terms['uitdatabank-entry-api']]
     }
   }
 
@@ -208,7 +208,7 @@ class deployment::udb3::entry_api (
       ensure    => 'running',
       enable    => true,
       hasstatus => true,
-      subscribe => [Package['uitdatabank-entry-api'], Systemd::Unit_file['udb3-amqp-listener-uitpas.service'], File['uitdatabank-entry-api-config'], File['uitdatabank-entry-api-admin-permissions'], File['uitdatabank-entry-api-client-permissions'], File['uitdatabank-entry-api-pubkey'], File['uitdatabank-entry-api-pubkey-auth0'], File['uitdatabank-entry-api-pubkey-keycloak'], Deployment::Udb3::Externalid['uitdatabank-entry-api'], Deployment::Udb3::Terms['uitdatabank-entry-api']]
+      subscribe => [Package['uitdatabank-entry-api'], File['uitdatabank-entry-api-config'], File['uitdatabank-entry-api-admin-permissions'], File['uitdatabank-entry-api-client-permissions'], File['uitdatabank-entry-api-pubkey'], File['uitdatabank-entry-api-pubkey-auth0'], File['uitdatabank-entry-api-pubkey-keycloak'], Deployment::Udb3::Externalid['uitdatabank-entry-api'], Deployment::Udb3::Terms['uitdatabank-entry-api']]
     }
   }
 
@@ -222,7 +222,7 @@ class deployment::udb3::entry_api (
         ensure    => 'running',
         enable    => true,
         hasstatus => true,
-        subscribe => [Package['uitdatabank-entry-api'], Systemd::Unit_file['udb3-amqp-listener-uitpas.service'], File['uitdatabank-entry-api-config'], File['uitdatabank-entry-api-admin-permissions'], File['uitdatabank-entry-api-client-permissions'], File['uitdatabank-entry-api-pubkey'], File['uitdatabank-entry-api-pubkey-auth0'], File['uitdatabank-entry-api-pubkey-keycloak'], Deployment::Udb3::Externalid['uitdatabank-entry-api'], Deployment::Udb3::Terms['uitdatabank-entry-api']]
+        subscribe => [Package['uitdatabank-entry-api'], File['uitdatabank-entry-api-config'], File['uitdatabank-entry-api-admin-permissions'], File['uitdatabank-entry-api-client-permissions'], File['uitdatabank-entry-api-pubkey'], File['uitdatabank-entry-api-pubkey-auth0'], File['uitdatabank-entry-api-pubkey-keycloak'], Deployment::Udb3::Externalid['uitdatabank-entry-api'], Deployment::Udb3::Terms['uitdatabank-entry-api']]
       }
     }
 
