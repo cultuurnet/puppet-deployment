@@ -2,8 +2,7 @@ class deployment::udb3 (
   $with_entry_api         = true,
   $with_angular           = true,
   $with_frontend          = true,
-  $with_jwtprovider       = true,
-  $with_movie_api_fetcher = true
+  $with_jwtprovider       = true
 ){
 
   unless $facts['noop_deploy'] == 'true' {
@@ -18,9 +17,6 @@ class deployment::udb3 (
     }
     if $with_jwtprovider {
       contain deployment::udb3::jwtprovider
-    }
-    if $with_movie_api_fetcher {
-      contain deployment::udb3::movie_api_fetcher
     }
   }
 }
