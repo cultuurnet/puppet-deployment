@@ -16,7 +16,6 @@ class deployment::udb3::entry_api (
   Integer[0] $event_export_worker_count    = 1,
   Boolean    $with_bulk_label_offer_worker = true,
   Boolean    $with_amqp_listener_uitpas    = true,
-  Boolean    $with_amqp_listener_rdf       = true,
   $noop_deploy                             = false,
   $puppetdb_url                            = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
@@ -183,19 +182,6 @@ class deployment::udb3::entry_api (
       enable    => true,
       hasstatus => true,
       subscribe => [Package['uitdatabank-entry-api'], Systemd::Unit_file['udb3-amqp-listener-uitpas.service'], File['uitdatabank-entry-api-config'], File['uitdatabank-entry-api-admin-permissions'], File['uitdatabank-entry-api-client-permissions'], File['uitdatabank-entry-api-pubkey'], File['uitdatabank-entry-api-pubkey-auth0'], File['uitdatabank-entry-api-pubkey-keycloak'], Deployment::Udb3::Externalid['uitdatabank-entry-api'], Deployment::Udb3::Terms['uitdatabank-entry-api']]
-    }
-  }
-
-  if $with_amqp_listener_rdf {
-    systemd::unit_file { 'udb3-amqp-listener-rdf.service':
-      content   => template('deployment/udb3/entry_api/udb3-amqp-listener-rdf.service.erb')
-    }
-
-    service { 'udb3-amqp-listener-rdf':
-      ensure    => 'running',
-      enable    => true,
-      hasstatus => true,
-      subscribe => [Package['uitdatabank-entry-api'], Systemd::Unit_file['udb3-amqp-listener-rdf.service'], File['uitdatabank-entry-api-config'], File['uitdatabank-entry-api-admin-permissions'], File['uitdatabank-entry-api-client-permissions'], File['uitdatabank-entry-api-pubkey'], File['uitdatabank-entry-api-pubkey-auth0'], File['uitdatabank-entry-api-pubkey-keycloak'], Deployment::Udb3::Externalid['uitdatabank-entry-api'], Deployment::Udb3::Terms['uitdatabank-entry-api']]
     }
   }
 
