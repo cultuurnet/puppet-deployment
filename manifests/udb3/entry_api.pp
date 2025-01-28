@@ -72,7 +72,7 @@ class deployment::udb3::entry_api (
     hour        => '6',
     monthday    => '*',
     month       => '*',
-    weekday     => '1,4',
+    weekday     => ['1', '4'],
     require     => Package['uitdatabank-entry-api']
   }
 
