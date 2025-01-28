@@ -13,6 +13,7 @@ class deployment::udb3::entry_api (
   $pubkey_auth0_source,
   $pubkey_keycloak_source,
   Boolean    $schedule_movie_fetcher       = false,
+  Boolean    $schedule_add_trailers        = false,
   Integer[0] $event_export_worker_count    = 1,
   Boolean    $with_bulk_label_offer_worker = true,
   Boolean    $with_amqp_listener_uitpas    = true,
@@ -56,6 +57,22 @@ class deployment::udb3::entry_api (
     monthday    => '*',
     month       => '*',
     weekday     => '1',
+    require     => Package['uitdatabank-entry-api']
+  }
+
+  cron { 'uitdatabank_add_trailers':
+    ensure      => $schedule_add_trailers ? {
+                     true  => 'present',
+                     false => 'absent'
+                   },
+    command     => "${basedir}/bin/udb3.php movies:add-trailers -l",
+    environment => ['SHELL=/bin/bash', 'MAILTO=infra@publiq.be,jonas.verhaeghe@publiq.be'],
+    user        => 'www-data',
+    minute      => '0',
+    hour        => '6',
+    monthday    => '*',
+    month       => '*',
+    weekday     => '1,4',
     require     => Package['uitdatabank-entry-api']
   }
 
