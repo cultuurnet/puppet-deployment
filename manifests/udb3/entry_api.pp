@@ -10,7 +10,6 @@ class deployment::udb3::entry_api (
   $term_mapping_themes_source,
   $term_mapping_types_source,
   $pubkey_source,
-  $pubkey_auth0_source,
   $pubkey_keycloak_source,
   Boolean    $schedule_movie_fetcher       = false,
   Boolean    $schedule_add_trailers        = false,
@@ -170,9 +169,8 @@ class deployment::udb3::entry_api (
   }
 
   file { 'uitdatabank-entry-api-pubkey-auth0':
-    ensure  => 'file',
+    ensure  => 'absent',
     path    => "${basedir}/public-auth0.pem",
-    source  => $pubkey_auth0_source,
     owner   => 'www-data',
     group   => 'www-data',
     require => Package['uitdatabank-entry-api'],
