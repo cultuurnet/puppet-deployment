@@ -97,7 +97,7 @@ class deployment::udb3::entry_api (
     monthday    => '*',
     month       => '*',
     weekday     => '*',
-    require     => [File['replay_mismatched_events.sh',Package['uitdatabank-entry-api']]
+    require     => [File['replay_mismatched_events.sh'],Package['uitdatabank-entry-api']]
   }
 
   file { 'uitdatabank-entry-api-log':
