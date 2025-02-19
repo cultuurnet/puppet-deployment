@@ -11,13 +11,14 @@ class deployment::udb3::entry_api (
   $term_mapping_types_source,
   $pubkey_source,
   $pubkey_keycloak_source,
-  Boolean    $schedule_movie_fetcher       = false,
-  Boolean    $schedule_add_trailers        = false,
-  Integer[0] $event_export_worker_count    = 1,
-  Boolean    $with_bulk_label_offer_worker = true,
-  Boolean    $with_amqp_listener_uitpas    = true,
-  $noop_deploy                             = false,
-  $puppetdb_url                            = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
+  Boolean    $schedule_movie_fetcher            = false,
+  Boolean    $schedule_add_trailers             = false,
+  Boolean    $schedule_replay_mismatched_events = false,
+  Integer[0] $event_export_worker_count         = 1,
+  Boolean    $with_bulk_label_offer_worker      = true,
+  Boolean    $with_amqp_listener_uitpas         = true,
+  $noop_deploy                                  = false,
+  $puppetdb_url                                 = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
 ) {
 
   realize Apt::Source['uitdatabank-entry-api']
@@ -73,6 +74,30 @@ class deployment::udb3::entry_api (
     month       => '*',
     weekday     => ['1', '4'],
     require     => Package['uitdatabank-entry-api']
+  }
+
+  file { 'replay_mismatched_events.sh':
+    ensure => 'file',
+    owner  => 'www-data',
+    path   => '/usr/local/bin/replay_mismatched_events.sh',
+    source => 'puppet:///modules/deployment/entry_api/replay_mismatched_events.sh',
+    mode   => '0744'
+  }
+
+  cron { 'uitdatabank_replay_mismatched_events':
+    ensure      => $schedule_replay_mismatched_events ? {
+                     true  => 'present',
+                     false => 'absent'
+                   },
+    command     => "/usr/local/bin/replay_mismatched_events.sh ${basedir}/log/web.log.1",
+    environment => ['SHELL=/bin/bash', 'MAILTO=infra@publiq.be,jonas.verhaeghe@publiq.be'],
+    user        => 'www-data',
+    minute      => '0',
+    hour        => '7',
+    monthday    => '*',
+    month       => '*',
+    weekday     => '*',
+    require     => [File['replay_mismatched_events.sh',Package['uitdatabank-entry-api']]
   }
 
   file { 'uitdatabank-entry-api-log':
