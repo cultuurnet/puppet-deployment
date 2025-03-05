@@ -252,7 +252,7 @@ class deployment::udb3::entry_api (
       enable     => true,
       hasstatus  => true,
       hasrestart => false,
-      subscribe  => [Systemd::Unit_file['uitdatabank-event-export-worker@.service'], Systemd::Unit_file['uitdatabank-event-export-workers.target']]
+      subscribe  => [Systemd::Unit_file['udb3-event-export-worker@.service'], Systemd::Unit_file['udb3-event-export-workers.target']]
     }
   }
 
