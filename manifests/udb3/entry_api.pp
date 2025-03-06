@@ -256,6 +256,24 @@ class deployment::udb3::entry_api (
       require    => Class['systemd::systemctl::daemon_reload'],
       subscribe  => [Systemd::Unit_file['udb3-event-export-worker@.service'], Systemd::Unit_file['udb3-event-export-workers.target']]
     }
+
+    file { 'udb3_event_export_worker_count_external_fact':
+      ensure  => 'file',
+      path    => '/etc/puppetlabs/facter/facts.d/udb3_event_export_worker_count.txt',
+      content => "udb3_event_export_worker_count=${event_export_worker_count}",
+      require => Service['udb3-event-export-workers.target']
+    }
+
+    if $facts['udb3_event_export_worker_count'] {
+      if $facts['udb3_event_export_worker_count'] > $event_export_worker_count {
+        Integer[$event_export_worker_count + 1, $facts['udb3_event_export_worker_count']].each |$id| {
+          service { "udb3-event-export-worker@${id}.service":
+            ensure  => 'stopped',
+            require => Service['udb3-event-export-workers.target']
+          }
+        }
+      }
+    }
   }
 
   deployment::udb3::externalid { 'uitdatabank-entry-api':
