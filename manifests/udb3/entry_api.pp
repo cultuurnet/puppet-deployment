@@ -265,7 +265,7 @@ class deployment::udb3::entry_api (
     }
 
     if $facts['udb3_event_export_worker_count'] {
-      if $facts['udb3_event_export_worker_count'] > $event_export_worker_count {
+      if Integer($facts['udb3_event_export_worker_count']) > $event_export_worker_count {
         Integer[$event_export_worker_count + 1, $facts['udb3_event_export_worker_count']].each |$id| {
           service { "udb3-event-export-worker@${id}.service":
             ensure  => 'stopped',
