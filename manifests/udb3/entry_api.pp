@@ -244,14 +244,16 @@ class deployment::udb3::entry_api (
     }
 
     systemd::unit_file { 'udb3-event-export-workers.target':
-      content => template('deployment/udb3/entry_api/udb3-event-export-workers.target.erb')
+      content => template('deployment/udb3/entry_api/udb3-event-export-workers.target.erb'),
+      notify  => Class['systemd::systemctl::daemon_reload']
     }
 
     service { 'udb3-event-export-workers.target':
-      ensure =>  'running',
+      ensure     => 'running',
       enable     => true,
       hasstatus  => true,
       hasrestart => false,
+      require    => Class['systemd::systemctl::daemon_reload'],
       subscribe  => [Systemd::Unit_file['udb3-event-export-worker@.service'], Systemd::Unit_file['udb3-event-export-workers.target']]
     }
   }
