@@ -16,6 +16,7 @@ class deployment::udb3::entry_api (
   Boolean    $schedule_replay_mismatched_events = false,
   Integer[0] $event_export_worker_count         = 1,
   Boolean    $with_bulk_label_offer_worker      = true,
+  Boolean    $with_mail_worker                  = true,
   Boolean    $with_amqp_listener_uitpas         = true,
   $noop_deploy                                  = false,
   $puppetdb_url                                 = lookup('data::puppet::puppetdb::url', Optional[String], 'first', undef)
@@ -222,6 +223,19 @@ class deployment::udb3::entry_api (
     }
 
     service { 'udb3-bulk-label-offer-worker':
+      ensure    => 'running',
+      enable    => true,
+      hasstatus => true,
+      subscribe => [Package['uitdatabank-entry-api'], File['uitdatabank-entry-api-config'], File['uitdatabank-entry-api-admin-permissions'], File['uitdatabank-entry-api-client-permissions'], File['uitdatabank-entry-api-pubkey'], File['uitdatabank-entry-api-pubkey-keycloak'], Deployment::Udb3::Externalid['uitdatabank-entry-api'], Deployment::Udb3::Terms['uitdatabank-entry-api']]
+    }
+  }
+
+  if $with_mail_worker {
+    systemd::unit_file { 'udb3-mail-worker.service':
+      content   => template('deployment/udb3/entry_api/udb3-mail-worker.service.erb')
+    }
+
+    service { 'udb3-mail-worker':
       ensure    => 'running',
       enable    => true,
       hasstatus => true,
