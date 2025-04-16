@@ -1,6 +1,0 @@
-[Unit]
-Description=UiTdatabank event export workers
-Wants=<%= Array(1..@event_export_worker_count).map { |num| "udb3-event-export-worker@#{num}.service" }.join(' ') %>
-
-[Install]
-WantedBy=multi-user.target
